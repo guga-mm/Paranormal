@@ -99,7 +99,13 @@ public class FogEntity extends Entity {
 				setLife(80);
 			} else {
 				setLife(getLife() - 1);
-				if (getLife() <= 0) this.remove(RemovalReason.DISCARDED);
+				if (getLife() <= 0) {
+					if (this.getIntensity() > 1 || this.getRadius() > 15) {
+						setIntensity(getIntensity() - 1);
+						setRadius(getRadius() - 15);
+						setLife(80);
+					} else if (getIntensity() == 1 && getRadius() == 15) this.remove(RemovalReason.DISCARDED);
+				}
 			}
 		}
 
