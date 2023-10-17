@@ -1,11 +1,12 @@
 {
 	"required": true,
 	"minVersion": "0.8",
-	"package": "com.example.example_mod.mixin",
+	"package": "io.github.qMartinz.paranormal.mixin",
 	"compatibilityLevel": "JAVA_17",
-	"mixins": [],
+	"mixins": [
+      "EntityDataSaverMixin"
+    ],
 	"client": [
-		"TitleScreenMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
