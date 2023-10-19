@@ -1,20 +1,18 @@
 package io.github.qMartinz.paranormal.entity;
 
-import io.github.qMartinz.paranormal.Paranormal;
+import io.github.qMartinz.paranormal.registry.EntityRegistry;
 import io.github.qMartinz.paranormal.registry.ParticleRegistry;
 import io.github.qMartinz.paranormal.util.IEntityDataSaver;
 import io.github.qMartinz.paranormal.util.NexData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -36,20 +34,20 @@ public class FogEntity extends Entity {
 	@Override
 	protected void initDataTracker() {
 		this.dataTracker.startTracking(FOG_INTENSITY, 1);
-		this.dataTracker.startTracking(FOG_LIFE, 80);
+		this.dataTracker.startTracking(FOG_LIFE, getMaxLife());
 		this.dataTracker.startTracking(FOG_RADIUS, 15);
 	}
 
 	public void setRadius(int size) {
-		this.dataTracker.set(FOG_RADIUS, Math.max(15, Math.min(75, size)));
+		this.dataTracker.set(FOG_RADIUS, Math.max(25, Math.min(75, size)));
 	}
 
 	public void setIntensity(int intensity) {
-		this.dataTracker.set(FOG_INTENSITY, Math.max(1, Math.min(5, intensity)));
+		this.dataTracker.set(FOG_INTENSITY, Math.max(1, Math.min(3, intensity)));
 	}
 
 	public void setLife(int life) {
-		this.dataTracker.set(FOG_LIFE, Math.min(life, 80));
+		this.dataTracker.set(FOG_LIFE, Math.min(life, getMaxLife()));
 	}
 
 	public int getRadius() {
@@ -63,6 +61,10 @@ public class FogEntity extends Entity {
 	public int getLife() {
 		return this.dataTracker.get(FOG_LIFE);
 	}
+	public int getMaxLife(){
+		if (this.getType() == EntityRegistry.RUINED_FOG) return 1200;
+		return 600;
+	}
 
 	static{
 		FOG_RADIUS = DataTracker.registerData(FogEntity.class, TrackedDataHandlerRegistry.INTEGER);
@@ -70,20 +72,21 @@ public class FogEntity extends Entity {
 		FOG_INTENSITY = DataTracker.registerData(FogEntity.class, TrackedDataHandlerRegistry.INTEGER);
 	}
 
-	private void fogParticle(){
+	public void fogParticle(){
+		DefaultParticleType particle = ParticleRegistry.FOG_1;
+		if (this.getType() == EntityRegistry.RUINED_FOG) particle = ParticleRegistry.FOG_2;
 		double radius = this.getRadius();
-		for (int i = 1; i <= Math.pow(radius, 1.5); i++) {
+		for (int i = 1; i <= Math.pow(radius, 1.8) * getIntensity(); i++) {
 			Vec3d randomPos = this.getPos().add(
-					new Vec3d(random.nextGaussian(), random.nextGaussian(), random.nextGaussian())
-							.normalize().multiply(
-									random.range(0, (int) radius),
-									random.range(0, (int) radius),
-									random.range(0, (int) radius)));
+					new Vec3d(random.range((int) -radius, (int) radius),
+							random.range((int) -radius, (int) radius),
+							random.range((int) -radius, (int) radius)));
 
 			BlockPos block = new BlockPos(new Vec3i((int) randomPos.x, (int) randomPos.y, (int) randomPos.z));
-			if (!this.getWorld().getBlockState(block.down()).isAir() && this.getWorld().getBlockState(block).isAir()) {
-				this.getWorld().addParticle(ParticleRegistry.FOG,
-						randomPos.x, randomPos.y + 0.5d, randomPos.z, 0D, 0D, 0D);
+			if (!this.getWorld().getBlockState(block.down()).isAir() && this.getWorld().getBlockState(block).isAir()
+			&& randomPos.distanceTo(this.getPos()) <= radius) {
+				this.getWorld().addParticle(particle,
+						randomPos.x, randomPos.y + 1.5d, randomPos.z, 0D, 0D, 0D);
 			}
 		}
 	}
@@ -96,15 +99,15 @@ public class FogEntity extends Entity {
 			fogParticle();
 
 			if (entitiesWithin().stream().anyMatch(e -> e instanceof HostileEntity || e instanceof CorpseEntity)) {
-				setLife(80);
+				setLife(getMaxLife());
 			} else {
 				setLife(getLife() - 1);
 				if (getLife() <= 0) {
-					if (this.getIntensity() > 1 || this.getRadius() > 15) {
+					if (this.getIntensity() > 1 || this.getRadius() > 25) {
 						setIntensity(getIntensity() - 1);
-						setRadius(getRadius() - 15);
-						setLife(80);
-					} else if (getIntensity() == 1 && getRadius() == 15) this.remove(RemovalReason.DISCARDED);
+						setRadius(getRadius() - 25);
+						setLife(getMaxLife());
+					} else if (getIntensity() == 1 && getRadius() == 25) this.remove(RemovalReason.DISCARDED);
 				}
 			}
 		}

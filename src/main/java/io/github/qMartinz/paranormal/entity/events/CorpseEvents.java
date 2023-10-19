@@ -18,20 +18,28 @@ public class CorpseEvents {
 
 		for (FogEntity fog : fogList){
 			if (fog.entitiesWithin().contains(killed)) {
-				fog.setIntensity(fog.getIntensity() + 1);
-				fog.setRadius(fog.getRadius() + 15);
+				if (fog.getIntensity() >= 3 && fog.getType() == EntityRegistry.FOG){
+					FogEntity ruinedFog = new FogEntity(EntityRegistry.RUINED_FOG, fog.getWorld());
+					ruinedFog.setPosition(fog.getPos());
+					fog.remove(Entity.RemovalReason.DISCARDED);
+					killed.getWorld().spawnEntity(ruinedFog);
+				} else {
+					fog.setIntensity(fog.getIntensity() + 1);
+					fog.setRadius(fog.getRadius() + 25);
+				}
 			}
 		}
 
 		if (killed instanceof MerchantEntity) {
 			CorpseEntity corpse = new CorpseEntity(EntityRegistry.VILLAGER_CORPSE, killed.getWorld());
 			corpse.setPosition(killed.getPos());
-			corpse.setBodyYaw(killed.bodyYaw);
+			corpse.setPitch(killed.getPitch());
+			corpse.setYaw(killed.getYaw());
 			killed.getWorld().spawnEntity(corpse);
 		};
 
 		List<CorpseEntity> corpseList = killed.getWorld().getEntitiesByClass(CorpseEntity.class, Box.of(killed.getPos(), 30, 30, 30),
-				e -> e.distanceTo(killed) <= 15);
+				e -> e.distanceTo(killed) <= 75);
 
 		if (corpseList.size() >= 3 && fogList.stream().noneMatch(fog -> fog.entitiesWithin().contains(killed))) {
 			FogEntity fog = new FogEntity(EntityRegistry.FOG, killed.getWorld());

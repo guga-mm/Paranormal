@@ -20,7 +20,6 @@ public class Paranormal implements ModInitializer {
 		// Registry
 		EntityRegistry.init();
 		ParticleRegistry.init();
-		ModelLayerRegistry.init();
 		ItemRegistry.init();
 
 		registerEvents();

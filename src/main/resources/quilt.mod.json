@@ -19,7 +19,9 @@
 		},
 		"intermediate_mappings": "net.fabricmc:intermediary",
 		"entrypoints": {
-			"init": "io.github.qMartinz.paranormal.Paranormal"
+			"init": "io.github.qMartinz.paranormal.Paranormal",
+			"client_init": "io.github.qMartinz.paranormal.ParanormalClient",
+			"fabric-datagen": "io.github.qMartinz.paranormal.datagen.ParanormalDatagen"
 		},
 		"depends": [
 			{

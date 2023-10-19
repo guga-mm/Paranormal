@@ -22,6 +22,11 @@ public class EntityRegistry {
 			QuiltEntityTypeBuilder.create(SpawnGroup.MISC, FogEntity::new)
 			.setDimensions(EntityDimensions.fixed(1f, 1f)).build());
 
+	public static final EntityType<FogEntity> RUINED_FOG = Registry.register(Registries.ENTITY_TYPE,
+			new Identifier(MODID, "ruined_fog"),
+			QuiltEntityTypeBuilder.create(SpawnGroup.MISC, FogEntity::new)
+					.setDimensions(EntityDimensions.fixed(1f, 1f)).build());
+
 	public static final EntityType<CorpseEntity> VILLAGER_CORPSE = Registry.register(Registries.ENTITY_TYPE,
 			new Identifier(MODID, "villager_corpse"),
 			QuiltEntityTypeBuilder.create(SpawnGroup.MISC, CorpseEntity::new)
@@ -29,11 +34,11 @@ public class EntityRegistry {
 
 	public static void registerRenderers(){
 		EntityRendererRegistry.register(FOG, FogRenderer::new);
+		EntityRendererRegistry.register(RUINED_FOG, FogRenderer::new);
 		EntityRendererRegistry.register(VILLAGER_CORPSE, VillagerCorpseRenderer::new);
 	}
 
 	public static void init() {
 		Paranormal.LOGGER.info("Registering entities for " + MODID);
-		registerRenderers();
 	}
 }
