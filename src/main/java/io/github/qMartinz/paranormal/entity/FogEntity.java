@@ -5,6 +5,7 @@ import io.github.qMartinz.paranormal.registry.EntityRegistry;
 import io.github.qMartinz.paranormal.registry.ParticleRegistry;
 import io.github.qMartinz.paranormal.util.FearData;
 import io.github.qMartinz.paranormal.util.IEntityDataSaver;
+import io.github.qMartinz.paranormal.util.PexData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.data.DataTracker;
@@ -12,6 +13,7 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.util.math.BlockPos;
@@ -156,6 +158,11 @@ public class FogEntity extends Entity {
 					}
 				} else increaseIntensityTimer = 1200;
 			}
+		}
+
+		for (Entity entity : entitiesWithin()){
+			if (entity instanceof PlayerEntity player && PexData.getPex((IEntityDataSaver) player) < 1)
+				PexData.addPex((IEntityDataSaver) player, 1);
 		}
 	}
 

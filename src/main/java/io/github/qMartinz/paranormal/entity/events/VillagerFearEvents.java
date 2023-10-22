@@ -1,6 +1,5 @@
 package io.github.qMartinz.paranormal.entity.events;
 
-import io.github.qMartinz.paranormal.Paranormal;
 import io.github.qMartinz.paranormal.entity.CorpseEntity;
 import io.github.qMartinz.paranormal.entity.FogEntity;
 import io.github.qMartinz.paranormal.registry.EntityRegistry;
