@@ -33,20 +33,20 @@ public class VillagerFearEvents {
 					Box.of(villager.getPos(), 128d, 128d, 128d),
 					e -> e.distanceTo(villager) <= 15d || villager.canSee(e));
 
-			if (!undeadList.isEmpty() && fear < 150) {
-				fearIncrement += 5 * undeadList.size();
+			if (!undeadList.isEmpty() && fear < 100) {
+				fearIncrement += undeadList.size()/2;
 			}
 
-			if (!raiderList.isEmpty() && fear < 150) {
-				fearIncrement += 5 * raiderList.size();
+			if (!raiderList.isEmpty() && fear < 50) {
+				fearIncrement += raiderList.size()/2;
 			}
 
-			if (!corpseList.isEmpty() && fear < 200) {
-				fearIncrement += 5 * corpseList.size();
+			if (!corpseList.isEmpty() && fear < 150) {
+				fearIncrement += corpseList.size();
 			}
 
-			if (villager.getHealth() < villager.getMaxHealth() && fear < 100) {
-				fearIncrement += 2 * (villager.getMaxHealth()/villager.getHealth());
+			if (villager.getHealth() < villager.getMaxHealth() && fear < 25) {
+				fearIncrement += (villager.getMaxHealth()/villager.getHealth());
 			}
 
 			if (fearIncrement > 0){
@@ -75,7 +75,7 @@ public class VillagerFearEvents {
 		}
 
 		FearData.addFear((IEntityDataSaver) entity, amount);
-		FearData.setFearTimer((IEntityDataSaver) entity, 60);
+		FearData.setFearTimer((IEntityDataSaver) entity, 120);
 
 		List<FogEntity> fogList = entity.getWorld().getEntitiesByClass(FogEntity.class, Box.of(entity.getPos(), 150, 150, 150),
 				e -> e.distanceTo(entity) <= e.getRadius());
