@@ -1,16 +1,17 @@
 package io.github.qMartinz.paranormal.entity;
 
+import io.github.qMartinz.paranormal.Paranormal;
 import io.github.qMartinz.paranormal.registry.EntityRegistry;
 import io.github.qMartinz.paranormal.registry.ParticleRegistry;
+import io.github.qMartinz.paranormal.util.FearData;
 import io.github.qMartinz.paranormal.util.IEntityDataSaver;
-import io.github.qMartinz.paranormal.util.NexData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.util.math.BlockPos;
@@ -25,6 +26,8 @@ public class FogEntity extends Entity {
 	private static final TrackedData<Integer> FOG_INTENSITY;
 	private static final TrackedData<Integer> FOG_LIFE;
 	private static final TrackedData<Integer> FOG_RADIUS;
+	private int increaseIntensityTimer = 1200;
+	private int turnRuinedTimer = 1200;
 
 	public FogEntity(EntityType<?> variant, World world) {
 		super(variant, world);
@@ -39,7 +42,7 @@ public class FogEntity extends Entity {
 	}
 
 	public void setRadius(int size) {
-		this.dataTracker.set(FOG_RADIUS, Math.max(25, Math.min(75, size)));
+		this.dataTracker.set(FOG_RADIUS, Math.max(15, Math.min(45, size)));
 	}
 
 	public void setIntensity(int intensity) {
@@ -62,8 +65,12 @@ public class FogEntity extends Entity {
 		return this.dataTracker.get(FOG_LIFE);
 	}
 	public int getMaxLife(){
-		if (this.getType() == EntityRegistry.RUINED_FOG) return 1200;
-		return 600;
+		return 1200;
+	}
+
+	public int getMaxRadius(){
+		if (this.getType() == EntityRegistry.RUINED_FOG) return 90;
+		return 45;
 	}
 
 	static{
@@ -86,7 +93,7 @@ public class FogEntity extends Entity {
 			if (!this.getWorld().getBlockState(block.down()).isAir() && this.getWorld().getBlockState(block).isAir()
 			&& randomPos.distanceTo(this.getPos()) <= radius) {
 				this.getWorld().addParticle(particle,
-						randomPos.x, randomPos.y + 1.5d, randomPos.z, 0D, 0D, 0D);
+						randomPos.x, randomPos.y + 1.4d, randomPos.z, 0D, 0D, 0D);
 			}
 		}
 	}
@@ -95,26 +102,59 @@ public class FogEntity extends Entity {
 	public void tick() {
 		super.tick();
 
-		if (random.nextFloat() <= 0.2f) {
-			fogParticle();
+		if (random.nextFloat() <= 0.2f) fogParticle();
 
-			if (entitiesWithin().stream().anyMatch(e -> e instanceof HostileEntity || e instanceof CorpseEntity)) {
-				setLife(getMaxLife());
-			} else {
-				setLife(getLife() - 1);
-				if (getLife() <= 0) {
-					if (this.getIntensity() > 1 || this.getRadius() > 25) {
-						setIntensity(getIntensity() - 1);
-						setRadius(getRadius() - 25);
-						setLife(getMaxLife());
-					} else if (getIntensity() == 1 && getRadius() == 25) this.remove(RemovalReason.DISCARDED);
+		Paranormal.LOGGER.info("Should lose intensity? " + shouldLoseIntensity());
+		if (shouldLoseIntensity()) {
+			setLife(getLife() - 1);
+			if (getLife() <= 0) {
+				if (this.getType() == EntityRegistry.RUINED_FOG){
+					if (this.getIntensity() > 1) {
+						loseIntensity();
+					} else if (getIntensity() == 1) turnNormal();
+				} else {
+					if (this.getIntensity() > 1) {
+						loseIntensity();
+					} else if (getIntensity() == 1) {
+						this.discard();
+						Paranormal.LOGGER.info("Being removed!");
+					}
 				}
 			}
-		}
+		} else {
+			setLife(getMaxLife());
 
-		for (Entity entity : entitiesWithin()){
-			if (entity instanceof PlayerEntity player && NexData.getNex((IEntityDataSaver) player) < 1){
-				NexData.addNex((IEntityDataSaver) player, 1);
+			if (this.getType() == EntityRegistry.RUINED_FOG){
+				List<VillagerEntity> v1 = this.getWorld().getEntitiesByClass(VillagerEntity.class, Box.of(this.getPos(), getRadius()*2, getRadius()*2, getRadius()*2),
+						e -> e.distanceTo(this) <= getRadius() && FearData.getFear(((IEntityDataSaver) e)) >= 200);
+
+				if (!v1.isEmpty()){
+					increaseIntensityTimer -= v1.size();
+
+					if (increaseIntensityTimer <= 0){
+						increaseIntensity();
+					}
+				} else increaseIntensityTimer = 1200;
+			} else {
+				List<VillagerEntity> v1 = this.getWorld().getEntitiesByClass(VillagerEntity.class, Box.of(this.getPos(), getRadius()*2, getRadius()*2, getRadius()*2),
+						e -> e.distanceTo(this) <= getRadius() && FearData.getFear(((IEntityDataSaver) e)) >= 100);
+
+				if (!v1.isEmpty()){
+					increaseIntensityTimer -= v1.size();
+
+					if (increaseIntensityTimer <= 0){
+						if (getIntensity() >= 3) {
+							List<VillagerEntity> v2 = this.getWorld().getEntitiesByClass(VillagerEntity.class, Box.of(this.getPos(), getRadius()*2, getRadius()*2, getRadius()*2),
+									e -> e.distanceTo(this) <= getRadius() && FearData.getFear(((IEntityDataSaver) e)) >= 150);
+
+							if (!v2.isEmpty()){
+								turnRuinedTimer -= v2.size();
+
+								if (turnRuinedTimer <= 0) turnRuined();
+							} else turnRuinedTimer = 1200;
+						} else increaseIntensity();
+					}
+				} else increaseIntensityTimer = 1200;
 			}
 		}
 	}
@@ -122,6 +162,57 @@ public class FogEntity extends Entity {
 	public List<Entity> entitiesWithin(){
 		return this.getWorld().getEntitiesByClass(Entity.class, Box.of(this.getPos(), getRadius()*2, getRadius()*2, getRadius()*2),
 				e -> e.distanceTo(this) <= getRadius());
+	}
+
+	public int getRequiredFear(){
+		if (this.getType() == EntityRegistry.RUINED_FOG){
+			return getIntensity() > 1 ? 200 : 150;
+		} else {
+			return getIntensity() > 1 ? 100 : 50;
+		}
+	}
+
+	public boolean shouldLoseIntensity(){
+		boolean hasFearfulVillager = entitiesWithin().stream().anyMatch(e ->
+				e instanceof VillagerEntity villager && FearData.getFear(((IEntityDataSaver) villager)) >= getRequiredFear());
+
+		boolean hasParanormalOrigin = entitiesWithin().stream().anyMatch(e ->
+				e instanceof HostileEntity || e instanceof CorpseEntity);
+
+		return !hasParanormalOrigin && !hasFearfulVillager;
+	}
+
+	public void loseIntensity(){
+		setIntensity(getIntensity() - 1);
+		setRadius(getRadius() - 15);
+		setLife(getMaxLife());
+		Paranormal.LOGGER.info("Losing intensity!");
+	}
+
+	public void increaseIntensity(){
+		this.setIntensity(this.getIntensity() + 1);
+		this.setRadius(this.getRadius() + 15);
+		increaseIntensityTimer = 1200;
+		Paranormal.LOGGER.info("Increasing intensity!");
+	}
+
+	public void turnNormal(){
+		FogEntity normalFog = new FogEntity(EntityRegistry.FOG, this.getWorld());
+		normalFog.setPosition(this.getPos());
+		normalFog.setRadius(this.getRadius());
+		normalFog.setIntensity(3);
+		this.getWorld().spawnEntity(normalFog);
+		this.discard();
+		Paranormal.LOGGER.info("Turning normal!");
+	}
+
+	public void turnRuined(){
+		FogEntity ruinedFog = new FogEntity(EntityRegistry.RUINED_FOG, this.getWorld());
+		ruinedFog.setPosition(this.getPos());
+		ruinedFog.setRadius(this.getRadius());
+		this.getWorld().spawnEntity(ruinedFog);
+		this.discard();
+		Paranormal.LOGGER.info("Turning ruined!");
 	}
 
 	@Override
