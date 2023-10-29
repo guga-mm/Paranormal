@@ -1,4 +1,6 @@
 {
+  "block.paranormal.transcendance_altar": "Altar de Transcendência",
   "item.paranormal.ashes": "Cinzas",
-  "item.paranormal.organ": "Órgao"
+  "item.paranormal.organ": "Órgao",
+  "itemgroup.paranormal.items": "Paranormal"
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 public class CorpseEvents {
 	public static void onDeath(LivingEntity killed, DamageSource source){
-		if (killed instanceof MerchantEntity) {
+		if (killed instanceof MerchantEntity && source.getAttacker().isPlayer()) {
 			CorpseEntity corpse = new CorpseEntity(EntityRegistry.VILLAGER_CORPSE, killed.getWorld());
 			corpse.setPosition(killed.getPos());
 			corpse.setPitch(killed.getPitch());

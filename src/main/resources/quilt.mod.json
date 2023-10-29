@@ -26,19 +26,19 @@
 		"depends": [
 			{
 				"id": "quilt_loader",
-				"versions": ">=0.19.1"
+				"versions": ">=0.18.3"
 			},
 			{
 				"id": "quilted_fabric_api",
-				"versions": ">=7.0.2"
+				"versions": ">=6.0.0-"
 			},
 			{
 				"id": "minecraft",
-				"versions": ">=1.20"
+				"versions": ">=1.19.4"
 			},
 			{
 				"id": "geckolib",
-				"versions": ">=4.2.3"
+				"versions": ">=4.1.2"
 			}
 		]
 	},

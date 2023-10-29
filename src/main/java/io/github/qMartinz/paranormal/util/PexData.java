@@ -39,7 +39,7 @@ public class PexData {
 	public static void addXp(IEntityDataSaver player, int amount){
 		NbtCompound nbt = player.getPersistentData();
 		int pex = getPex(player);
-		int xp = nbt.getInt("xp");
+		int xp = nbt.getInt("xp") + amount;
 
 		while (xp >= (pex + 1) * 50 && pex < 20){
 			xp -= (pex + 1) * 50;

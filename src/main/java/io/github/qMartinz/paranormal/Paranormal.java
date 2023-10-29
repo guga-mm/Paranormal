@@ -2,9 +2,7 @@ package io.github.qMartinz.paranormal;
 
 import io.github.qMartinz.paranormal.entity.events.CorpseEvents;
 import io.github.qMartinz.paranormal.entity.events.VillagerFearEvents;
-import io.github.qMartinz.paranormal.registry.EntityRegistry;
-import io.github.qMartinz.paranormal.registry.ItemRegistry;
-import io.github.qMartinz.paranormal.registry.ParticleRegistry;
+import io.github.qMartinz.paranormal.registry.*;
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
 import org.quiltmc.qsl.entity.event.api.LivingEntityDeathCallback;
@@ -21,7 +19,9 @@ public class Paranormal implements ModInitializer {
 		// Registry
 		EntityRegistry.init();
 		ParticleRegistry.init();
+		ItemGroupRegistry.registerItemGroup();
 		ItemRegistry.init();
+		BlockRegistry.init();
 
 		registerEvents();
 	}

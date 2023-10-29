@@ -1,14 +1,31 @@
 package io.github.qMartinz.paranormal.datagen;
 
+import io.github.qMartinz.paranormal.Paranormal;
+import io.github.qMartinz.paranormal.registry.BlockRegistry;
+import io.github.qMartinz.paranormal.registry.ItemGroupRegistry;
 import io.github.qMartinz.paranormal.registry.ItemRegistry;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.minecraft.block.Block;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.client.model.BlockStateModelGenerator;
+import net.minecraft.data.client.model.Model;
+import net.minecraft.data.client.model.ModelIds;
 import net.minecraft.data.client.model.Models;
+import net.minecraft.data.server.LootTablesProvider;
+import net.minecraft.item.Item;
+import net.minecraft.registry.HolderLookup;
+import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.registry.tag.TagKey;
+import net.minecraft.util.Identifier;
+import org.quiltmc.qsl.tag.api.QuiltTagKey;
+
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class ParanormalDatagen implements DataGeneratorEntrypoint {
 	@Override
@@ -16,13 +33,30 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 		FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
 
 		pack.addProvider(ModelProvider::new);
+		pack.addProvider(BlockTagsProvider::new);
 		pack.addProvider(EnUsLangProvider::new);
 		pack.addProvider(PtBrLangProvider::new);
+	}
+
+	public static class BlockTagsProvider extends FabricTagProvider.BlockTagProvider {
+		public BlockTagsProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+			super(output, registriesFuture);
+		}
+
+		@Override
+		protected void configure(HolderLookup.Provider arg) {
+			getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE).add(BlockRegistry.TRANSCENDANCE_ALTAR);
+			getOrCreateTagBuilder(BlockTags.NEEDS_STONE_TOOL).add(BlockRegistry.TRANSCENDANCE_ALTAR);
+		}
 	}
 
 	public static class ModelProvider extends FabricModelProvider {
 		public ModelProvider(FabricDataOutput output) {
 			super(output);
+		}
+
+		private Model blockItem(Block block){
+			return new Model(Optional.of(new Identifier(Paranormal.MODID, ModelIds.getBlockModelId(block).getPath())), Optional.empty());
 		}
 
 		@Override
@@ -34,6 +68,7 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 		public void generateItemModels(ItemModelGenerator itemModelGenerator) {
 			itemModelGenerator.register(ItemRegistry.ASHES, Models.SINGLE_LAYER_ITEM);
 			itemModelGenerator.register(ItemRegistry.ORGAN, Models.SINGLE_LAYER_ITEM);
+			itemModelGenerator.register(ItemRegistry.TRANSCENDANCE_ALTAR, blockItem(BlockRegistry.TRANSCENDANCE_ALTAR));
 		}
 	}
 
@@ -47,6 +82,8 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 		public void generateTranslations(TranslationBuilder translationBuilder) {
 			translationBuilder.add(ItemRegistry.ASHES, "Ashes");
 			translationBuilder.add(ItemRegistry.ORGAN, "Organ");
+			translationBuilder.add(BlockRegistry.TRANSCENDANCE_ALTAR, "Transcendance Altar");
+			translationBuilder.add(ItemGroupRegistry.PARANORMAL, "Paranormal");
 		}
 	}
 
@@ -60,6 +97,8 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 		public void generateTranslations(TranslationBuilder translationBuilder) {
 			translationBuilder.add(ItemRegistry.ASHES, "Cinzas");
 			translationBuilder.add(ItemRegistry.ORGAN, "Órgao");
+			translationBuilder.add(BlockRegistry.TRANSCENDANCE_ALTAR, "Altar de Transcendência");
+			translationBuilder.add(ItemGroupRegistry.PARANORMAL, "Paranormal");
 		}
 	}
 }

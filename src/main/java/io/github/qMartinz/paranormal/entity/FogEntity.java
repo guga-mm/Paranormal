@@ -106,7 +106,6 @@ public class FogEntity extends Entity {
 
 		if (random.nextFloat() <= 0.2f) fogParticle();
 
-		Paranormal.LOGGER.info("Should lose intensity? " + shouldLoseIntensity());
 		if (shouldLoseIntensity()) {
 			setLife(getLife() - 1);
 			if (getLife() <= 0) {
@@ -161,8 +160,8 @@ public class FogEntity extends Entity {
 		}
 
 		for (Entity entity : entitiesWithin()){
-			if (entity instanceof PlayerEntity player && PexData.getPex((IEntityDataSaver) player) < 1)
-				PexData.addPex((IEntityDataSaver) player, 1);
+			if (entity instanceof PlayerEntity player && PexData.getPex((IEntityDataSaver) player) < 2 && random.nextFloat() <= 0.05f)
+				PexData.addXp(((IEntityDataSaver) player), getIntensity() + (getType() == EntityRegistry.RUINED_FOG ? 3 : 0));
 		}
 	}
 

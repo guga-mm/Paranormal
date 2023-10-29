@@ -1,6 +1,7 @@
 plugins {
 	id 'maven-publish'
-	alias libs.plugins.quilt.loom
+	id 'org.quiltmc.loom' version '1.+' // Required for the loader to work.
+	id 'io.github.juuxel.loom-quiltflower' version '1.8.+' // For loom 0.8-0.9, 0.11+
 }
 
 base {
@@ -16,6 +17,11 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
+	maven {
+		name 'Quilt'
+		url 'https://maven.quiltmc.org/repository/release'
+	}
+
 	maven {
 		name = 'GeckoLib'
 		url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
@@ -53,22 +59,14 @@ assemble.dependsOn(runDatagen)
 // See https://docs.gradle.org/current/userguide/platforms.html for information on how version catalogs work.
 dependencies {
 	minecraft libs.minecraft
-	mappings variantOf(libs.quilt.mappings) { classifier 'intermediary-v2' }
-	// Replace the above line with the block below if you want to use Mojang mappings as your primary mappings, falling back on QM for parameters and Javadocs
-	/*
-	mappings loom.layered {
-		mappings "org.quiltmc:quilt-mappings:${libs.versions.quilt.mappings.get()}:intermediary-v2"
-		officialMojangMappings()
-	}
-	*/
-	modImplementation libs.quilt.loader
 
-	// QSL is not a complete API; You will need Quilted Fabric API to fill in the gaps.
-	// Quilted Fabric API will automatically pull in the correct QSL version.
-	modImplementation libs.quilted.fabric.api
-	// modImplementation libs.bundles.quilted.fabric.api // If you wish to use Fabric API's deprecated modules, you can replace the above line with this one
+	modImplementation "org.quiltmc:quilt-loader:${project.loader_version}"
+	modImplementation "org.quiltmc.qsl.core:resource_loader:${qsl_version}+${minecraft_version}"
+	modImplementation "org.quiltmc.quilted-fabric-api:quilted-fabric-api:${quilted_fabric_api_version}-${minecraft_version}"
+	modImplementation "org.quiltmc:qsl:${qsl_version}+${minecraft_version}"
+	mappings "org.quiltmc:quilt-mappings:${minecraft_version}+build.${quilt_mappings}:intermediary-v2"
 
-	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.20.1:4.2.3'
+	modImplementation "software.bernie.geckolib:geckolib-quilt-${minecraft_version}:${geckolib_version}"
 }
 
 processResources {
