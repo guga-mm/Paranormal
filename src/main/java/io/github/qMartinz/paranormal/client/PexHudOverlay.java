@@ -2,8 +2,10 @@ package io.github.qMartinz.paranormal.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.qMartinz.paranormal.Paranormal;
+import io.github.qMartinz.paranormal.ParanormalClient;
+import io.github.qMartinz.paranormal.api.PlayerData;
+import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
 import io.github.qMartinz.paranormal.util.IEntityDataSaver;
-import io.github.qMartinz.paranormal.util.PexData;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
@@ -18,8 +20,8 @@ public class PexHudOverlay implements HudRenderCallback {
 	@Override
 	public void onHudRender(MatrixStack matrixStack, float tickDelta) {
 		MinecraftClient client = MinecraftClient.getInstance();
-		PlayerEntity player = client.player;
-		if (!client.options.hudHidden) {
+		if (!client.options.hudHidden && client != null) {
+			PlayerEntity player = client.player;
 			int width = client.getWindow().getScaledWidth();
 			int height = client.getWindow().getScaledHeight();
 
@@ -29,11 +31,12 @@ public class PexHudOverlay implements HudRenderCallback {
 
 			DrawableHelper.drawTexture(matrixStack, width - 95, height - 9, 3, 24, 92, 5);
 
-			int nextLvlXP = (PexData.getPex(((IEntityDataSaver) player)) + 1) * 50;
-			int barFilled = (PexData.getXp(((IEntityDataSaver) player)) / nextLvlXP) * 90;
-			DrawableHelper.drawTexture(matrixStack, width - 95, height - 9, 3, 29, barFilled, 5);
+			PlayerData playerData = ParanormalClient.playerData;
+			float nextLvlXP = (playerData.getPex() + 1) * 50;
+			float barFilled = playerData.getXp() / nextLvlXP * 90;
+			DrawableHelper.drawTexture(matrixStack, width - 95, height - 9, 3, 29, (int) barFilled, 5);
 
-			String s = PexData.getPexPercentage(((IEntityDataSaver) player)) + "%";
+			String s = playerData.getNexPercentage() + "%";
 			client.textRenderer.drawWithShadow(matrixStack, s,
 					width - (client.textRenderer.getWidth(s) + 96),
 					height - (client.textRenderer.fontHeight + 2),

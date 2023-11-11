@@ -66,11 +66,13 @@ public class VillagerFearEvents {
 
 	private static void frighten(VillagerEntity entity, int amount){
 		// Fear particle effects & sfx
-		for(int i = 0; i < 5; ++i) {
-			double d = entity.getRandom().nextGaussian() * 0.02;
-			double e = entity.getRandom().nextGaussian() * 0.02;
-			double f = entity.getRandom().nextGaussian() * 0.02;
-			entity.getWorld().addParticle(ParticleTypes.ANGRY_VILLAGER, entity.getParticleX(1.0), entity.getRandomBodyY() + 1.0, entity.getParticleZ(1.0), d, e, f);
+		if (entity.getWorld().isClient()) {
+			for (int i = 0; i < 5; ++i) {
+				double d = entity.getRandom().nextGaussian() * 0.02;
+				double e = entity.getRandom().nextGaussian() * 0.02;
+				double f = entity.getRandom().nextGaussian() * 0.02;
+				entity.getWorld().addParticle(ParticleTypes.ANGRY_VILLAGER, entity.getParticleX(1.0), entity.getRandomBodyY() + 1.0, entity.getParticleZ(1.0), d, e, f);
+			}
 		}
 
 		FearData.addFear((IEntityDataSaver) entity, amount);
@@ -88,11 +90,13 @@ public class VillagerFearEvents {
 
 	private static void calm(VillagerEntity entity, int amount){
 		// Fear particle effects & sfx
-		for(int i = 0; i < 5; ++i) {
-			double d = entity.getRandom().nextGaussian() * 0.02;
-			double e = entity.getRandom().nextGaussian() * 0.02;
-			double f = entity.getRandom().nextGaussian() * 0.02;
-			entity.getWorld().addParticle(ParticleTypes.HAPPY_VILLAGER, entity.getParticleX(1.0), entity.getRandomBodyY() + 1.0, entity.getParticleZ(1.0), d, e, f);
+		if (entity.getWorld().isClient()) {
+			for (int i = 0; i < 5; ++i) {
+				double d = entity.getRandom().nextGaussian() * 0.02;
+				double e = entity.getRandom().nextGaussian() * 0.02;
+				double f = entity.getRandom().nextGaussian() * 0.02;
+				entity.getWorld().addParticle(ParticleTypes.HAPPY_VILLAGER, entity.getParticleX(1.0), entity.getRandomBodyY() + 1.0, entity.getParticleZ(1.0), d, e, f);
+			}
 		}
 
 		FearData.removeFear((IEntityDataSaver) entity, amount);

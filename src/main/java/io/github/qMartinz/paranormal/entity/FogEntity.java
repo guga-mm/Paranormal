@@ -1,11 +1,12 @@
 package io.github.qMartinz.paranormal.entity;
 
 import io.github.qMartinz.paranormal.Paranormal;
+import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.registry.EntityRegistry;
 import io.github.qMartinz.paranormal.registry.ParticleRegistry;
+import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
 import io.github.qMartinz.paranormal.util.FearData;
 import io.github.qMartinz.paranormal.util.IEntityDataSaver;
-import io.github.qMartinz.paranormal.util.PexData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.data.DataTracker;
@@ -16,6 +17,7 @@ import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -160,8 +162,13 @@ public class FogEntity extends Entity {
 		}
 
 		for (Entity entity : entitiesWithin()){
-			if (entity instanceof PlayerEntity player && PexData.getPex((IEntityDataSaver) player) < 2 && random.nextFloat() <= 0.05f)
-				PexData.addXp(((IEntityDataSaver) player), getIntensity() + (getType() == EntityRegistry.RUINED_FOG ? 3 : 0));
+			if (entity instanceof PlayerEntity player && !player.getWorld().isClient()){
+				PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+				if (playerData.getPex() < 2 && random.nextFloat() <= 0.05f && isServer()) {
+					playerData.addXp(getIntensity() + (getType() == EntityRegistry.RUINED_FOG ? 3 : 0));
+					playerData.syncData((ServerPlayerEntity) player);
+				}
+			}
 		}
 	}
 
