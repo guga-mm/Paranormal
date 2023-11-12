@@ -84,6 +84,14 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 			translationBuilder.add(ItemRegistry.ORGAN, "Organ");
 			translationBuilder.add(BlockRegistry.TRANSCENDANCE_ALTAR, "Transcendance Altar");
 			translationBuilder.add(ItemGroupRegistry.PARANORMAL, "Paranormal");
+			translationBuilder.add("paranormal.screen.attributes_screen", "Attributes");
+			translationBuilder.add("paranormal.screen.attributes_screen.attPoints", "Attribute Points");
+			translationBuilder.add("paranormal.screen.attributes_screen.increase_attribute_0", "Increase Strength");
+			translationBuilder.add("paranormal.screen.attributes_screen.increase_attribute_1", "Increase Vigor");
+			translationBuilder.add("paranormal.screen.attributes_screen.increase_attribute_2", "Increase Presence");
+			translationBuilder.add("paranormal.screen.attributes_screen.attribute_0", "Strength");
+			translationBuilder.add("paranormal.screen.attributes_screen.attribute_1", "Vigor");
+			translationBuilder.add("paranormal.screen.attributes_screen.attribute_2", "Presence");
 		}
 	}
 
@@ -99,6 +107,14 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 			translationBuilder.add(ItemRegistry.ORGAN, "Órgao");
 			translationBuilder.add(BlockRegistry.TRANSCENDANCE_ALTAR, "Altar de Transcendência");
 			translationBuilder.add(ItemGroupRegistry.PARANORMAL, "Paranormal");
+			translationBuilder.add("paranormal.screen.attributes_screen", "Atributos");
+			translationBuilder.add("paranormal.screen.attributes_screen.attPoints", "Pontos de Atributo");
+			translationBuilder.add("paranormal.screen.attributes_screen.increase_attribute_0", "Aumentar Força");
+			translationBuilder.add("paranormal.screen.attributes_screen.increase_attribute_1", "Aumentar Vigor");
+			translationBuilder.add("paranormal.screen.attributes_screen.increase_attribute_2", "Aumentar Presença");
+			translationBuilder.add("paranormal.screen.attributes_screen.attribute_0", "Força");
+			translationBuilder.add("paranormal.screen.attributes_screen.attribute_1", "Vigor");
+			translationBuilder.add("paranormal.screen.attributes_screen.attribute_2", "Presença");
 		}
 	}
 }

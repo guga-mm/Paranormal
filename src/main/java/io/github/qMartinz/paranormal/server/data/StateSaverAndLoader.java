@@ -23,6 +23,10 @@ public class StateSaverAndLoader extends PersistentState {
 
 			playerNbt.putInt("pex", playerData.pex);
 			playerNbt.putInt("xp", playerData.xp);
+			playerNbt.putInt("attPoints", playerData.attPoints);
+			playerNbt.putIntArray("attributes", playerData.attributes);
+			playerNbt.putInt("ritualSlots", playerData.ritualSlots);
+			playerNbt.putInt("powerPoints", playerData.powerPoints);
 
 			playersNbt.put(uuid.toString(), playerNbt);
 		});
@@ -40,6 +44,10 @@ public class StateSaverAndLoader extends PersistentState {
 
 			playerData.pex = playersNbt.getCompound(key).getInt("pex");
 			playerData.xp = playersNbt.getCompound(key).getInt("xp");
+			playerData.attPoints = playersNbt.getCompound(key).getInt("attPoints");
+			playerData.attributes = playersNbt.getCompound(key).getIntArray("attributes");
+			playerData.ritualSlots = playersNbt.getCompound(key).getInt("ritualSlots");
+			playerData.powerPoints = playersNbt.getCompound(key).getInt("powerPoints");
 
 			UUID uuid = UUID.fromString(key);
 			state.players.put(uuid, playerData);

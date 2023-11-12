@@ -2,5 +2,13 @@
   "block.paranormal.transcendance_altar": "Transcendance Altar",
   "item.paranormal.ashes": "Ashes",
   "item.paranormal.organ": "Organ",
-  "itemgroup.paranormal.items": "Paranormal"
+  "itemgroup.paranormal.items": "Paranormal",
+  "paranormal.screen.attributes_screen": "Attributes",
+  "paranormal.screen.attributes_screen.attPoints": "Attribute Points",
+  "paranormal.screen.attributes_screen.attribute_0": "Strength",
+  "paranormal.screen.attributes_screen.attribute_1": "Vigor",
+  "paranormal.screen.attributes_screen.attribute_2": "Presence",
+  "paranormal.screen.attributes_screen.increase_attribute_0": "Increase Strength",
+  "paranormal.screen.attributes_screen.increase_attribute_1": "Increase Vigor",
+  "paranormal.screen.attributes_screen.increase_attribute_2": "Increase Presence"
 }
