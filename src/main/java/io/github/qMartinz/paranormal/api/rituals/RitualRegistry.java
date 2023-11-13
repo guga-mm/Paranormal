@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.Optional;
 
 public class RitualRegistry {
-	private static final HashMap<Identifier, AbstractRitual> rituals = new HashMap<>();
+	public static final HashMap<Identifier, AbstractRitual> rituals = new HashMap<>();
 
-	private static void register(Identifier key, AbstractRitual ritual) {
-		rituals.compute(key, (key2, old) -> {
+	public static AbstractRitual register(Identifier key, AbstractRitual ritual) {
+		return rituals.compute(key, (key2, old) -> {
 			if (old == null) {
 				return ritual;
 			}

@@ -1,5 +1,7 @@
 package io.github.qMartinz.paranormal.api;
 
+import io.github.qMartinz.paranormal.api.powers.AbstractPower;
+import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
 import io.github.qMartinz.paranormal.networking.ModMessages;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
 import net.minecraft.network.PacketByteBuf;
@@ -8,7 +10,8 @@ import org.quiltmc.qsl.networking.api.PacketByteBufs;
 import org.quiltmc.qsl.networking.api.ServerPlayNetworking;
 import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 public class PlayerData {
 	public int pex = 0;
@@ -22,11 +25,13 @@ public class PlayerData {
 	 */
 	public int[] attributes = new int[]{0, 0, 0};
 
-	public int ritualSlots;
-	public int powerPoints;
+	public int ritualSlots = 0;
+	public int powerPoints = 0;
 
 	// Rituals
+	public Set<AbstractRitual> rituals = new HashSet<>();
 	// Powers
+	public Set<AbstractPower> powers = new HashSet<>();
 
 	public void setPex(int amount){
 		pex = Math.max(0, Math.min(amount, 20));
@@ -83,21 +88,27 @@ public class PlayerData {
 		return attributes[index];
 	}
 
-	public void syncData(ServerPlayerEntity player){
+	public void syncToClient(ServerPlayerEntity player){
 		PlayerData playerState = StateSaverAndLoader.getPlayerState(player);
 		PacketByteBuf data = PacketByteBufs.create();
 		data.writeInt(playerState.pex);
 		data.writeInt(playerState.xp);
 		data.writeInt(playerState.attPoints);
 		data.writeIntArray(playerState.attributes);
+		data.writeInt(playerState.ritualSlots);
+		data.writeInt(playerState.powerPoints);
 
 		ServerPlayNetworking.send(player, ModMessages.PLAYER_DATA_SYNC_ID, data);
 	}
-	public void increaseAttributes(){
+	public void syncToServer(){
 		PacketByteBuf data = PacketByteBufs.create();
+		data.writeInt(pex);
+		data.writeInt(xp);
 		data.writeInt(attPoints);
 		data.writeIntArray(attributes);
+		data.writeInt(ritualSlots);
+		data.writeInt(powerPoints);
 
-		ClientPlayNetworking.send(ModMessages.INCREASE_ATTRIBUTE_ID, data);
+		ClientPlayNetworking.send(ModMessages.PLAYER_DATA_SYNC_ID, data);
 	}
 }

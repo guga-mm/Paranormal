@@ -16,13 +16,9 @@ import net.minecraft.data.client.model.BlockStateModelGenerator;
 import net.minecraft.data.client.model.Model;
 import net.minecraft.data.client.model.ModelIds;
 import net.minecraft.data.client.model.Models;
-import net.minecraft.data.server.LootTablesProvider;
-import net.minecraft.item.Item;
 import net.minecraft.registry.HolderLookup;
 import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
-import org.quiltmc.qsl.tag.api.QuiltTagKey;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;

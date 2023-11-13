@@ -166,7 +166,7 @@ public class FogEntity extends Entity {
 				PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 				if (playerData.getPex() < 2 && random.nextFloat() <= 0.05f && isServer()) {
 					playerData.addXp(getIntensity() + (getType() == EntityRegistry.RUINED_FOG ? 3 : 0));
-					playerData.syncData((ServerPlayerEntity) player);
+					playerData.syncToClient((ServerPlayerEntity) player);
 				}
 			}
 		}

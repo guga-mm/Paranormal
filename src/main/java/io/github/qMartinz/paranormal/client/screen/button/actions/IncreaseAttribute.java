@@ -16,7 +16,7 @@ public class IncreaseAttribute implements ButtonWidget.PressAction {
 		if (playerData.getAttPoints() > 0){
 			playerData.setAttribute(attIndex, playerData.getAttribute(attIndex) + 1);
 			playerData.setAttPoints(playerData.getAttPoints() - 1);
-			playerData.increaseAttributes();
+			playerData.syncToServer();
 		}
 	}
 }

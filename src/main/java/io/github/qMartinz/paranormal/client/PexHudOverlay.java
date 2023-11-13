@@ -4,8 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.qMartinz.paranormal.Paranormal;
 import io.github.qMartinz.paranormal.ParanormalClient;
 import io.github.qMartinz.paranormal.api.PlayerData;
-import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
-import io.github.qMartinz.paranormal.util.IEntityDataSaver;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
