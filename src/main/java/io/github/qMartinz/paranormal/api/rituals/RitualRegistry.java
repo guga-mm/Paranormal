@@ -1,8 +1,10 @@
 package io.github.qMartinz.paranormal.api.rituals;
 
+import io.github.qMartinz.paranormal.api.powers.AbstractPower;
 import net.minecraft.util.Identifier;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class RitualRegistry {
@@ -19,5 +21,9 @@ public class RitualRegistry {
 
 	public static Optional<AbstractRitual> getRitual(Identifier key) {
 		return Optional.ofNullable(rituals.get(key));
+	}
+	public static Identifier getId(AbstractRitual value) {
+		return rituals.entrySet().stream().filter(entry -> value.equals(entry.getValue()))
+				.map(Map.Entry::getKey).findFirst().orElse(null);
 	}
 }

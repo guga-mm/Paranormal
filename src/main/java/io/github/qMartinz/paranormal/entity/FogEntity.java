@@ -164,7 +164,8 @@ public class FogEntity extends Entity {
 		for (Entity entity : entitiesWithin()){
 			if (entity instanceof PlayerEntity player && !player.getWorld().isClient()){
 				PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-				if (playerData.getPex() < 2 && random.nextFloat() <= 0.05f && isServer()) {
+				// TODO limit xp gain by pex after testing is done
+				if (random.nextFloat() <= 0.05f && isServer()) {
 					playerData.addXp(getIntensity() + (getType() == EntityRegistry.RUINED_FOG ? 3 : 0));
 					playerData.syncToClient((ServerPlayerEntity) player);
 				}
