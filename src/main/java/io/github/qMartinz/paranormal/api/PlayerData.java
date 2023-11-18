@@ -41,6 +41,10 @@ public class PlayerData {
 		return pex;
 	}
 
+	public void setXp(int amount) {
+		xp = amount;
+	}
+
 	public void addXp(int amount){
 		if (amount > 0) {
 			int totalXp = xp + amount;
@@ -86,6 +90,46 @@ public class PlayerData {
 
 	public int getAttribute(int index){
 		return attributes[index];
+	}
+
+	public void setPowerPoints(int powerPoints) {
+		this.powerPoints = powerPoints;
+	}
+
+	public int getPowerPoints() {
+		return powerPoints;
+	}
+
+	public void setRitualSlots(int ritualSlots) {
+		this.ritualSlots = ritualSlots;
+	}
+
+	public int getRitualSlots() {
+		return ritualSlots;
+	}
+
+	public void clearRituals(){
+		this.rituals.clear();
+	}
+
+	public void addRitual(AbstractRitual ritual){
+		this.rituals.add(ritual);
+	}
+
+	public void removeRitual(AbstractRitual ritual){
+		this.rituals.remove(ritual);
+	}
+
+	public void clearPowers(){
+		this.powers.clear();
+	}
+
+	public void addPower(AbstractPower power){
+		this.powers.add(power);
+	}
+
+	public void removePower(AbstractPower power){
+		this.powers.remove(power);
 	}
 
 	public void syncToClient(ServerPlayerEntity player){

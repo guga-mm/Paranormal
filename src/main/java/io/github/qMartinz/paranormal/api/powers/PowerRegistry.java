@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class PowerRegistry {
-	private static final HashMap<Identifier, AbstractPower> powers = new HashMap<>();
+	public static final HashMap<Identifier, AbstractPower> powers = new HashMap<>();
 
 	public static AbstractPower register(Identifier key, AbstractPower power) {
 		return powers.compute(key, (key2, old) -> {
