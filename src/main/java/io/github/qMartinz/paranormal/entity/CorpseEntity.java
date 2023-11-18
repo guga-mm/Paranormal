@@ -1,6 +1,6 @@
 package io.github.qMartinz.paranormal.entity;
 
-import io.github.qMartinz.paranormal.registry.ItemRegistry;
+import io.github.qMartinz.paranormal.registry.ModItemRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MovementType;
@@ -58,11 +58,11 @@ public class CorpseEntity extends Entity {
 	@Override
 	public ActionResult interact(PlayerEntity player, Hand hand) {
 		if (player.getStackInHand(hand).isOf(Items.FLINT_AND_STEEL)) {
-			this.dropStack(new ItemStack(ItemRegistry.ASHES, random.range(1, 3)));
+			this.dropStack(new ItemStack(ModItemRegistry.ASHES, random.range(1, 3)));
 			this.remove(RemovalReason.KILLED);
 			return ActionResult.CONSUME;
 		} else {
-			this.dropStack(new ItemStack(ItemRegistry.ORGAN, random.range(1, 3)));
+			this.dropStack(new ItemStack(ModItemRegistry.ORGAN, random.range(1, 3)));
 			this.remove(RemovalReason.KILLED);
 			return ActionResult.CONSUME;
 		}

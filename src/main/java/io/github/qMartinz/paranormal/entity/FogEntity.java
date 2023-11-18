@@ -2,8 +2,8 @@ package io.github.qMartinz.paranormal.entity;
 
 import io.github.qMartinz.paranormal.Paranormal;
 import io.github.qMartinz.paranormal.api.PlayerData;
-import io.github.qMartinz.paranormal.registry.EntityRegistry;
-import io.github.qMartinz.paranormal.registry.ParticleRegistry;
+import io.github.qMartinz.paranormal.registry.ModEntityRegistry;
+import io.github.qMartinz.paranormal.registry.ModParticleRegistry;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
 import io.github.qMartinz.paranormal.util.FearData;
 import io.github.qMartinz.paranormal.util.IEntityDataSaver;
@@ -73,7 +73,7 @@ public class FogEntity extends Entity {
 	}
 
 	public int getMaxRadius(){
-		if (this.getType() == EntityRegistry.RUINED_FOG) return 90;
+		if (this.getType() == ModEntityRegistry.RUINED_FOG) return 90;
 		return 45;
 	}
 
@@ -84,8 +84,8 @@ public class FogEntity extends Entity {
 	}
 
 	public void fogParticle(){
-		DefaultParticleType particle = ParticleRegistry.FOG_1;
-		if (this.getType() == EntityRegistry.RUINED_FOG) particle = ParticleRegistry.FOG_2;
+		DefaultParticleType particle = ModParticleRegistry.FOG_1;
+		if (this.getType() == ModEntityRegistry.RUINED_FOG) particle = ModParticleRegistry.FOG_2;
 		double radius = this.getRadius();
 		for (int i = 1; i <= Math.pow(radius, 1.8) * getIntensity(); i++) {
 			Vec3d randomPos = this.getPos().add(
@@ -111,7 +111,7 @@ public class FogEntity extends Entity {
 		if (shouldLoseIntensity()) {
 			setLife(getLife() - 1);
 			if (getLife() <= 0) {
-				if (this.getType() == EntityRegistry.RUINED_FOG){
+				if (this.getType() == ModEntityRegistry.RUINED_FOG){
 					if (this.getIntensity() > 1) {
 						loseIntensity();
 					} else if (getIntensity() == 1) turnNormal();
@@ -127,7 +127,7 @@ public class FogEntity extends Entity {
 		} else {
 			setLife(getMaxLife());
 
-			if (this.getType() == EntityRegistry.RUINED_FOG){
+			if (this.getType() == ModEntityRegistry.RUINED_FOG){
 				List<VillagerEntity> v1 = this.getWorld().getEntitiesByClass(VillagerEntity.class, Box.of(this.getPos(), getRadius()*2, getRadius()*2, getRadius()*2),
 						e -> e.distanceTo(this) <= getRadius() && FearData.getFear(((IEntityDataSaver) e)) >= 200);
 
@@ -166,7 +166,7 @@ public class FogEntity extends Entity {
 				PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 				// TODO limit xp gain by pex after testing is done
 				if (random.nextFloat() <= 0.05f && isServer()) {
-					playerData.addXp(getIntensity() + (getType() == EntityRegistry.RUINED_FOG ? 3 : 0));
+					playerData.addXp(getIntensity() + (getType() == ModEntityRegistry.RUINED_FOG ? 3 : 0));
 					playerData.syncToClient((ServerPlayerEntity) player);
 				}
 			}
@@ -179,7 +179,7 @@ public class FogEntity extends Entity {
 	}
 
 	public int getRequiredFear(){
-		if (this.getType() == EntityRegistry.RUINED_FOG){
+		if (this.getType() == ModEntityRegistry.RUINED_FOG){
 			return getIntensity() > 1 ? 200 : 150;
 		} else {
 			return getIntensity() > 1 ? 100 : 50;
@@ -211,7 +211,7 @@ public class FogEntity extends Entity {
 	}
 
 	public void turnNormal(){
-		FogEntity normalFog = new FogEntity(EntityRegistry.FOG, this.getWorld());
+		FogEntity normalFog = new FogEntity(ModEntityRegistry.FOG, this.getWorld());
 		normalFog.setPosition(this.getPos());
 		normalFog.setRadius(this.getRadius());
 		normalFog.setIntensity(3);
@@ -221,7 +221,7 @@ public class FogEntity extends Entity {
 	}
 
 	public void turnRuined(){
-		FogEntity ruinedFog = new FogEntity(EntityRegistry.RUINED_FOG, this.getWorld());
+		FogEntity ruinedFog = new FogEntity(ModEntityRegistry.RUINED_FOG, this.getWorld());
 		ruinedFog.setPosition(this.getPos());
 		ruinedFog.setRadius(this.getRadius());
 		this.getWorld().spawnEntity(ruinedFog);

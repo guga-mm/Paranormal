@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier;
 
 import static io.github.qMartinz.paranormal.Paranormal.MODID;
 
-public class ParticleRegistry {
+public class ModParticleRegistry {
 	public static final DefaultParticleType FOG_1 = register("fog_particle_1", FabricParticleTypes.simple());
 	public static final DefaultParticleType FOG_2 = register("fog_particle_2", FabricParticleTypes.simple());
 

@@ -18,12 +18,13 @@ public class Paranormal implements ModInitializer {
 	@Override
 	public void onInitialize(ModContainer mod) {
 		// Registry
-		EntityRegistry.init();
-		ParticleRegistry.init();
-		ItemGroupRegistry.registerItemGroup();
-		ItemRegistry.init();
-		BlockRegistry.init();
-		CommandRegistry.registerCommands();
+		ModEntityRegistry.init();
+		ModParticleRegistry.init();
+		ModItemGroupRegistry.registerItemGroup();
+		ModItemRegistry.init();
+		ModBlockRegistry.init();
+		ModRitualRegistry.init();
+		ModCommandRegistry.registerCommands();
 
 		ModMessages.registerC2SPackets();
 

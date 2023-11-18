@@ -8,7 +8,7 @@ import net.minecraft.util.Identifier;
 
 import static io.github.qMartinz.paranormal.Paranormal.MODID;
 
-public class ModelLayerRegistry {
+public class ModModelLayerRegistry {
 	public static final EntityModelLayer VILLAGER_CORPSE = register("villager_corpse");
 
 	private static EntityModelLayer register(String id){

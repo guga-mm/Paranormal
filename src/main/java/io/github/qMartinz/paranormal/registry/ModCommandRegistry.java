@@ -14,7 +14,7 @@ import org.quiltmc.qsl.command.api.CommandRegistrationCallback;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class CommandRegistry {
+public class ModCommandRegistry {
 	public static void registerCommands(){
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			// PEX commands
@@ -189,7 +189,7 @@ public class CommandRegistry {
 							builder.suggest(id.toString());
 						}
 						return builder.buildFuture();
-					})).executes(context -> {
+					}).executes(context -> {
 						ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
 						PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 						final Identifier id = IdentifierArgumentType.getIdentifier(context, "id");
@@ -197,14 +197,14 @@ public class CommandRegistry {
 						if (playerData.rituals.size() < playerData.getRitualSlots()) RitualRegistry.getRitual(id).ifPresent(playerData::addRitual);
 						playerData.syncToClient(player);
 						return 1;
-					}))
+					})))
 					// Remove ritual
 					.then(literal("remove").then(argument("id", IdentifierArgumentType.identifier()).suggests((context, builder) -> {
 						for (Identifier id : RitualRegistry.rituals.keySet()){
 							builder.suggest(id.toString());
 						}
 						return builder.buildFuture();
-					})).executes(context -> {
+					}).executes(context -> {
 						ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
 						PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 						final Identifier id = IdentifierArgumentType.getIdentifier(context, "id");
@@ -212,7 +212,7 @@ public class CommandRegistry {
 						RitualRegistry.getRitual(id).ifPresent(playerData::removeRitual);
 						playerData.syncToClient(player);
 						return 1;
-					}))
+					})))
 					));
 
 			// Power commands
@@ -247,7 +247,7 @@ public class CommandRegistry {
 							builder.suggest(id.toString());
 						}
 						return builder.buildFuture();
-					})).executes(context -> {
+					}).executes(context -> {
 						ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
 						PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 						final Identifier id = IdentifierArgumentType.getIdentifier(context, "id");
@@ -255,14 +255,14 @@ public class CommandRegistry {
 						PowerRegistry.getPower(id).ifPresent(playerData::addPower);
 						playerData.syncToClient(player);
 						return 1;
-					}))
+					})))
 					// Remove power
 					.then(literal("remove").then(argument("id", IdentifierArgumentType.identifier()).suggests((context, builder) -> {
 						for (Identifier id : RitualRegistry.rituals.keySet()){
 							builder.suggest(id.toString());
 						}
 						return builder.buildFuture();
-					})).executes(context -> {
+					}).executes(context -> {
 						ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
 						PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 						final Identifier id = IdentifierArgumentType.getIdentifier(context, "id");
@@ -270,7 +270,7 @@ public class CommandRegistry {
 						PowerRegistry.getPower(id).ifPresent(playerData::removePower);
 						playerData.syncToClient(player);
 						return 1;
-					}))
+					})))
 					));
 		});
 	}

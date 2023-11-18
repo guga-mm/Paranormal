@@ -2,7 +2,7 @@ package io.github.qMartinz.paranormal.entity.events;
 
 import io.github.qMartinz.paranormal.entity.CorpseEntity;
 import io.github.qMartinz.paranormal.entity.FogEntity;
-import io.github.qMartinz.paranormal.registry.EntityRegistry;
+import io.github.qMartinz.paranormal.registry.ModEntityRegistry;
 import io.github.qMartinz.paranormal.util.FearData;
 import io.github.qMartinz.paranormal.util.IEntityDataSaver;
 import net.minecraft.entity.Entity;
@@ -82,7 +82,7 @@ public class VillagerFearEvents {
 				e -> e.distanceTo(entity) <= e.getRadius());
 
 		if (FearData.getFear((IEntityDataSaver) entity) >= 50 && fogList.isEmpty()) {
-			FogEntity fog = new FogEntity(EntityRegistry.FOG, entity.getWorld());
+			FogEntity fog = new FogEntity(ModEntityRegistry.FOG, entity.getWorld());
 			fog.setPosition(entity.getPos());
 			entity.getWorld().spawnEntity(fog);
 		}

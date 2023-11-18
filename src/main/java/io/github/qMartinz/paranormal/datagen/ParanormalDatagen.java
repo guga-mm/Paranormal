@@ -1,9 +1,9 @@
 package io.github.qMartinz.paranormal.datagen;
 
 import io.github.qMartinz.paranormal.Paranormal;
-import io.github.qMartinz.paranormal.registry.BlockRegistry;
-import io.github.qMartinz.paranormal.registry.ItemGroupRegistry;
-import io.github.qMartinz.paranormal.registry.ItemRegistry;
+import io.github.qMartinz.paranormal.registry.ModBlockRegistry;
+import io.github.qMartinz.paranormal.registry.ModItemGroupRegistry;
+import io.github.qMartinz.paranormal.registry.ModItemRegistry;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -41,8 +41,8 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void configure(HolderLookup.Provider arg) {
-			getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE).add(BlockRegistry.TRANSCENDANCE_ALTAR);
-			getOrCreateTagBuilder(BlockTags.NEEDS_STONE_TOOL).add(BlockRegistry.TRANSCENDANCE_ALTAR);
+			getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE).add(ModBlockRegistry.TRANSCENDANCE_ALTAR);
+			getOrCreateTagBuilder(BlockTags.NEEDS_STONE_TOOL).add(ModBlockRegistry.TRANSCENDANCE_ALTAR);
 		}
 	}
 
@@ -62,9 +62,9 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 
 		@Override
 		public void generateItemModels(ItemModelGenerator itemModelGenerator) {
-			itemModelGenerator.register(ItemRegistry.ASHES, Models.SINGLE_LAYER_ITEM);
-			itemModelGenerator.register(ItemRegistry.ORGAN, Models.SINGLE_LAYER_ITEM);
-			itemModelGenerator.register(ItemRegistry.TRANSCENDANCE_ALTAR, blockItem(BlockRegistry.TRANSCENDANCE_ALTAR));
+			itemModelGenerator.register(ModItemRegistry.ASHES, Models.SINGLE_LAYER_ITEM);
+			itemModelGenerator.register(ModItemRegistry.ORGAN, Models.SINGLE_LAYER_ITEM);
+			itemModelGenerator.register(ModItemRegistry.TRANSCENDANCE_ALTAR, blockItem(ModBlockRegistry.TRANSCENDANCE_ALTAR));
 		}
 	}
 
@@ -76,10 +76,10 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 
 		@Override
 		public void generateTranslations(TranslationBuilder translationBuilder) {
-			translationBuilder.add(ItemRegistry.ASHES, "Ashes");
-			translationBuilder.add(ItemRegistry.ORGAN, "Organ");
-			translationBuilder.add(BlockRegistry.TRANSCENDANCE_ALTAR, "Transcendance Altar");
-			translationBuilder.add(ItemGroupRegistry.PARANORMAL, "Paranormal");
+			translationBuilder.add(ModItemRegistry.ASHES, "Ashes");
+			translationBuilder.add(ModItemRegistry.ORGAN, "Organ");
+			translationBuilder.add(ModBlockRegistry.TRANSCENDANCE_ALTAR, "Transcendance Altar");
+			translationBuilder.add(ModItemGroupRegistry.PARANORMAL, "Paranormal");
 			translationBuilder.add("paranormal.screen.attributes_screen", "Attributes");
 			translationBuilder.add("paranormal.screen.attributes_screen.attPoints", "Attribute Points");
 			translationBuilder.add("paranormal.screen.attributes_screen.increase_attribute_0", "Increase Strength");
@@ -99,10 +99,10 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 
 		@Override
 		public void generateTranslations(TranslationBuilder translationBuilder) {
-			translationBuilder.add(ItemRegistry.ASHES, "Cinzas");
-			translationBuilder.add(ItemRegistry.ORGAN, "Órgao");
-			translationBuilder.add(BlockRegistry.TRANSCENDANCE_ALTAR, "Altar de Transcendência");
-			translationBuilder.add(ItemGroupRegistry.PARANORMAL, "Paranormal");
+			translationBuilder.add(ModItemRegistry.ASHES, "Cinzas");
+			translationBuilder.add(ModItemRegistry.ORGAN, "Órgao");
+			translationBuilder.add(ModBlockRegistry.TRANSCENDANCE_ALTAR, "Altar de Transcendência");
+			translationBuilder.add(ModItemGroupRegistry.PARANORMAL, "Paranormal");
 			translationBuilder.add("paranormal.screen.attributes_screen", "Atributos");
 			translationBuilder.add("paranormal.screen.attributes_screen.attPoints", "Pontos de Atributo");
 			translationBuilder.add("paranormal.screen.attributes_screen.increase_attribute_0", "Aumentar Força");

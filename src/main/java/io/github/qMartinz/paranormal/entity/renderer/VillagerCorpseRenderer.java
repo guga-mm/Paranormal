@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.qMartinz.paranormal.Paranormal;
 import io.github.qMartinz.paranormal.entity.CorpseEntity;
 import io.github.qMartinz.paranormal.entity.model.VillagerCorpseModel;
-import io.github.qMartinz.paranormal.registry.ModelLayerRegistry;
+import io.github.qMartinz.paranormal.registry.ModModelLayerRegistry;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -19,7 +19,7 @@ public class VillagerCorpseRenderer extends EntityRenderer<CorpseEntity> {
 
 	public VillagerCorpseRenderer(EntityRendererFactory.Context ctx) {
 		super(ctx);
-		model = new VillagerCorpseModel(ctx.getPart(ModelLayerRegistry.VILLAGER_CORPSE));
+		model = new VillagerCorpseModel(ctx.getPart(ModModelLayerRegistry.VILLAGER_CORPSE));
 	}
 
 	@Override

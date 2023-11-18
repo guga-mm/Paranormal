@@ -3,6 +3,7 @@ package io.github.qMartinz.paranormal.server.data;
 import io.github.qMartinz.paranormal.Paranormal;
 import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.api.powers.PowerRegistry;
+import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
 import io.github.qMartinz.paranormal.api.rituals.RitualRegistry;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -33,12 +34,17 @@ public class StateSaverAndLoader extends PersistentState {
 			playerNbt.putInt("ritualSlots", playerData.ritualSlots);
 			playerNbt.putInt("powerPoints", playerData.powerPoints);
 
-			NbtList ritualList = new NbtList();
-			playerData.rituals.forEach(ritual -> ritualList.add(NbtString.of(ritual.getId().toString())));
-			NbtList powerList = new NbtList();
-			playerData.powers.forEach(power -> powerList.add(NbtString.of(power.getId().toString())));
-			playerNbt.put("rituals", ritualList);
-			playerNbt.put("powers", powerList);
+			NbtCompound rituals = new NbtCompound();
+			for (int i = 0; i < playerData.rituals.size(); i++) {
+				rituals.putString("ritual_" + i, playerData.rituals.stream().toList().get(i).getId().toString());
+			}
+			NbtCompound powers = new NbtCompound();
+			for (int i = 0; i < playerData.powers.size(); i++) {
+				powers.putString("power_" + i, playerData.powers.stream().toList().get(i).getId().toString());
+			}
+
+			playerNbt.put("rituals", rituals);
+			playerNbt.put("powers", powers);
 
 			playersNbt.put(uuid.toString(), playerNbt);
 		});
@@ -63,15 +69,15 @@ public class StateSaverAndLoader extends PersistentState {
 			playerData.powerPoints = nbt.getInt("powerPoints");
 
 			playerData.rituals.clear();
-			NbtList ritualList = nbt.getList("rituals", 9);
-			for (int i = 0; i < ritualList.size(); i++){
-				playerData.rituals.add(RitualRegistry.getRitual(new Identifier(ritualList.getString(i))).orElse(null));
+			NbtCompound rituals = nbt.getCompound("rituals");
+			for (int i = 0; i < rituals.getKeys().size(); i++){
+				playerData.rituals.add(RitualRegistry.getRitual(new Identifier(rituals.getString("ritual_" + i))).orElse(null));
 			}
 
 			playerData.powers.clear();
-			NbtList powerList = nbt.getList("powers", 9);
-			for (int i = 0; i < powerList.size(); i++){
-				playerData.powers.add(PowerRegistry.getPower(new Identifier(powerList.getString(i))).orElse(null));
+			NbtCompound powers = nbt.getCompound("powers");
+			for (int i = 0; i < powers.getKeys().size(); i++){
+				playerData.powers.add(PowerRegistry.getPower(new Identifier(powers.getString("power_" + i))).orElse(null));
 			}
 
 			UUID uuid = UUID.fromString(key);

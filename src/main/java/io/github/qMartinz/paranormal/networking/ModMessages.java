@@ -3,7 +3,10 @@ package io.github.qMartinz.paranormal.networking;
 import io.github.qMartinz.paranormal.Paranormal;
 import io.github.qMartinz.paranormal.ParanormalClient;
 import io.github.qMartinz.paranormal.api.PlayerData;
+import io.github.qMartinz.paranormal.api.powers.PowerRegistry;
+import io.github.qMartinz.paranormal.api.rituals.RitualRegistry;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import org.quiltmc.qsl.networking.api.ServerPlayNetworking;
 import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
@@ -20,6 +23,9 @@ public class ModMessages {
 			playerData.attributes = buf.readIntArray();
 			playerData.ritualSlots = buf.readInt();
 			playerData.powerPoints = buf.readInt();
+
+			playerData.deserializeRituals(buf.readNbt());
+			playerData.deserializePowers(buf.readNbt());
 		});
 	}
 
@@ -31,6 +37,9 @@ public class ModMessages {
 			ParanormalClient.playerData.attributes = buf.readIntArray();
 			ParanormalClient.playerData.ritualSlots = buf.readInt();
 			ParanormalClient.playerData.powerPoints = buf.readInt();
+
+			ParanormalClient.playerData.deserializeRituals(buf.readNbt());
+			ParanormalClient.playerData.deserializePowers(buf.readNbt());
 		});
 	}
 }

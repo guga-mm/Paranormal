@@ -11,7 +11,7 @@ import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings;
 
 import static io.github.qMartinz.paranormal.Paranormal.MODID;
 
-public class BlockRegistry {
+public class ModBlockRegistry {
 	public static final Block TRANSCENDANCE_ALTAR = Registry.register(Registries.BLOCK,
 			new Identifier(MODID, "transcendance_altar"),
 			new TranscendanceAltar(QuiltBlockSettings.copyOf(Blocks.ENCHANTING_TABLE)));

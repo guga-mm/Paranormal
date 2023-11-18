@@ -1,9 +1,9 @@
-package io.github.qMartinz.paranormal.client.screen.button;
+package io.github.qMartinz.paranormal.client.screen.elements.button;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.qMartinz.paranormal.ParanormalClient;
+import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.client.screen.AttributesScreen;
-import io.github.qMartinz.paranormal.client.screen.button.actions.IncreaseAttribute;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -34,5 +34,22 @@ public class AttributeButton extends ButtonWidget {
 
 		String text = Text.translatable("paranormal.screen.attributes_screen.attribute_" + attIndex).getString();
 		drawStringWithShadow(stack, client.textRenderer, text, getX() + 16 - client.textRenderer.getWidth(text) / 2, getY() + height + 2 + client.textRenderer.fontHeight, color);
+	}
+
+	public static class IncreaseAttribute implements PressAction {
+		private final int attIndex;
+		public IncreaseAttribute(int attIndex){
+			this.attIndex = attIndex;
+		}
+		@Override
+		public void onPress(ButtonWidget buttonWidget) {
+			PlayerData playerData = ParanormalClient.playerData;
+
+			if (playerData.getAttPoints() > 0){
+				playerData.setAttribute(attIndex, playerData.getAttribute(attIndex) + 1);
+				playerData.setAttPoints(playerData.getAttPoints() - 1);
+				playerData.syncToServer();
+			}
+		}
 	}
 }

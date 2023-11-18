@@ -16,7 +16,7 @@ import org.quiltmc.qsl.item.setting.api.QuiltItemSettings;
 
 import static io.github.qMartinz.paranormal.Paranormal.MODID;
 
-public class ItemRegistry {
+public class ModItemRegistry {
 	public static final Item ORGAN = Registry.register(Registries.ITEM,
 			new Identifier(MODID, "organ"),
 			new Item(new QuiltItemSettings()
@@ -32,16 +32,16 @@ public class ItemRegistry {
 
 	public static final Item TRANSCENDANCE_ALTAR = Registry.register(Registries.ITEM,
 			new Identifier(MODID, "transcendance_altar"),
-			new BlockItem(BlockRegistry.TRANSCENDANCE_ALTAR, new QuiltItemSettings().rarity(Rarity.UNCOMMON)));
+			new BlockItem(ModBlockRegistry.TRANSCENDANCE_ALTAR, new QuiltItemSettings().rarity(Rarity.UNCOMMON)));
 
 	public static void addToItemGroup(ItemGroup group, Item item) {
 		ItemGroupEvents.modifyEntriesEvent(group).register(entries -> entries.addItem(item));
 	}
 
 	public static void addItemsToItemGroup(){
-		addToItemGroup(ItemGroupRegistry.PARANORMAL, ORGAN);
-		addToItemGroup(ItemGroupRegistry.PARANORMAL, ASHES);
-		addToItemGroup(ItemGroupRegistry.PARANORMAL, BlockRegistry.TRANSCENDANCE_ALTAR.asItem());
+		addToItemGroup(ModItemGroupRegistry.PARANORMAL, ORGAN);
+		addToItemGroup(ModItemGroupRegistry.PARANORMAL, ASHES);
+		addToItemGroup(ModItemGroupRegistry.PARANORMAL, ModBlockRegistry.TRANSCENDANCE_ALTAR.asItem());
 	}
 
 	public static void init() {

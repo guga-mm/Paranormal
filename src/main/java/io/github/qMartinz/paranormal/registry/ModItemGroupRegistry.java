@@ -7,12 +7,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-public class ItemGroupRegistry {
+public class ModItemGroupRegistry {
 	public static ItemGroup PARANORMAL;
 
 	public static void registerItemGroup() {
 		PARANORMAL = FabricItemGroup.builder(new Identifier(Paranormal.MODID, "paranormal"))
 				.name(Text.translatable("itemgroup.paranormal.items"))
-				.icon(() -> new ItemStack(ItemRegistry.ORGAN)).build();
+				.icon(() -> new ItemStack(ModItemRegistry.ORGAN)).build();
 	}
 }

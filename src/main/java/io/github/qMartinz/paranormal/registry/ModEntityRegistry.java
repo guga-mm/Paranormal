@@ -16,7 +16,7 @@ import org.quiltmc.qsl.entity.api.QuiltEntityTypeBuilder;
 
 import static io.github.qMartinz.paranormal.Paranormal.MODID;
 
-public class EntityRegistry {
+public class ModEntityRegistry {
 	public static final EntityType<FogEntity> FOG = Registry.register(Registries.ENTITY_TYPE,
 			new Identifier(MODID, "fog"),
 			QuiltEntityTypeBuilder.create(SpawnGroup.MISC, FogEntity::new)

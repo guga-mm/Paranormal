@@ -1,17 +1,23 @@
 package io.github.qMartinz.paranormal.api;
 
 import io.github.qMartinz.paranormal.api.powers.AbstractPower;
+import io.github.qMartinz.paranormal.api.powers.PowerRegistry;
 import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
+import io.github.qMartinz.paranormal.api.rituals.RitualRegistry;
 import io.github.qMartinz.paranormal.networking.ModMessages;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
+import io.github.qMartinz.paranormal.util.NBTUtil;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
 import org.quiltmc.qsl.networking.api.PacketByteBufs;
 import org.quiltmc.qsl.networking.api.ServerPlayNetworking;
 import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class PlayerData {
 	public int pex = 0;
@@ -132,6 +138,40 @@ public class PlayerData {
 		this.powers.remove(power);
 	}
 
+	public NbtCompound serializeRituals() {
+		NbtCompound nbt = new NbtCompound();
+
+		NBTUtil.writeStrings(nbt, "ritual", rituals.stream().map(AbstractRitual::getId).map(Identifier::toString).collect(Collectors.toList()));
+
+		return nbt;
+	}
+
+	public NbtCompound serializePowers() {
+		NbtCompound nbt = new NbtCompound();
+
+		NBTUtil.writeStrings(nbt, "power", powers.stream().map(AbstractPower::getId).map(Identifier::toString).collect(Collectors.toList()));
+
+		return nbt;
+	}
+
+	public void deserializeRituals(NbtCompound nbt) {
+		clearRituals();
+		for(String s : NBTUtil.readStrings(nbt, "ritual")){
+			if(RitualRegistry.rituals.containsKey(Identifier.tryParse(s))){
+				rituals.add(RitualRegistry.getRitual(Identifier.tryParse(s)).get());
+			}
+		}
+	}
+
+	public void deserializePowers(NbtCompound nbt) {
+		clearPowers();
+		for(String s : NBTUtil.readStrings(nbt, "power")){
+			if(PowerRegistry.powers.containsKey(Identifier.tryParse(s))){
+				powers.add(PowerRegistry.getPower(Identifier.tryParse(s)).get());
+			}
+		}
+	}
+
 	public void syncToClient(ServerPlayerEntity player){
 		PlayerData playerState = StateSaverAndLoader.getPlayerState(player);
 		PacketByteBuf data = PacketByteBufs.create();
@@ -141,6 +181,9 @@ public class PlayerData {
 		data.writeIntArray(playerState.attributes);
 		data.writeInt(playerState.ritualSlots);
 		data.writeInt(playerState.powerPoints);
+
+		data.writeNbt(playerState.serializeRituals());
+		data.writeNbt(playerState.serializePowers());
 
 		ServerPlayNetworking.send(player, ModMessages.PLAYER_DATA_SYNC_ID, data);
 	}
@@ -152,6 +195,9 @@ public class PlayerData {
 		data.writeIntArray(attributes);
 		data.writeInt(ritualSlots);
 		data.writeInt(powerPoints);
+
+		data.writeNbt(serializeRituals());
+		data.writeNbt(serializePowers());
 
 		ClientPlayNetworking.send(ModMessages.PLAYER_DATA_SYNC_ID, data);
 	}
