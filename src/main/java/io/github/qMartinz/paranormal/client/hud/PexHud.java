@@ -1,4 +1,4 @@
-package io.github.qMartinz.paranormal.client;
+package io.github.qMartinz.paranormal.client.hud;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.qMartinz.paranormal.Paranormal;
@@ -13,13 +13,12 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 
-public class PexHudOverlay implements HudRenderCallback {
+public class PexHud implements HudRenderCallback {
 	public static final Identifier TEXTURES = new Identifier(Paranormal.MODID, "textures/gui/overlay.png");
 	@Override
 	public void onHudRender(MatrixStack matrixStack, float tickDelta) {
 		MinecraftClient client = MinecraftClient.getInstance();
 		if (!client.options.hudHidden && client != null) {
-			PlayerEntity player = client.player;
 			int width = client.getWindow().getScaledWidth();
 			int height = client.getWindow().getScaledHeight();
 
@@ -38,7 +37,7 @@ public class PexHudOverlay implements HudRenderCallback {
 			client.textRenderer.drawWithShadow(matrixStack, s,
 					width - (client.textRenderer.getWidth(s) + 96),
 					height - (client.textRenderer.fontHeight + 2),
-					ColorUtil.ARGB32.getArgb(255, 255, 255, 255));
+					0xFFFFFFFF);
 		}
 	}
 }

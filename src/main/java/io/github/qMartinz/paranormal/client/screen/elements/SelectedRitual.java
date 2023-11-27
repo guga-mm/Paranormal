@@ -43,7 +43,7 @@ public class SelectedRitual extends ClickableWidget {
 			RenderSystem.defaultBlendFunc();
 
 			RenderSystem.setShaderTexture(0, symbol);
-			drawTexture(matrices, this.getX() + width/2 - 32, this.getY() + height/2 - 32, 0, 0, 64, 64, 64, 64);
+			drawTexture(matrices, this.getX() + width/2 - 32, this.getY() + height/2 - 32, 0, 0, 64, 64, 256, 256);
 
 			RenderSystem.depthMask(true);
 			RenderSystem.enableDepthTest();

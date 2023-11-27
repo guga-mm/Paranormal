@@ -1,7 +1,8 @@
 package io.github.qMartinz.paranormal;
 
 import io.github.qMartinz.paranormal.api.PlayerData;
-import io.github.qMartinz.paranormal.client.PexHudOverlay;
+import io.github.qMartinz.paranormal.client.hud.PexHud;
+import io.github.qMartinz.paranormal.client.hud.RitualHud;
 import io.github.qMartinz.paranormal.client.screen.AttributesScreen;
 import io.github.qMartinz.paranormal.networking.ModMessages;
 import io.github.qMartinz.paranormal.registry.ModBlockRegistry;
@@ -32,7 +33,8 @@ public class ParanormalClient implements ClientModInitializer {
 	}
 
 	private void registerEvents(){
-		HudRenderCallback.EVENT.register(new PexHudOverlay());
+		HudRenderCallback.EVENT.register(new PexHud());
+		HudRenderCallback.EVENT.register(new RitualHud());
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
 			if (world.getBlockState(hitResult.getBlockPos()).isOf(ModBlockRegistry.TRANSCENDANCE_ALTAR)){
 				MinecraftClient.getInstance().setScreen(new AttributesScreen());

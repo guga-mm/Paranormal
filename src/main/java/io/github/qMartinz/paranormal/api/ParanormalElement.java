@@ -1,5 +1,6 @@
 package io.github.qMartinz.paranormal.api;
 
+import net.minecraft.client.util.ColorUtil;
 import net.minecraft.text.Text;
 
 public enum ParanormalElement {
@@ -18,5 +19,15 @@ public enum ParanormalElement {
 
 	public Text getDisplayName() {
 		return Text.translatable("paranormal.element." + name);
+	}
+
+	public int getColor() {
+		return switch (this){
+			case FEAR -> 0xFFFFFFFF;
+			case BLOOD -> 0xFFFF1100;
+			case WISDOM -> 0xFFFFCC00;
+			case DEATH -> 0xFF0C0C0D;
+			case ENERGY -> 0xFF8000FF;
+		};
 	}
 }
