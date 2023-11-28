@@ -10,9 +10,9 @@ import org.quiltmc.qsl.lifecycle.api.client.event.ClientTickEvents;
 
 public class KeyInputHandler {
 	public static final String KEY_CATEGORY = "key.category.paranormal";
-	public static final String KEY_RITUAL_HUD = "key.tutorialmod.ritual_hud";
-	public static final String KEY_PREVIOUS_RITUAL = "key.tutorialmod.previous_ritual";
-	public static final String KEY_NEXT_RITUAL = "key.tutorialmod.next_ritual";
+	public static final String KEY_RITUAL_HUD = "key.paranormal.ritual_hud";
+	public static final String KEY_PREVIOUS_RITUAL = "key.paranormal.previous_ritual";
+	public static final String KEY_NEXT_RITUAL = "key.paranormal.next_ritual";
 
 	public static KeyBind ritualHudKey;
 	public static KeyBind previousRitualKey;
