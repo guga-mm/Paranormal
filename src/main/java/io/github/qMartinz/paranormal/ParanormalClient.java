@@ -1,6 +1,7 @@
 package io.github.qMartinz.paranormal;
 
 import io.github.qMartinz.paranormal.api.PlayerData;
+import io.github.qMartinz.paranormal.client.event.KeyInputHandler;
 import io.github.qMartinz.paranormal.client.hud.PexHud;
 import io.github.qMartinz.paranormal.client.hud.RitualHud;
 import io.github.qMartinz.paranormal.client.screen.AttributesScreen;
@@ -20,12 +21,14 @@ import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
 
 public class ParanormalClient implements ClientModInitializer {
 	public static PlayerData playerData = new PlayerData();
+	public static RitualHud ritualHud = new RitualHud();
 	@Override
 	public void onInitializeClient(ModContainer mod) {
 		ModEntityRegistry.registerRenderers();
 		ModParticleRegistry.registerFactories();
 		ModModelLayerRegistry.init();
 
+		KeyInputHandler.register();
 		ModMessages.registerS2CPackets();
 
 		registerEvents();
@@ -34,7 +37,7 @@ public class ParanormalClient implements ClientModInitializer {
 
 	private void registerEvents(){
 		HudRenderCallback.EVENT.register(new PexHud());
-		HudRenderCallback.EVENT.register(new RitualHud());
+		HudRenderCallback.EVENT.register(ritualHud);
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
 			if (world.getBlockState(hitResult.getBlockPos()).isOf(ModBlockRegistry.TRANSCENDANCE_ALTAR)){
 				MinecraftClient.getInstance().setScreen(new AttributesScreen());

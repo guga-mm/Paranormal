@@ -88,6 +88,10 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 			translationBuilder.add("paranormal.screen.attributes_screen.attribute_0", "Strength");
 			translationBuilder.add("paranormal.screen.attributes_screen.attribute_1", "Vigor");
 			translationBuilder.add("paranormal.screen.attributes_screen.attribute_2", "Presence");
+
+			// Rituals
+			translationBuilder.add("paranormal.ritual.healing", "Healing");
+			translationBuilder.add("paranormal.ritual.skinning", "Skinning");
 		}
 	}
 
@@ -111,6 +115,10 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 			translationBuilder.add("paranormal.screen.attributes_screen.attribute_0", "Força");
 			translationBuilder.add("paranormal.screen.attributes_screen.attribute_1", "Vigor");
 			translationBuilder.add("paranormal.screen.attributes_screen.attribute_2", "Presença");
+
+			// Rituals
+			translationBuilder.add("paranormal.ritual.healing", "Cicatrização");
+			translationBuilder.add("paranormal.ritual.skinning", "Descarnar");
 		}
 	}
 }
