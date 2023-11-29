@@ -4,6 +4,7 @@ import io.github.qMartinz.paranormal.Paranormal;
 import io.github.qMartinz.paranormal.registry.ModBlockRegistry;
 import io.github.qMartinz.paranormal.registry.ModItemGroupRegistry;
 import io.github.qMartinz.paranormal.registry.ModItemRegistry;
+import io.github.qMartinz.paranormal.registry.ModRitualRegistry;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -90,8 +91,9 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 			translationBuilder.add("paranormal.screen.attributes_screen.attribute_2", "Presence");
 
 			// Rituals
-			translationBuilder.add("paranormal.ritual.healing", "Healing");
-			translationBuilder.add("paranormal.ritual.skinning", "Skinning");
+			translationBuilder.add(ModRitualRegistry.HEALING.getTranslationKey(), "Healing");
+			translationBuilder.add(ModRitualRegistry.SKINNING.getTranslationKey(), "Skinning");
+			translationBuilder.add(ModRitualRegistry.LIGHT.getTranslationKey(), "Light");
 		}
 	}
 
@@ -117,8 +119,9 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 			translationBuilder.add("paranormal.screen.attributes_screen.attribute_2", "Presença");
 
 			// Rituals
-			translationBuilder.add("paranormal.ritual.healing", "Cicatrização");
-			translationBuilder.add("paranormal.ritual.skinning", "Descarnar");
+			translationBuilder.add(ModRitualRegistry.HEALING.getTranslationKey(), "Cicatrização");
+			translationBuilder.add(ModRitualRegistry.SKINNING.getTranslationKey(), 	"Descarnar");
+			translationBuilder.add(ModRitualRegistry.LIGHT.getTranslationKey(), "Luz");
 		}
 	}
 }

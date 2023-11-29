@@ -42,6 +42,8 @@ public class ModCommandRegistry {
 								playerData.setAttPoints(0);
 								playerData.setPowerPoints(0);
 								playerData.setRitualSlots(0);
+								playerData.setMaxOccultPoints(4);
+								playerData.setOccultPoints(4);
 								playerData.setAttribute(0, 0);
 								playerData.setAttribute(1, 0);
 								playerData.setAttribute(2, 0);
@@ -59,6 +61,20 @@ public class ModCommandRegistry {
 										final int amount = IntegerArgumentType.getInteger(context, "amount");
 
 										playerData.addXp(amount);
+										playerData.syncToClient(player);
+										return 1;
+									}))))
+					.then(literal("occultPoints")
+							// Add xp
+							.then(literal("set").then(argument("amount", IntegerArgumentType.integer(1, 14))
+									.executes(context -> {
+										ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+										PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+										final int amount = IntegerArgumentType.getInteger(context, "amount");
+
+										playerData.setMaxOccultPoints(amount);
+										playerData.setOccultPoints(playerData.getOccultPoints() + amount - playerData.getMaxOccultPoints());
+
 										playerData.syncToClient(player);
 										return 1;
 									}))))

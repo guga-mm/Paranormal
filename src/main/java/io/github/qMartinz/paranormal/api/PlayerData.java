@@ -35,6 +35,9 @@ public class PlayerData {
 	public int ritualSlots = 0;
 	public int powerPoints = 0;
 
+	public int maxOccultPoints = 4;
+	public int occultPoints = 4;
+
 	// Rituals
 	public Set<AbstractRitual> rituals = new HashSet<>();
 	// Powers
@@ -115,6 +118,22 @@ public class PlayerData {
 		return ritualSlots;
 	}
 
+	public void setMaxOccultPoints(int maxOccultPoints) {
+		this.maxOccultPoints = Math.max(1, maxOccultPoints);
+	}
+
+	public int getMaxOccultPoints() {
+		return maxOccultPoints;
+	}
+
+	public void setOccultPoints(int occultPoints) {
+		this.occultPoints = Math.max(0, Math.min(occultPoints, getMaxOccultPoints()));
+	}
+
+	public int getOccultPoints() {
+		return occultPoints;
+	}
+
 	public void clearRituals(){
 		this.rituals.clear();
 	}
@@ -137,6 +156,10 @@ public class PlayerData {
 
 	public void removePower(AbstractPower power){
 		this.powers.remove(power);
+	}
+
+	public boolean hasPower(AbstractPower power){
+		return this.powers.contains(power);
 	}
 
 	public NbtCompound serializeRituals() {
@@ -182,6 +205,8 @@ public class PlayerData {
 		data.writeIntArray(playerState.attributes);
 		data.writeInt(playerState.ritualSlots);
 		data.writeInt(playerState.powerPoints);
+		data.writeInt(playerState.maxOccultPoints);
+		data.writeInt(playerState.occultPoints);
 
 		data.writeNbt(playerState.serializeRituals());
 		data.writeNbt(playerState.serializePowers());
@@ -196,6 +221,8 @@ public class PlayerData {
 		data.writeIntArray(attributes);
 		data.writeInt(ritualSlots);
 		data.writeInt(powerPoints);
+		data.writeInt(maxOccultPoints);
+		data.writeInt(occultPoints);
 
 		data.writeNbt(serializeRituals());
 		data.writeNbt(serializePowers());

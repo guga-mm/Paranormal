@@ -5,19 +5,17 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
-import java.awt.*;
-
 public abstract class AbstractRitual {
 	private final ParanormalElement element;
 	private final int tier;
-	private final int effortCost;
+	private final int occultPointsCost;
 	private final double range;
 	private final boolean mustHoldIngredient;
 
-	protected AbstractRitual(ParanormalElement element, int tier, int effortCost, double range, boolean mustHoldIngredient) {
+	protected AbstractRitual(ParanormalElement element, int tier, int occultPointsCost, double range, boolean mustHoldIngredient) {
 		this.element = element;
 		this.tier = Math.max(1, Math.min(tier, 4));
-		this.effortCost = effortCost;
+		this.occultPointsCost = occultPointsCost;
 		this.range = range;
 		this.mustHoldIngredient = mustHoldIngredient;
 	}
@@ -38,8 +36,8 @@ public abstract class AbstractRitual {
 		return Text.translatable(getTranslationKey());
 	}
 
-	public int getEffortCost() {
-		return effortCost;
+	public int getOccultPointsCost() {
+		return occultPointsCost;
 	}
 
 	public ParanormalElement getElement() {

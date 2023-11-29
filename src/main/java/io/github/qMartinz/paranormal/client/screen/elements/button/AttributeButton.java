@@ -48,6 +48,11 @@ public class AttributeButton extends ButtonWidget {
 			if (playerData.getAttPoints() > 0){
 				playerData.setAttribute(attIndex, playerData.getAttribute(attIndex) + 1);
 				playerData.setAttPoints(playerData.getAttPoints() - 1);
+				if (attIndex == 2) {
+					playerData.setMaxOccultPoints(playerData.getMaxOccultPoints() + 1);
+					playerData.setOccultPoints(playerData.getOccultPoints() + 1);
+				}
+
 				playerData.syncToServer();
 			}
 		}
