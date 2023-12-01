@@ -146,6 +146,14 @@ public class PlayerData {
 		this.rituals.remove(ritual);
 	}
 
+	public AbstractRitual getRitual(int index){
+		return rituals.stream().toList().get(index);
+	}
+
+	public boolean hasRituals(AbstractRitual ritual){
+		return this.powers.contains(ritual);
+	}
+
 	public void clearPowers(){
 		this.powers.clear();
 	}
@@ -156,6 +164,10 @@ public class PlayerData {
 
 	public void removePower(AbstractPower power){
 		this.powers.remove(power);
+	}
+
+	public AbstractPower getPower(int index){
+		return powers.stream().toList().get(index);
 	}
 
 	public boolean hasPower(AbstractPower power){

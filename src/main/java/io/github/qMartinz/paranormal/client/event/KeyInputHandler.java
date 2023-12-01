@@ -3,10 +3,15 @@ package io.github.qMartinz.paranormal.client.event;
 import com.mojang.blaze3d.platform.InputUtil;
 import io.github.qMartinz.paranormal.ParanormalClient;
 import io.github.qMartinz.paranormal.api.PlayerData;
+import io.github.qMartinz.paranormal.networking.ModMessages;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBind;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.ActionResult;
 import org.lwjgl.glfw.GLFW;
 import org.quiltmc.qsl.lifecycle.api.client.event.ClientTickEvents;
+import org.quiltmc.qsl.networking.api.PacketByteBufs;
+import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 
 public class KeyInputHandler {
 	public static final String KEY_CATEGORY = "key.category.paranormal";
@@ -20,7 +25,7 @@ public class KeyInputHandler {
 
 	public static void registerKeyInputs() {
 		ClientTickEvents.END.register(client -> {
-			if(ritualHudKey.wasPressed()) {
+			if (ritualHudKey.wasPressed() && !ParanormalClient.playerData.rituals.isEmpty()) {
 				ParanormalClient.ritualHud.setVisible(!ParanormalClient.ritualHud.isVisible());
 			}
 
@@ -31,11 +36,19 @@ public class KeyInputHandler {
 				ParanormalClient.ritualHud.setRitualIndex(ritualIndex);
 			}
 
-			if(previousRitualKey.wasPressed()) {
+			if (previousRitualKey.wasPressed()) {
 				PlayerData playerData = ParanormalClient.playerData;
 				int ritualIndex = ParanormalClient.ritualHud.getRitualIndex() - 1;
 				if (ritualIndex < 0) ritualIndex = playerData.rituals.size() - 1;
 				ParanormalClient.ritualHud.setRitualIndex(ritualIndex);
+			}
+
+			if (client.mouse.hasRightClicked()) {
+				if (ParanormalClient.ritualHud.isVisible()){
+					PacketByteBuf data = PacketByteBufs.create();
+					data.writeInt(ParanormalClient.ritualHud.getRitualIndex());
+					ClientPlayNetworking.send(ModMessages.CAST_RITUAL_ID, data);
+				}
 			}
 		});
 	}

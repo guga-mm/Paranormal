@@ -35,10 +35,6 @@
 			{
 				"id": "minecraft",
 				"versions": ">=1.19.4"
-			},
-			{
-				"id": "geckolib",
-				"versions": ">=4.1.2"
 			}
 		]
 	},

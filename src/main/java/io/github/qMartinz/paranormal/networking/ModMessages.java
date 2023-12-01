@@ -10,6 +10,7 @@ import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 
 public class ModMessages {
 	public static final Identifier PLAYER_DATA_SYNC_ID = new Identifier(Paranormal.MODID, "player_data_sync");
+	public static final Identifier CAST_RITUAL_ID = new Identifier(Paranormal.MODID, "cast_ritual");
 
 	public static void registerC2SPackets() {
 		ServerPlayNetworking.registerGlobalReceiver(PLAYER_DATA_SYNC_ID, (server, player, handler, buf, responseSender) -> {
@@ -25,6 +26,11 @@ public class ModMessages {
 
 			playerData.deserializeRituals(buf.readNbt());
 			playerData.deserializePowers(buf.readNbt());
+		});
+
+		ServerPlayNetworking.registerGlobalReceiver(CAST_RITUAL_ID, (server, player, handler, buf, responseSender) -> {
+			PlayerData playerData = StateSaverAndLoader.getPlayerState(handler.player);
+			playerData.getRitual(buf.readInt()).onCast(player);
 		});
 	}
 

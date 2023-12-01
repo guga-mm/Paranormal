@@ -3,6 +3,7 @@ package io.github.qMartinz.paranormal.entity;
 import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.TargetPredicate;
@@ -28,11 +29,19 @@ public class RitualProjectile extends ProjectileEntity {
     private final double iY;
     private final double iZ;
 
-	public RitualProjectile(EntityType<? extends ProjectileEntity> entityType, World world) {
+	public RitualProjectile(EntityType<? extends RitualProjectile> entityType, World world) {
 		super(entityType, world);
 		this.iX = this.getX();
 		this.iY = this.getY();
 		this.iZ = this.getZ();
+	}
+
+	public RitualProjectile(EntityType<? extends RitualProjectile> entityType, World world, AbstractRitual ritual) {
+		super(entityType, world);
+		this.iX = this.getX();
+		this.iY = this.getY();
+		this.iZ = this.getZ();
+		this.ritual = ritual;
 	}
 
 	@Override

@@ -36,7 +36,7 @@ public class ModEntityRegistry {
 
 	public static final EntityType<RitualProjectile> RITUAL_PROJECTILE = Registry.register(Registries.ENTITY_TYPE,
 			new Identifier(MODID, "ritual_projectile"),
-			QuiltEntityTypeBuilder.create(SpawnGroup.MISC, RitualProjectile::new)
+			QuiltEntityTypeBuilder.<RitualProjectile>create(SpawnGroup.MISC, RitualProjectile::new)
 					.setDimensions(EntityDimensions.fixed(0.5f, 0.5f)).build());
 
 	public static void registerRenderers(){

@@ -1,6 +1,13 @@
 package io.github.qMartinz.paranormal.api.rituals;
 
 import io.github.qMartinz.paranormal.api.ParanormalElement;
+import io.github.qMartinz.paranormal.api.PlayerData;
+import io.github.qMartinz.paranormal.api.rituals.types.ProjectileRitual;
+import io.github.qMartinz.paranormal.api.rituals.types.RayTracingRitual;
+import io.github.qMartinz.paranormal.api.rituals.types.SelfRitual;
+import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -54,5 +61,33 @@ public abstract class AbstractRitual {
 
 	public boolean mustHoldIngredient() {
 		return mustHoldIngredient;
+	}
+
+	public boolean canCast(LivingEntity caster){
+		return true;
+	}
+
+	public void onCast(LivingEntity caster){
+		PlayerData playerData = StateSaverAndLoader.getPlayerState(caster);
+		if (canCast(caster) && playerData.getOccultPoints() >= getOccultPointsCost()){
+			boolean cast = false;
+
+			if (this instanceof SelfRitual ritual) cast = ritual.useOnSelf(caster);
+
+			if (this instanceof RayTracingRitual ritual) {
+				cast = cast || ritual.onHit(caster, caster.raycast(getRange(), 0, false));
+			}
+
+			if (this instanceof ProjectileRitual ritual) cast = cast || ritual.onShoot(caster, this);
+
+			if (cast) {
+				if (caster instanceof ServerPlayerEntity player) {
+					playerData.setOccultPoints(playerData.getOccultPoints() - getOccultPointsCost());
+					playerData.syncToClient(player);
+				}
+
+				// cast effects
+			}
+		}
 	}
 }
