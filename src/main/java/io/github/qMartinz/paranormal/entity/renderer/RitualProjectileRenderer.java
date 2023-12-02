@@ -1,6 +1,5 @@
 package io.github.qMartinz.paranormal.entity.renderer;
 
-import io.github.qMartinz.paranormal.entity.FogEntity;
 import io.github.qMartinz.paranormal.entity.RitualProjectile;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;

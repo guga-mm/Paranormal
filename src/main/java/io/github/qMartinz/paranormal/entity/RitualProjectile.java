@@ -2,8 +2,8 @@ package io.github.qMartinz.paranormal.entity;
 
 import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
+import io.github.qMartinz.paranormal.api.rituals.types.ProjectileRitual;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.TargetPredicate;
@@ -16,6 +16,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 public class RitualProjectile extends ProjectileEntity {
@@ -42,29 +43,6 @@ public class RitualProjectile extends ProjectileEntity {
 		this.iY = this.getY();
 		this.iZ = this.getZ();
 		this.ritual = ritual;
-	}
-
-	@Override
-	protected void onCollision(HitResult hitResult) {
-		super.onCollision(hitResult);
-
-		if (getOwner() instanceof LivingEntity owner) {
-			/*
-			if (ritual instanceof UtilityRitual ritual1){
-				if (pResult instanceof BlockHitResult blockHitResult){
-					ritual1.onUseBlock(blockHitResult, level, owner, ritualItem, hand);
-				} else {
-					BlockHitResult blockHitResult = BlockHitResult.miss(pResult.getLocation(), getDirection(), new BlockPos(pResult.getLocation()));
-					ritual1.onUseBlock(blockHitResult, level, owner, ritualItem, hand);
-				}
-			}
-			*/
-
-
-
-		}
-
-		this.discard();
 	}
 
 	@Override
@@ -101,46 +79,45 @@ public class RitualProjectile extends ProjectileEntity {
             if (Math.abs(iX - getX()) > this.getRange() ||
                     Math.abs(iY - getY()) > this.getRange() ||
                     Math.abs(iZ - getZ()) > this.getRange()) {
-                this.discard();
-
                 if (getOwner() instanceof LivingEntity owner && world.getBlockState(getBlockPos()).isAir()) {
-					/*
-                    if (ritual instanceof UtilityRitual ritual1) {
-                        BlockHitResult blockHitResult = BlockHitResult.miss(position(), getDirection(), new BlockPos(position()));
-                        ritual1.onUseBlock(blockHitResult, level, owner, ritualItem, hand);
-                    }
-                    */
+					if (ritual instanceof ProjectileRitual ritual1){
+						ritual1.onBlockHit(owner, BlockHitResult.createMissed(getPos(), Direction.random(random), getBlockPos()));
+					}
                 }
+				this.discard();
             }
         }
     }
 
 	@Override
-	protected void onEntityHit(EntityHitResult entityHitResult) {
-		super.onEntityHit(entityHitResult);
-
+	protected void onCollision(HitResult hitResult) {
 		if (getOwner() instanceof LivingEntity owner) {
-			/*
-			if (ritual instanceof OffensiveRitual ritual1){
-				ritual1.onUseEntity(pResult, level, owner, ritualItem, hand);
+			if (ritual instanceof ProjectileRitual ritual1){
+				ritual1.onHit(owner, hitResult);
 			}
-			*/
 		}
-
+		super.onCollision(hitResult);
 		this.discard();
 	}
 
 	@Override
-	protected void onBlockHit(BlockHitResult blockHitResult) {
+	protected void onEntityHit(EntityHitResult entityHitResult) {
+		super.onEntityHit(entityHitResult);
 		if (getOwner() instanceof LivingEntity owner) {
-			/*
-			if (ritual instanceof UtilityRitual ritual1){
-				ritual1.onUseBlock(pResult, level, owner, ritualItem, hand);
+			if (ritual instanceof ProjectileRitual ritual1){
+				ritual1.onEntityHit(owner, entityHitResult);
 			}
-			*/
 		}
+	}
 
-		this.discard();
+	@Override
+	protected void onBlockHit(BlockHitResult blockHitResult) {
+		super.onBlockHit(blockHitResult);
+		if (getOwner() instanceof LivingEntity owner) {
+			if (ritual instanceof ProjectileRitual ritual1){
+				ritual1.onBlockHit(owner, blockHitResult);
+			}
+		}
 	}
 
     public int getElement() {

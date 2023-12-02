@@ -1,6 +1,5 @@
 package io.github.qMartinz.paranormal.api;
 
-import net.minecraft.client.util.ColorUtil;
 import net.minecraft.text.Text;
 
 public enum ParanormalElement {

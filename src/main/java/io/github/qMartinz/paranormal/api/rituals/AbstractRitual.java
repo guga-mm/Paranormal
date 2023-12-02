@@ -7,10 +7,14 @@ import io.github.qMartinz.paranormal.api.rituals.types.RayTracingRitual;
 import io.github.qMartinz.paranormal.api.rituals.types.SelfRitual;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.world.RaycastContext;
 
 public abstract class AbstractRitual {
 	private final ParanormalElement element;
@@ -74,8 +78,10 @@ public abstract class AbstractRitual {
 
 			if (this instanceof SelfRitual ritual) cast = ritual.useOnSelf(caster);
 
-			if (this instanceof RayTracingRitual ritual) {
-				cast = cast || ritual.onHit(caster, caster.raycast(getRange(), 0, false));
+			if (this instanceof RayTracingRitual ritual && caster instanceof PlayerEntity) {
+				cast = cast || ritual.onHit(caster, getRange());
+			} else if (this instanceof RayTracingRitual ritual && caster instanceof MobEntity mob && mob.distanceTo(mob.getTarget()) <= getRange()) {
+				cast = cast || ritual.onEntityHit(caster, mob.getTarget());
 			}
 
 			if (this instanceof ProjectileRitual ritual) cast = cast || ritual.onShoot(caster, this);

@@ -8,9 +8,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.ColorUtil;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 
 public class PexHud implements HudRenderCallback {

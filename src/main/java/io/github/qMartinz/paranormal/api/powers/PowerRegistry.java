@@ -1,6 +1,5 @@
 package io.github.qMartinz.paranormal.api.powers;
 
-import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
 import net.minecraft.util.Identifier;
 
 import java.util.HashMap;

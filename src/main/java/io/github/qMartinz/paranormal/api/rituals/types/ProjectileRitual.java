@@ -16,7 +16,7 @@ public interface ProjectileRitual {
 		caster.world.spawnEntity(projectile);
 		return true;
 	};
-	boolean onHit(LivingEntity caster, HitResult hitResult);
-	boolean onEntityHit(LivingEntity caster, EntityHitResult hitResult);
-	boolean onBlockHit(LivingEntity caster, BlockHitResult hitResult);
+	void onHit(LivingEntity caster, HitResult hitResult);
+	void onEntityHit(LivingEntity caster, EntityHitResult hitResult);
+	void onBlockHit(LivingEntity caster, BlockHitResult hitResult);
 }

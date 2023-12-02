@@ -7,7 +7,6 @@ import io.github.qMartinz.paranormal.networking.ModMessages;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBind;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.ActionResult;
 import org.lwjgl.glfw.GLFW;
 import org.quiltmc.qsl.lifecycle.api.client.event.ClientTickEvents;
 import org.quiltmc.qsl.networking.api.PacketByteBufs;
@@ -22,6 +21,8 @@ public class KeyInputHandler {
 	public static KeyBind ritualHudKey;
 	public static KeyBind previousRitualKey;
 	public static KeyBind nextRitualKey;
+
+	private static int castCooldownTicks = 0;
 
 	public static void registerKeyInputs() {
 		ClientTickEvents.END.register(client -> {
@@ -43,13 +44,16 @@ public class KeyInputHandler {
 				ParanormalClient.ritualHud.setRitualIndex(ritualIndex);
 			}
 
-			if (client.mouse.hasRightClicked()) {
+			if (client.mouse.hasRightClicked() && castCooldownTicks <= 0) {
 				if (ParanormalClient.ritualHud.isVisible()){
 					PacketByteBuf data = PacketByteBufs.create();
 					data.writeInt(ParanormalClient.ritualHud.getRitualIndex());
 					ClientPlayNetworking.send(ModMessages.CAST_RITUAL_ID, data);
+					castCooldownTicks = 20;
 				}
 			}
+
+			if (castCooldownTicks > 0) castCooldownTicks--;
 		});
 	}
 

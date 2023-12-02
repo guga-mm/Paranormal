@@ -13,16 +13,11 @@ import io.github.qMartinz.paranormal.registry.ModParticleRegistry;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.TypedActionResult;
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
-import org.quiltmc.qsl.networking.api.PacketByteBufs;
-import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 
 public class ParanormalClient implements ClientModInitializer {
 	public static PlayerData playerData = new PlayerData();

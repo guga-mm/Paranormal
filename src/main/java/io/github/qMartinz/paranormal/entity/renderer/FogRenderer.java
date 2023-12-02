@@ -1,9 +1,7 @@
 package io.github.qMartinz.paranormal.entity.renderer;
 
-import io.github.qMartinz.paranormal.Paranormal;
 import io.github.qMartinz.paranormal.entity.FogEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EmptyEntityRenderer;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.texture.SpriteAtlasTexture;
