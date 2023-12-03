@@ -120,7 +120,6 @@ public class FogEntity extends Entity {
 						loseIntensity();
 					} else if (getIntensity() == 1) {
 						this.discard();
-						Paranormal.LOGGER.info("Being removed!");
 					}
 				}
 			}

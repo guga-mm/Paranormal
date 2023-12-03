@@ -73,7 +73,7 @@ public abstract class AbstractRitual {
 
 	public void onCast(LivingEntity caster){
 		PlayerData playerData = StateSaverAndLoader.getPlayerState(caster);
-		if (canCast(caster) && playerData.getOccultPoints() >= getOccultPointsCost()){
+		if (canCast(caster) && (playerData.getOccultPoints() >= getOccultPointsCost() || (caster instanceof PlayerEntity player && player.isCreative()))){
 			boolean cast = false;
 
 			if (this instanceof SelfRitual ritual) cast = ritual.useOnSelf(caster);
@@ -87,7 +87,7 @@ public abstract class AbstractRitual {
 			if (this instanceof ProjectileRitual ritual) cast = cast || ritual.onShoot(caster, this);
 
 			if (cast) {
-				if (caster instanceof ServerPlayerEntity player) {
+				if (caster instanceof ServerPlayerEntity player && !player.isCreative()) {
 					playerData.setOccultPoints(playerData.getOccultPoints() - getOccultPointsCost());
 					playerData.syncToClient(player);
 				}

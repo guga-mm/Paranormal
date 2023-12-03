@@ -2,6 +2,7 @@ package io.github.qMartinz.paranormal.entity.events;
 
 import io.github.qMartinz.paranormal.entity.CorpseEntity;
 import io.github.qMartinz.paranormal.entity.FogEntity;
+import io.github.qMartinz.paranormal.networking.ModMessages;
 import io.github.qMartinz.paranormal.registry.ModEntityRegistry;
 import io.github.qMartinz.paranormal.util.FearData;
 import io.github.qMartinz.paranormal.util.IEntityDataSaver;
@@ -66,13 +67,14 @@ public class VillagerFearEvents {
 
 	private static void frighten(VillagerEntity entity, int amount){
 		// Fear particle effects & sfx
-		if (entity.getWorld().isClient()) {
-			for (int i = 0; i < 5; ++i) {
-				double d = entity.getRandom().nextGaussian() * 0.02;
-				double e = entity.getRandom().nextGaussian() * 0.02;
-				double f = entity.getRandom().nextGaussian() * 0.02;
-				entity.getWorld().addParticle(ParticleTypes.ANGRY_VILLAGER, entity.getParticleX(1.0), entity.getRandomBodyY() + 1.0, entity.getParticleZ(1.0), d, e, f);
-			}
+		for (int i = 0; i < 5; ++i) {
+			double yd = entity.getRandom().nextGaussian() * 0.02;
+			ModMessages.spawnParticlePacket(entity.getServer().getWorld(entity.getWorld().getRegistryKey()).getPlayers(),
+					ParticleTypes.ANGRY_VILLAGER,
+					entity.getX() + (entity.getRandom().range(-4, 4)/10d),
+					entity.getEyeY(),
+					entity.getZ() + (entity.getRandom().range(-4, 4)/10d),
+					0, yd, 0);
 		}
 
 		FearData.addFear((IEntityDataSaver) entity, amount);
@@ -90,13 +92,14 @@ public class VillagerFearEvents {
 
 	private static void calm(VillagerEntity entity, int amount){
 		// Fear particle effects & sfx
-		if (entity.getWorld().isClient()) {
-			for (int i = 0; i < 5; ++i) {
-				double d = entity.getRandom().nextGaussian() * 0.02;
-				double e = entity.getRandom().nextGaussian() * 0.02;
-				double f = entity.getRandom().nextGaussian() * 0.02;
-				entity.getWorld().addParticle(ParticleTypes.HAPPY_VILLAGER, entity.getParticleX(1.0), entity.getRandomBodyY() + 1.0, entity.getParticleZ(1.0), d, e, f);
-			}
+		for (int i = 0; i < 5; ++i) {
+			double yd = entity.getRandom().nextGaussian() * 0.01;
+			ModMessages.spawnParticlePacket(entity.getServer().getWorld(entity.getWorld().getRegistryKey()).getPlayers(),
+					ParticleTypes.HAPPY_VILLAGER,
+					entity.getX() + (entity.getRandom().range(-4, 4)/10d),
+					entity.getEyeY(),
+					entity.getZ() + (entity.getRandom().range(-4, 4)/10d),
+					0, yd, 0);
 		}
 
 		FearData.removeFear((IEntityDataSaver) entity, amount);
