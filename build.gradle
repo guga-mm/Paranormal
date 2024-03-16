@@ -22,6 +22,24 @@ repositories {
 		url 'https://maven.quiltmc.org/repository/release'
 	}
 
+	maven{
+		name = 'Ladysnake Mods'
+		url = 'https://maven.ladysnake.org/releases'
+		content {
+			includeGroup 'org.ladysnake'
+			includeGroup 'io.github.ladysnake'
+			includeGroup 'team.lodestar.lodestone'
+		}
+	}
+
+	maven {
+		name "modrinth"
+		url "https://api.modrinth.com/maven"
+		content {
+			includeGroup('maven.modrinth')
+		}
+	}
+
 	//maven {
 	//	name = 'GeckoLib'
 	//	url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
@@ -65,6 +83,22 @@ dependencies {
 	modImplementation "org.quiltmc.quilted-fabric-api:quilted-fabric-api:${quilted_fabric_api_version}-${minecraft_version}"
 	modImplementation "org.quiltmc:qsl:${qsl_version}+${minecraft_version}"
 	mappings "org.quiltmc:quilt-mappings:${minecraft_version}+build.${quilt_mappings}:intermediary-v2"
+
+	// midnight
+	modImplementation(libs.midnightLib)
+	include(libs.midnightLib)
+
+	// satin
+	modImplementation(libs.satin) {
+		exclude group: 'net.fabricmc'
+	}
+	include(libs.satin)
+
+	// lodestone
+	modImplementation(libs.lodestoneLib) {
+		transitive = false
+	}
+	include(libs.lodestoneLib)
 
 	//modImplementation "software.bernie.geckolib:geckolib-quilt-${minecraft_version}:${geckolib_version}"
 }

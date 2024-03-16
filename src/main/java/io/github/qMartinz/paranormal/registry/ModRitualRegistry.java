@@ -5,6 +5,7 @@ import io.github.qMartinz.paranormal.api.ParanormalElement;
 import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
 import io.github.qMartinz.paranormal.api.rituals.RitualRegistry;
 import io.github.qMartinz.paranormal.ritual.HealingRitual;
+import io.github.qMartinz.paranormal.ritual.SkinningRitual;
 import net.minecraft.util.Identifier;
 
 import static io.github.qMartinz.paranormal.Paranormal.MODID;
@@ -14,10 +15,10 @@ public class ModRitualRegistry {
 			new HealingRitual());
 
 	public static final AbstractRitual SKINNING = RitualRegistry.register(new Identifier(MODID, "skinning"),
-			new AbstractRitual(ParanormalElement.BLOOD, 1, 1, 7.5d, true) {});
+			new SkinningRitual());
 
 	public static final AbstractRitual LIGHT = RitualRegistry.register(new Identifier(MODID, "light"),
-			new AbstractRitual(ParanormalElement.ENERGY, 1, 1, 7.5d, true) {});
+			new AbstractRitual(ParanormalElement.ENERGY, 1, 1f, 7.5d, true) {});
 
 	public static void init(){
 		Paranormal.LOGGER.info("Registering rituals for " + MODID);

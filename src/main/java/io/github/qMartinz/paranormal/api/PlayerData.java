@@ -34,8 +34,8 @@ public class PlayerData {
 	public int ritualSlots = 0;
 	public int powerPoints = 0;
 
-	public int maxOccultPoints = 4;
-	public int occultPoints = 4;
+	public double maxOccultPoints = 4;
+	public double occultPoints = 4;
 
 	// Rituals
 	public Set<AbstractRitual> rituals = new HashSet<>();
@@ -93,10 +93,20 @@ public class PlayerData {
 		return attPoints;
 	}
 
+	/**
+	 * <p>0 = str
+	 * <p>1 = vig
+	 * <p>2 = pre
+	 */
 	public void setAttribute(int index, int value) {
 		this.attributes[index] = value;
 	}
 
+	/**
+	 * <p>0 = str
+	 * <p>1 = vig
+	 * <p>2 = pre
+	 */
 	public int getAttribute(int index){
 		return attributes[index];
 	}
@@ -117,19 +127,19 @@ public class PlayerData {
 		return ritualSlots;
 	}
 
-	public void setMaxOccultPoints(int maxOccultPoints) {
+	public void setMaxOccultPoints(double maxOccultPoints) {
 		this.maxOccultPoints = Math.max(1, maxOccultPoints);
 	}
 
-	public int getMaxOccultPoints() {
+	public double getMaxOccultPoints() {
 		return maxOccultPoints;
 	}
 
-	public void setOccultPoints(int occultPoints) {
+	public void setOccultPoints(double occultPoints) {
 		this.occultPoints = Math.max(0, Math.min(occultPoints, getMaxOccultPoints()));
 	}
 
-	public int getOccultPoints() {
+	public double getOccultPoints() {
 		return occultPoints;
 	}
 
@@ -216,8 +226,8 @@ public class PlayerData {
 		data.writeIntArray(playerState.attributes);
 		data.writeInt(playerState.ritualSlots);
 		data.writeInt(playerState.powerPoints);
-		data.writeInt(playerState.maxOccultPoints);
-		data.writeInt(playerState.occultPoints);
+		data.writeDouble(playerState.maxOccultPoints);
+		data.writeDouble(playerState.occultPoints);
 
 		data.writeNbt(playerState.serializeRituals());
 		data.writeNbt(playerState.serializePowers());
@@ -232,8 +242,8 @@ public class PlayerData {
 		data.writeIntArray(attributes);
 		data.writeInt(ritualSlots);
 		data.writeInt(powerPoints);
-		data.writeInt(maxOccultPoints);
-		data.writeInt(occultPoints);
+		data.writeDouble(maxOccultPoints);
+		data.writeDouble(occultPoints);
 
 		data.writeNbt(serializeRituals());
 		data.writeNbt(serializePowers());

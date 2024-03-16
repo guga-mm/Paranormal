@@ -5,25 +5,31 @@ import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.api.rituals.types.ProjectileRitual;
 import io.github.qMartinz.paranormal.api.rituals.types.RayTracingRitual;
 import io.github.qMartinz.paranormal.api.rituals.types.SelfRitual;
+import io.github.qMartinz.paranormal.networking.ParticleMessages;
+import io.github.qMartinz.paranormal.particle.GlowingParticle;
+import io.github.qMartinz.paranormal.registry.ModParticleRegistry;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.world.RaycastContext;
+import team.lodestar.lodestone.systems.rendering.particle.Easing;
+import team.lodestar.lodestone.systems.rendering.particle.LodestoneWorldParticleTextureSheet;
+import team.lodestar.lodestone.systems.rendering.particle.WorldParticleBuilder;
+import team.lodestar.lodestone.systems.rendering.particle.data.ColorParticleData;
 
 public abstract class AbstractRitual {
 	private final ParanormalElement element;
 	private final int tier;
-	private final int occultPointsCost;
+	private final float occultPointsCost;
 	private final double range;
 	private final boolean mustHoldIngredient;
 
-	protected AbstractRitual(ParanormalElement element, int tier, int occultPointsCost, double range, boolean mustHoldIngredient) {
+	protected AbstractRitual(ParanormalElement element, int tier, float occultPointsCost, double range, boolean mustHoldIngredient) {
 		this.element = element;
 		this.tier = Math.max(1, Math.min(tier, 4));
 		this.occultPointsCost = occultPointsCost;
@@ -47,7 +53,7 @@ public abstract class AbstractRitual {
 		return Text.translatable(getTranslationKey());
 	}
 
-	public int getOccultPointsCost() {
+	public float getOccultPointsCost() {
 		return occultPointsCost;
 	}
 
@@ -79,9 +85,9 @@ public abstract class AbstractRitual {
 			if (this instanceof SelfRitual ritual) cast = ritual.useOnSelf(caster);
 
 			if (this instanceof RayTracingRitual ritual && caster instanceof PlayerEntity) {
-				cast = cast || ritual.onHit(caster, getRange());
+				cast = cast || ritual.onHit(getElement(), caster, getRange());
 			} else if (this instanceof RayTracingRitual ritual && caster instanceof MobEntity mob && mob.distanceTo(mob.getTarget()) <= getRange()) {
-				cast = cast || ritual.onEntityHit(caster, mob.getTarget());
+				cast = cast || ritual.onCastByMob(getElement(), mob, mob.getTarget());
 			}
 
 			if (this instanceof ProjectileRitual ritual) cast = cast || ritual.onShoot(caster, this);
@@ -92,7 +98,25 @@ public abstract class AbstractRitual {
 					playerData.syncToClient(player);
 				}
 
-				// cast effects
+				castEffects(caster);
+			}
+		}
+	}
+
+	public void castEffects(LivingEntity caster){
+		if (caster.getWorld() instanceof ServerWorld world){
+			if (getElement() == ParanormalElement.DEATH){
+				ParticleMessages.spawnLumitransparentCircle(world, ModParticleRegistry.GLOWING_PARTICLE, caster.getX(),
+						caster.getY(), caster.getZ(), 0.5d, 12, 0d, 0.5d, 0d,
+						getElement().particleColorS(), getElement().particleColorE(), 1f, 0f, -1f,
+						1f, Easing.LINEAR, Easing.LINEAR, 0.3f, 0f, -1f, 1f,
+						Easing.LINEAR, Easing.LINEAR, 36, 0f);
+			} else {
+				ParticleMessages.spawnAdditiveCircle(world, ModParticleRegistry.GLOWING_PARTICLE, caster.getX(),
+						caster.getY(), caster.getZ(), 0.5d, 12, 0d, 0.5d, 0d,
+						getElement().particleColorS(), getElement().particleColorE(), 1f, 0f, -1f,
+						1f, Easing.LINEAR, Easing.LINEAR, 0.3f, 0f, -1f, 1f,
+						Easing.LINEAR, Easing.LINEAR, 36, 0f);
 			}
 		}
 	}

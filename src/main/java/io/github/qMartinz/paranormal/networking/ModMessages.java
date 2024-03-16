@@ -6,17 +6,15 @@ import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.DefaultParticleType;
-import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import org.quiltmc.qsl.networking.api.PacketByteBufs;
 import org.quiltmc.qsl.networking.api.ServerPlayNetworking;
 import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 
+import java.awt.*;
 import java.util.Collection;
 
 public class ModMessages {
@@ -33,8 +31,8 @@ public class ModMessages {
 			playerData.attributes = buf.readIntArray();
 			playerData.ritualSlots = buf.readInt();
 			playerData.powerPoints = buf.readInt();
-			playerData.maxOccultPoints = buf.readInt();
-			playerData.occultPoints = buf.readInt();
+			playerData.maxOccultPoints = buf.readDouble();
+			playerData.occultPoints = buf.readDouble();
 
 			playerData.deserializeRituals(buf.readNbt());
 			playerData.deserializePowers(buf.readNbt());
@@ -43,6 +41,7 @@ public class ModMessages {
 		ServerPlayNetworking.registerGlobalReceiver(CAST_RITUAL_ID, (server, player, handler, buf, responseSender) -> {
 			PlayerData playerData = StateSaverAndLoader.getPlayerState(handler.player);
 			playerData.getRitual(buf.readInt()).onCast(player);
+			Paranormal.LOGGER.info("Cast ritual within message!");
 		});
 	}
 
@@ -54,8 +53,8 @@ public class ModMessages {
 			ParanormalClient.playerData.attributes = buf.readIntArray();
 			ParanormalClient.playerData.ritualSlots = buf.readInt();
 			ParanormalClient.playerData.powerPoints = buf.readInt();
-			ParanormalClient.playerData.maxOccultPoints = buf.readInt();
-			ParanormalClient.playerData.occultPoints = buf.readInt();
+			ParanormalClient.playerData.maxOccultPoints = buf.readDouble();
+			ParanormalClient.playerData.occultPoints = buf.readDouble();
 
 			ParanormalClient.playerData.deserializeRituals(buf.readNbt());
 			ParanormalClient.playerData.deserializePowers(buf.readNbt());
@@ -74,6 +73,8 @@ public class ModMessages {
 				client.world.addParticle(particle, x, y, z, xd, yd, zd);
 			}
 		});
+
+		ParticleMessages.registerPackets();
 	}
 
 	public static void spawnParticlePacket(Collection<ServerPlayerEntity> players, ParticleType<?> particle, double x, double y, double z, double xd, double yd, double zd){

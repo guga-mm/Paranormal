@@ -14,7 +14,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class HealingRitual extends AbstractRitual implements SelfRitual, RayTracingRitual {
 	public HealingRitual() {
-		super(ParanormalElement.DEATH, 1, 1, 3d, true);
+		super(ParanormalElement.DEATH, 1, 1f, 3d, true);
 	}
 	@Override
 	public boolean useOnSelf(LivingEntity caster) {

@@ -80,7 +80,7 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 			translationBuilder.add(ModItemRegistry.ASHES, "Ashes");
 			translationBuilder.add(ModItemRegistry.ORGAN, "Organ");
 			translationBuilder.add(ModBlockRegistry.TRANSCENDANCE_ALTAR, "Transcendance Altar");
-			translationBuilder.add(ModItemGroupRegistry.PARANORMAL, "Paranormal");
+			translationBuilder.add(ModItemGroupRegistry.PARANORMAL.toString(), "Paranormal");
 			translationBuilder.add("paranormal.screen.attributes_screen", "Attributes");
 			translationBuilder.add("paranormal.screen.attributes_screen.attPoints", "Attribute Points");
 			translationBuilder.add("paranormal.screen.attributes_screen.increase_attribute_0", "Increase Strength");
@@ -108,7 +108,7 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 			translationBuilder.add(ModItemRegistry.ASHES, "Cinzas");
 			translationBuilder.add(ModItemRegistry.ORGAN, "Órgao");
 			translationBuilder.add(ModBlockRegistry.TRANSCENDANCE_ALTAR, "Altar de Transcendência");
-			translationBuilder.add(ModItemGroupRegistry.PARANORMAL, "Paranormal");
+			translationBuilder.add(ModItemGroupRegistry.PARANORMAL.toString(), "Paranormal");
 			translationBuilder.add("paranormal.screen.attributes_screen", "Atributos");
 			translationBuilder.add("paranormal.screen.attributes_screen.attPoints", "Pontos de Atributo");
 			translationBuilder.add("paranormal.screen.attributes_screen.increase_attribute_0", "Aumentar Força");

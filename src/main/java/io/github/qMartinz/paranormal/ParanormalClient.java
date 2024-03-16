@@ -10,7 +10,6 @@ import io.github.qMartinz.paranormal.registry.ModBlockRegistry;
 import io.github.qMartinz.paranormal.registry.ModEntityRegistry;
 import io.github.qMartinz.paranormal.registry.ModModelLayerRegistry;
 import io.github.qMartinz.paranormal.registry.ModParticleRegistry;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.client.MinecraftClient;
@@ -18,6 +17,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.ActionResult;
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
+import org.quiltmc.qsl.block.extensions.api.client.BlockRenderLayerMap;
 
 public class ParanormalClient implements ClientModInitializer {
 	public static PlayerData playerData = new PlayerData();
@@ -49,7 +49,7 @@ public class ParanormalClient implements ClientModInitializer {
 	}
 
 	private void setBlockRenderLayers(){
-		BlockRenderLayerMap.INSTANCE.putBlock(ModBlockRegistry.TRANSCENDANCE_ALTAR, RenderLayer.getCutout());
+		BlockRenderLayerMap.put(RenderLayer.getCutout(), ModBlockRegistry.TRANSCENDANCE_ALTAR);
 
 	}
 }

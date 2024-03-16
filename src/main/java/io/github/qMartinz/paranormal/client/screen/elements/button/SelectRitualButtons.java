@@ -6,6 +6,7 @@ import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.client.screen.AttributesScreen;
 import io.github.qMartinz.paranormal.client.screen.elements.SelectedRitual;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -17,12 +18,11 @@ public class SelectRitualButtons {
 		}
 
 		@Override
-		public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+		public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
 			PlayerData playerData = ParanormalClient.playerData;
 			if (!playerData.rituals.isEmpty()){
 				if (isMouseOver(mouseX, mouseY)) RenderSystem.setShaderColor(1.5f, 1.5f, 1.5f, 1f);
-				RenderSystem.setShaderTexture(0, AttributesScreen.TEXTURES);
-				drawTexture(matrices, getX(), getY(), 174, 63, 8, 7);
+				guiGraphics.drawTexture(AttributesScreen.TEXTURES, getX(), getY(), 174, 63, 8, 7);
 				RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 			}
 		}
@@ -44,12 +44,11 @@ public class SelectRitualButtons {
 		}
 
 		@Override
-		public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+		public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
 			PlayerData playerData = ParanormalClient.playerData;
 			if (!playerData.rituals.isEmpty()){
 				if (isMouseOver(mouseX, mouseY)) RenderSystem.setShaderColor(1.5f, 1.5f, 1.5f, 1f);
-				RenderSystem.setShaderTexture(0, AttributesScreen.TEXTURES);
-				drawTexture(matrices, getX(), getY(), 174, 70, 8, 7);
+				guiGraphics.drawTexture(AttributesScreen.TEXTURES, getX(), getY(), 174, 70, 8, 7);
 				RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 			}
 		}

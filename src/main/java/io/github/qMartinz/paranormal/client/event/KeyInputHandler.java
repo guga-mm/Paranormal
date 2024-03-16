@@ -22,7 +22,7 @@ public class KeyInputHandler {
 	public static KeyBind previousRitualKey;
 	public static KeyBind nextRitualKey;
 
-	private static int castCooldownTicks = 0;
+    private static int castCooldownTicks = 0;
 
 	public static void registerKeyInputs() {
 		ClientTickEvents.END.register(client -> {
@@ -44,7 +44,7 @@ public class KeyInputHandler {
 				ParanormalClient.ritualHud.setRitualIndex(ritualIndex);
 			}
 
-			if (client.mouse.hasRightClicked() && castCooldownTicks <= 0) {
+			if (client.options.useKey.isPressed() && castCooldownTicks <= 0) {
 				if (ParanormalClient.ritualHud.isVisible()){
 					PacketByteBuf data = PacketByteBufs.create();
 					data.writeInt(ParanormalClient.ritualHud.getRitualIndex());

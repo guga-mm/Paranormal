@@ -8,6 +8,7 @@ import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
 import io.github.qMartinz.paranormal.client.screen.elements.SelectedRitual;
 import io.github.qMartinz.paranormal.client.screen.elements.button.AttributeButton;
 import io.github.qMartinz.paranormal.client.screen.elements.button.SelectRitualButtons;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.StringVisitable;
@@ -42,10 +43,10 @@ public class AttributesScreen extends Screen {
 		//addDrawableChild(new PowerScreenButton(screenX + 39, screenY + 195, 20, 20));
 	}
 	@Override
-	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		PlayerData playerData = ParanormalClient.playerData;
 
-		renderBackground(stack);
+		renderBackground(guiGraphics);
 
 		int screenX = (this.width/2) - 266/2;
 		int screenY = (this.height/2) - (this.screenHeight/2);
@@ -54,34 +55,32 @@ public class AttributesScreen extends Screen {
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.depthMask(false);
 		RenderSystem.disableDepthTest();
-		RenderSystem.setShaderTexture(0, TEXTURES);
 
-		drawTexture(stack, screenX + 98/2 - 27, screenY + 174, 174, 0, 54, 63);
+		guiGraphics.drawTexture(TEXTURES, screenX + 98/2 - 27, screenY + 174, 174, 0, 54, 63);
 
-		drawTexture(stack, screenX, screenY, 0, 0, 98, this.screenHeight);
+		guiGraphics.drawTexture(TEXTURES, screenX, screenY, 0, 0, 98, this.screenHeight);
 
 		String label = Text.translatable("paranormal.screen.attributes_screen.attPoints").getString();
 		String value = String.valueOf(playerData.getAttPoints());
-		textRenderer.draw(stack, label, screenX + 98/2f - textRenderer.getWidth(label)/2f, screenY - 2 - textRenderer.fontHeight*2, 0xFFFFFF);
-		textRenderer.draw(stack, value, screenX + 98/2f - textRenderer.getWidth(value)/2f, screenY - 1 - textRenderer.fontHeight, 0xFFFFFF);
+		guiGraphics.drawText(client.textRenderer, label, (int) (screenX + 98/2f - textRenderer.getWidth(label)/2f), screenY - 2 - textRenderer.fontHeight*2, 0xFFFFFF, false);
+		guiGraphics.drawText(client.textRenderer, value, (int) (screenX + 98/2f - textRenderer.getWidth(value)/2f), screenY - 1 - textRenderer.fontHeight, 0xFFFFFF, false);
 
-		this.renderRitualTab(stack);
+		this.renderRitualTab(guiGraphics);
 
 		RenderSystem.enableDepthTest();
 		RenderSystem.depthMask(true);
 		RenderSystem.disableBlend();
 
-		super.render(stack, mouseX, mouseY, partialTicks);
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
-	public void renderRitualTab(MatrixStack stack){
+	public void renderRitualTab(GuiGraphics guiGraphics){
 		PlayerData playerData = ParanormalClient.playerData;
 
 		int tabX = (this.width/2) - 266/2 + 110;
 		int tabY = (this.height/2) - (this.screenHeight/2);
 
-		RenderSystem.setShaderTexture(0, RITUAL_TAB_BG);
-		drawTexture(stack, tabX + 156/2 - 80, tabY + screenHeight/2 - 90, 0, 0, 160, 160, 160, 160);
+		guiGraphics.drawTexture(RITUAL_TAB_BG, tabX + 156/2 - 80, tabY + screenHeight/2 - 90, 0, 0, 160, 160, 160, 160);
 
 		children().stream().filter(w -> w instanceof SelectedRitual).findFirst().ifPresent(widget -> {
 			if (widget instanceof SelectedRitual ritualWidget && playerData.rituals.size() > 0) {
@@ -94,31 +93,31 @@ public class AttributesScreen extends Screen {
 						148, Style.EMPTY.withFormatting(Formatting.WHITE));
 				tabHeight += 2 + client.textRenderer.fontHeight * splitLines.size();
 
-				fill(stack, tabX, tabY, tabX + 156, tabY + tabHeight, 0xFF602c2c);
-				fill(stack, tabX - 1, tabY - 3, tabX, tabY + tabHeight + 3, 0xFFde9e41);
-				fill(stack, tabX + 157, tabY - 3, tabX + 156, tabY + tabHeight + 3, 0xFFde9e41);
-				fill(stack, tabX - 3, tabY - 1, tabX + 159, tabY, 0xFFde9e41);
-				fill(stack, tabX - 3, tabY + tabHeight + 1, tabX + 159, tabY + tabHeight, 0xFFde9e41);
+				guiGraphics.fill(tabX, tabY, tabX + 156, tabY + tabHeight, 0xFF602c2c);
+				guiGraphics.fill(tabX - 1, tabY - 3, tabX, tabY + tabHeight + 3, 0xFFde9e41);
+				guiGraphics.fill(tabX + 157, tabY - 3, tabX + 156, tabY + tabHeight + 3, 0xFFde9e41);
+				guiGraphics.fill(tabX - 3, tabY - 1, tabX + 159, tabY, 0xFFde9e41);
+				guiGraphics.fill(tabX - 3, tabY + tabHeight + 1, tabX + 159, tabY + tabHeight, 0xFFde9e41);
 
-				fill(stack, tabX + 1, tabY + 98, tabX + 155, tabY + 100 + client.textRenderer.fontHeight * splitLines.size(), 0xFFde9e41);
-				fill(stack, tabX + 2, tabY + 99, tabX + 154, tabY + 99 + client.textRenderer.fontHeight * splitLines.size(), 0xFF341c27);
+				guiGraphics.fill(tabX + 1, tabY + 98, tabX + 155, tabY + 100 + client.textRenderer.fontHeight * splitLines.size(), 0xFFde9e41);
+				guiGraphics.fill(tabX + 2, tabY + 99, tabX + 154, tabY + 99 + client.textRenderer.fontHeight * splitLines.size(), 0xFF341c27);
 
 				RenderSystem.setShaderTexture(0, TEXTURES);
-				drawTexture(stack, tabX + 40, tabY + 1, 98, 0, 76, 86);
-				drawTexture(stack, tabX + 1, tabY + tabHeight - 11, 98, 86, 9, 9);
+				guiGraphics.fill(tabX + 40, tabY + 1, 98, 0, 76, 86);
+				guiGraphics.fill(tabX + 1, tabY + tabHeight - 11, 98, 86, 9, 9);
 
 				String text = playerData.rituals.size() + "/" + playerData.getRitualSlots();
-				client.textRenderer.draw(stack, text, tabX + 79 - client.textRenderer.getWidth(text)/2f, tabY + 76, 0xFFFFFF);
+				guiGraphics.drawText(client.textRenderer, text, (int) (tabX + 79 - client.textRenderer.getWidth(text)/2f), tabY + 76, 0xFFFFFF, false);
 
-				client.textRenderer.draw(stack, ritual.getDisplayName(), tabX + 79 - client.textRenderer.getWidth(ritual.getDisplayName())/2f, tabY + 88, 0xFFFFFF);
+				guiGraphics.drawText(client.textRenderer, ritual.getDisplayName().asOrderedText(), (int) (tabX + 79 - client.textRenderer.getWidth(ritual.getDisplayName())/2f), tabY + 88, 0xFFFFFF, false);
 
 				text = String.valueOf(ritual.getOccultPointsCost());
-				client.textRenderer.draw(stack, text, tabX + 11, tabY + tabHeight - 10, 0xFFFFFF);
+				guiGraphics.drawText(client.textRenderer, text, tabX + 11, tabY + tabHeight - 10, 0xFFFFFF, false);
 
-				client.textRenderer.draw(stack, ritual.getElement().getDisplayName(), tabX + 156 - client.textRenderer.getWidth(ritual.getElement().getDisplayName()) - 2, tabY + tabHeight - 10, 0xFFFFFF);
+				guiGraphics.drawText(client.textRenderer, ritual.getElement().getDisplayName(), tabX + 156 - client.textRenderer.getWidth(ritual.getElement().getDisplayName()) - 2, tabY + tabHeight - 10, 0xFFFFFF, false);
 
 				for (int i = 0; i < splitLines.size(); i++) {
-					client.textRenderer.draw(stack, splitLines.get(i).getString(), tabX + 4, tabY + 100 + client.textRenderer.fontHeight * i, 0xFFFFFF);
+					guiGraphics.drawText(client.textRenderer, splitLines.get(i).getString(), tabX + 4, tabY + 100 + client.textRenderer.fontHeight * i, 0xFFFFFF, false);
 				}
 			}
 		});

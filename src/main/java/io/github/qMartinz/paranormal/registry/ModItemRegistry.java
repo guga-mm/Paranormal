@@ -35,7 +35,7 @@ public class ModItemRegistry {
 			new BlockItem(ModBlockRegistry.TRANSCENDANCE_ALTAR, new QuiltItemSettings().rarity(Rarity.UNCOMMON)));
 
 	public static void addToItemGroup(ItemGroup group, Item item) {
-		ItemGroupEvents.modifyEntriesEvent(group).register(entries -> entries.addItem(item));
+		ItemGroupEvents.modifyEntriesEvent(Registries.ITEM_GROUP.getKey(group).orElse(null)).register(entries -> entries.addItem(item));
 	}
 
 	public static void addItemsToItemGroup(){

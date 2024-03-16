@@ -11,7 +11,7 @@ public class ModItemGroupRegistry {
 	public static ItemGroup PARANORMAL;
 
 	public static void registerItemGroup() {
-		PARANORMAL = FabricItemGroup.builder(new Identifier(Paranormal.MODID, "paranormal"))
+		PARANORMAL = FabricItemGroup.builder()
 				.name(Text.translatable("itemgroup.paranormal.items"))
 				.icon(() -> new ItemStack(ModItemRegistry.ORGAN)).build();
 	}

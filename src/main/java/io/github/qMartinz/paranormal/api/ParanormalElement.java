@@ -2,6 +2,8 @@ package io.github.qMartinz.paranormal.api;
 
 import net.minecraft.text.Text;
 
+import java.awt.*;
+
 public enum ParanormalElement {
 	FEAR("fear", 0),
 	BLOOD("blood", 1),
@@ -26,7 +28,27 @@ public enum ParanormalElement {
 			case BLOOD -> 0xFFFF1100;
 			case WISDOM -> 0xFFFFCC00;
 			case DEATH -> 0xFF0C0C0D;
-			case ENERGY -> 0xFF8000FF;
+			case ENERGY -> 0xFF6C25FF;
+		};
+	}
+
+	public Color particleColorS() {
+		return switch (this){
+			case FEAR -> new Color(0xFFFFFFFF);
+			case BLOOD -> new Color(0xFF0000);
+			case WISDOM -> new Color(0xFFFFCC00);
+			case DEATH -> new Color(0xFF0C0C0D);
+			case ENERGY -> new Color(0xFF00B3FF);
+		};
+	}
+
+	public Color particleColorE() {
+		return switch (this){
+			case FEAR -> new Color(0xFFFFFFFF);
+			case BLOOD -> new Color(0xFFFF1100);
+			case WISDOM -> new Color(0xFFFFCC00);
+			case DEATH -> new Color(0xFF0C0C0D);
+			case ENERGY -> new Color(0xFFFF00E6);
 		};
 	}
 }

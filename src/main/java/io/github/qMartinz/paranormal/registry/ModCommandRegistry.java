@@ -1,5 +1,7 @@
 package io.github.qMartinz.paranormal.registry;
 
+import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.api.powers.PowerRegistry;
@@ -42,8 +44,8 @@ public class ModCommandRegistry {
 								playerData.setAttPoints(0);
 								playerData.setPowerPoints(0);
 								playerData.setRitualSlots(0);
-								playerData.setMaxOccultPoints(4);
-								playerData.setOccultPoints(4);
+								playerData.setMaxOccultPoints(4d);
+								playerData.setOccultPoints(4d);
 								playerData.setAttribute(0, 0);
 								playerData.setAttribute(1, 0);
 								playerData.setAttribute(2, 0);
@@ -65,12 +67,12 @@ public class ModCommandRegistry {
 										return 1;
 									}))))
 					.then(literal("occultPoints")
-							// Add xp
-							.then(literal("set").then(argument("amount", IntegerArgumentType.integer(1, 14))
+							// Add occult points
+							.then(literal("set").then(argument("amount", DoubleArgumentType.doubleArg(1, 14))
 									.executes(context -> {
 										ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
 										PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-										final int amount = IntegerArgumentType.getInteger(context, "amount");
+										final double amount = DoubleArgumentType.getDouble(context, "amount");
 
 										playerData.setMaxOccultPoints(amount);
 										playerData.setOccultPoints(playerData.getOccultPoints() + amount - playerData.getMaxOccultPoints());

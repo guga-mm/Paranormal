@@ -2,6 +2,7 @@ package io.github.qMartinz.paranormal.registry;
 
 import io.github.qMartinz.paranormal.Paranormal;
 import io.github.qMartinz.paranormal.particle.FogParticle;
+import io.github.qMartinz.paranormal.particle.types.GlowingParticleType;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.particle.DefaultParticleType;
@@ -14,6 +15,7 @@ import static io.github.qMartinz.paranormal.Paranormal.MODID;
 public class ModParticleRegistry {
 	public static final DefaultParticleType FOG_1 = register("fog_particle_1", FabricParticleTypes.simple());
 	public static final DefaultParticleType FOG_2 = register("fog_particle_2", FabricParticleTypes.simple());
+	public static GlowingParticleType GLOWING_PARTICLE = new GlowingParticleType();
 
 	static DefaultParticleType register(String id, DefaultParticleType type) {
 		return Registry.register(Registries.PARTICLE_TYPE, new Identifier(MODID, id), type);
@@ -22,6 +24,9 @@ public class ModParticleRegistry {
 	public static void registerFactories(){
 		ParticleFactoryRegistry.getInstance().register(FOG_1, FogParticle.DefaultFactory::new);
 		ParticleFactoryRegistry.getInstance().register(FOG_2, FogParticle.DefaultFactory::new);
+		ParticleFactoryRegistry.getInstance().register(GLOWING_PARTICLE, GlowingParticleType.Factory::new);
+
+		GLOWING_PARTICLE = Registry.register(Registries.PARTICLE_TYPE, new Identifier(MODID, "glowing"), GLOWING_PARTICLE);
 	}
 
 	public static void init() {
