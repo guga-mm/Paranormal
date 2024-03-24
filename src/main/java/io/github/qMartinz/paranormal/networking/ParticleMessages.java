@@ -24,9 +24,6 @@ public class ParticleMessages {
 	public static final Identifier SPAWN_ADDITIVE_PARTICLE_ID = new Identifier(Paranormal.MODID, "spawn_additive_particle");
 	public static final Identifier SPAWN_LUMITRANSPARENT_PARTICLE_ID = new Identifier(Paranormal.MODID, "spawn_lumitransparent_particle");
 	public static final Identifier SPAWN_TRANSPARENT_PARTICLE_ID = new Identifier(Paranormal.MODID, "spawn_transparent_particle");
-	public static final Identifier SPAWN_ADDITIVE_LINE_ID = new Identifier(Paranormal.MODID, "spawn_additive_line");
-	public static final Identifier SPAWN_LUMITRANSPARENT_LINE_ID = new Identifier(Paranormal.MODID, "spawn_lumitransparent_line");
-	public static final Identifier SPAWN_TRANSPARENT_LINE_ID = new Identifier(Paranormal.MODID, "spawn_transparent_line");
 	public static final Identifier SPAWN_ADDITIVE_CIRCLE_ID = new Identifier(Paranormal.MODID, "spawn_additive_circle");
 	public static final Identifier SPAWN_LUMITRANSPARENT_CIRCLE_ID = new Identifier(Paranormal.MODID, "spawn_lumitransparent_circle");
 	public static final Identifier SPAWN_TRANSPARENT_CIRCLE_ID = new Identifier(Paranormal.MODID, "spawn_transparent_circle");

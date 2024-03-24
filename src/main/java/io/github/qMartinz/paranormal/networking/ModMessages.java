@@ -14,7 +14,6 @@ import org.quiltmc.qsl.networking.api.PacketByteBufs;
 import org.quiltmc.qsl.networking.api.ServerPlayNetworking;
 import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 
-import java.awt.*;
 import java.util.Collection;
 
 public class ModMessages {

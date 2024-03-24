@@ -31,7 +31,7 @@ public class StateSaverAndLoader extends PersistentState {
 			playerNbt.putInt("ritualSlots", playerData.ritualSlots);
 			playerNbt.putInt("powerPoints", playerData.powerPoints);
 			playerNbt.putDouble("maxOccultPoints", playerData.maxOccultPoints);
-			playerNbt.putDouble("maxOccultPoints", playerData.occultPoints);
+			playerNbt.putDouble("occultPoints", playerData.occultPoints);
 
 			NbtCompound rituals = new NbtCompound();
 			for (int i = 0; i < playerData.rituals.size(); i++) {

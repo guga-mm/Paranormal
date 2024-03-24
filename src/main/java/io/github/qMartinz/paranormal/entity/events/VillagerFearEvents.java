@@ -60,7 +60,7 @@ public class VillagerFearEvents {
 					FearData.setCalmTimer((IEntityDataSaver) villager, FearData.getCalmTimer((IEntityDataSaver) villager) - 1);
 
 				int calmTimer = FearData.getCalmTimer((IEntityDataSaver) villager);
-				if (calmTimer <= 0) calm(villager, 2);
+				if (calmTimer <= 0 && fear > 24) calm(villager, 2);
 			}
 		}
 	}

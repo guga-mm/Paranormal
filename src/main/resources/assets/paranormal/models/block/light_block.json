@@ -1,0 +1,7 @@
+{
+	"textures": {
+		"0": "ordemparanormal:block/luz_block",
+		"particle": "ordemparanormal:block/luz_block"
+	},
+	"elements": []
+}

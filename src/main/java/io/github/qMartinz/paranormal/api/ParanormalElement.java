@@ -38,7 +38,7 @@ public enum ParanormalElement {
 			case BLOOD -> new Color(0xFF0000);
 			case WISDOM -> new Color(0xFFFFCC00);
 			case DEATH -> new Color(0xFF0C0C0D);
-			case ENERGY -> new Color(0xFF00B3FF);
+			case ENERGY -> new Color(0xFFFF00E6);
 		};
 	}
 
@@ -48,7 +48,27 @@ public enum ParanormalElement {
 			case BLOOD -> new Color(0xFFFF1100);
 			case WISDOM -> new Color(0xFFFFCC00);
 			case DEATH -> new Color(0xFF0C0C0D);
-			case ENERGY -> new Color(0xFFFF00E6);
+			case ENERGY -> new Color(0xFF00B3FF);
+		};
+	}
+
+	public Color complementColorS() {
+		return switch (this){
+			case FEAR -> new Color(0xD6E2FF);
+			case BLOOD -> new Color(0xFF513B);
+			case WISDOM -> new Color(0xFFDC4B);
+			case DEATH -> new Color(0x2D2D3F);
+			case ENERGY -> new Color(0xC163FF);
+		};
+	}
+
+	public Color complementColorE() {
+		return switch (this){
+			case FEAR -> new Color(0xD6E2FF);
+			case BLOOD -> new Color(0xFF513B);
+			case WISDOM -> new Color(0xFFDC4B);
+			case DEATH -> new Color(0x2D2D3F);
+			case ENERGY -> new Color(0x8BFFA6);
 		};
 	}
 }

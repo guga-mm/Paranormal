@@ -32,11 +32,9 @@ public interface RayTracingRitual {
 				RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, caster));
 
 		if (entityHitResult != null){
-			rayCastEffects(element, caster, entityHitResult.getPos());
 			return onEntityHit(caster, entityHitResult.getEntity());
 		}
 		if (blockHitResult != null){
-			rayCastEffects(element, caster, blockHitResult.getPos());
 			return onBlockHit(caster, caster.getWorld().getBlockState(blockHitResult.getBlockPos()), blockHitResult.getBlockPos());
 		}
 
@@ -44,7 +42,6 @@ public interface RayTracingRitual {
 	}
 
 	default boolean onCastByMob(ParanormalElement element, MobEntity caster, LivingEntity target){
-		rayCastEffects(element, caster, target.getEyePos());
 		return onEntityHit(caster, target);
 	}
 
@@ -53,10 +50,10 @@ public interface RayTracingRitual {
 
 	default void rayCastEffects(ParanormalElement element, LivingEntity caster, Vec3d hitPos){
 		if (caster.getWorld() instanceof ServerWorld world){
-			int amount = 24;
 			Vec3d start = new Vec3d(caster.getEyePos().x, caster.getEyePos().y, caster.getEyePos().z);
 			Vec3d end = new Vec3d(hitPos.x, hitPos.y, hitPos.z);
 			Vec3d diff = start.subtract(end);
+			int amount = (int) (start.distanceTo(end) * 12);
 
 			for (int i = 0; i < amount; i++){
 				double x = start.x - ((diff.x / amount) * i);
@@ -66,13 +63,13 @@ public interface RayTracingRitual {
 				if (element == ParanormalElement.DEATH){
 					ParticleMessages.spawnLumitransparentParticle(world, ModParticleRegistry.GLOWING_PARTICLE, x, y, z,
 							0f, 0f, 0f, element.particleColorS(), element.particleColorE(), 1f,
-							0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR, 0.2f,
-							0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR, 36, 0f);
+							0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR, 0.1f,
+							0.1f, 0.1f, 1f, Easing.LINEAR, Easing.LINEAR, 46, 0f);
 				} else {
 					ParticleMessages.spawnAdditiveParticle(world, ModParticleRegistry.GLOWING_PARTICLE, x, y, z,
 							0f, 0f, 0f, element.particleColorS(), element.particleColorE(), 1f,
-							0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR, 0.2f,
-							0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR, 36, 0f);
+							0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR, 0.1f,
+							0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR, 46, 0f);
 				}
 			}
 		}

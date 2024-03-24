@@ -25,27 +25,27 @@ public class KeyInputHandler {
     private static int castCooldownTicks = 0;
 
 	public static void registerKeyInputs() {
+		PlayerData playerData = ParanormalClient.playerData;
+
 		ClientTickEvents.END.register(client -> {
-			if (ritualHudKey.wasPressed() && !ParanormalClient.playerData.rituals.isEmpty()) {
+			if (ritualHudKey.wasPressed() && !playerData.rituals.isEmpty()) {
 				ParanormalClient.ritualHud.setVisible(!ParanormalClient.ritualHud.isVisible());
 			}
 
 			if (nextRitualKey.wasPressed()) {
-				PlayerData playerData = ParanormalClient.playerData;
 				int ritualIndex = ParanormalClient.ritualHud.getRitualIndex() + 1;
 				if (ritualIndex > playerData.rituals.size() - 1) ritualIndex = 0;
 				ParanormalClient.ritualHud.setRitualIndex(ritualIndex);
 			}
 
 			if (previousRitualKey.wasPressed()) {
-				PlayerData playerData = ParanormalClient.playerData;
 				int ritualIndex = ParanormalClient.ritualHud.getRitualIndex() - 1;
 				if (ritualIndex < 0) ritualIndex = playerData.rituals.size() - 1;
 				ParanormalClient.ritualHud.setRitualIndex(ritualIndex);
 			}
 
 			if (client.options.useKey.isPressed() && castCooldownTicks <= 0) {
-				if (ParanormalClient.ritualHud.isVisible()){
+				if (ParanormalClient.ritualHud.isVisible() && !playerData.rituals.isEmpty()){
 					PacketByteBuf data = PacketByteBufs.create();
 					data.writeInt(ParanormalClient.ritualHud.getRitualIndex());
 					ClientPlayNetworking.send(ModMessages.CAST_RITUAL_ID, data);

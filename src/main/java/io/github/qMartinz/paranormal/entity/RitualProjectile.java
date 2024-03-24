@@ -5,9 +5,7 @@ import io.github.qMartinz.paranormal.api.ParanormalElement;
 import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
 import io.github.qMartinz.paranormal.api.rituals.types.ProjectileRitual;
-import io.github.qMartinz.paranormal.networking.ModMessages;
 import io.github.qMartinz.paranormal.networking.ParticleMessages;
-import io.github.qMartinz.paranormal.particle.GlowingParticle;
 import io.github.qMartinz.paranormal.registry.ModParticleRegistry;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
 import net.minecraft.entity.EntityType;
@@ -21,7 +19,6 @@ import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -29,11 +26,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
-import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 import team.lodestar.lodestone.systems.rendering.particle.Easing;
-import team.lodestar.lodestone.systems.rendering.particle.LodestoneWorldParticleTextureSheet;
-import team.lodestar.lodestone.systems.rendering.particle.WorldParticleBuilder;
-import team.lodestar.lodestone.systems.rendering.particle.data.ColorParticleData;
+
+import java.awt.*;
 
 public class RitualProjectile extends PersistentProjectileEntity {
     private static final TrackedData<Integer> DATA_ELEMENT;
@@ -45,6 +40,8 @@ public class RitualProjectile extends PersistentProjectileEntity {
     private final double iX;
     private final double iY;
     private final double iZ;
+
+	private int particleIncrement;
 
 	public RitualProjectile(EntityType<? extends PersistentProjectileEntity> type, World world) {
 		super(type, world);
@@ -59,6 +56,8 @@ public class RitualProjectile extends PersistentProjectileEntity {
 		this.iX = this.getX();
 		this.iY = this.getY();
 		this.iZ = this.getZ();
+		this.setRotation(owner.getYaw(), owner.getPitch());
+		Paranormal.LOGGER.info("pitch: " + getPitch());
 		this.ritual = ritual;
 		this.setElement(ritual.getElement().index);
 	}
@@ -116,14 +115,60 @@ public class RitualProjectile extends PersistentProjectileEntity {
 						ritual.getElement().particleColorE(), 1f, 0f, -1f,
 						1f, Easing.LINEAR, Easing.LINEAR, 0.3f, 0f, -1f, 1f,
 						Easing.LINEAR, Easing.LINEAR, 36, 0f);
+
+				if (getPitch() < 45 && getPitch() > -45) {
+					if (getHorizontalFacing().getAxis() == Direction.Axis.Z) {
+						ParticleMessages.spawnLumitransparentParticle(world, ModParticleRegistry.GLOWING_PARTICLE,
+								this.getX() + Math.sin(particleIncrement / 3f) * 0.25d, this.getY() + Math.cos(particleIncrement / 3f) * 0.25d, this.getZ(),
+								0d, 0d, 0d, ritual.getComplement().complementColorS(), ritual.getComplement().complementColorE(),
+								1f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR,
+								0.15f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR, 36, 0f);
+					} else {
+						ParticleMessages.spawnLumitransparentParticle(world, ModParticleRegistry.GLOWING_PARTICLE,
+								this.getX(), this.getY() + Math.cos(particleIncrement / 3f) * 0.25d, this.getZ() + Math.sin(particleIncrement / 3f) * 0.25d,
+								0d, 0d, 0d, ritual.getComplement().complementColorS(), ritual.getComplement().complementColorE(),
+								1f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR,
+								0.15f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR, 36, 0f);
+					}
+				} else {
+					ParticleMessages.spawnLumitransparentParticle(world, ModParticleRegistry.GLOWING_PARTICLE,
+							this.getX() + Math.sin(particleIncrement / 3f) * 0.25d, this.getY(), this.getZ() + Math.cos(particleIncrement / 3f) * 0.25d,
+							0d, 0d, 0d, ritual.getComplement().complementColorS(), ritual.getComplement().complementColorE(),
+							1f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR,
+							0.15f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR, 36, 0f);
+				}
 			} else {
 				ParticleMessages.spawnAdditiveParticle(world, ModParticleRegistry.GLOWING_PARTICLE, this.getX(),
 						this.getY(), this.getZ(), 0d, 0d, 0d, ritual.getElement().particleColorS(),
 						ritual.getElement().particleColorE(), 1f, 0f, -1f,
 						1f, Easing.LINEAR, Easing.LINEAR, 0.3f, 0f, -1f, 1f,
 						Easing.LINEAR, Easing.LINEAR, 36, 0f);
+
+				if (getPitch() < 45 && getPitch() > -45) {
+					if (getHorizontalFacing().getAxis() == Direction.Axis.Z) {
+						ParticleMessages.spawnAdditiveParticle(world, ModParticleRegistry.GLOWING_PARTICLE,
+								this.getX() + Math.sin(particleIncrement / 3f) * 0.25d, this.getY() + Math.cos(particleIncrement / 3f) * 0.25d, this.getZ(),
+								0d, 0d, 0d, ritual.getComplement().complementColorS(), ritual.getComplement().complementColorE(),
+								1f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR,
+								0.15f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR, 36, 0f);
+					} else {
+						ParticleMessages.spawnAdditiveParticle(world, ModParticleRegistry.GLOWING_PARTICLE,
+								this.getX(), this.getY() + Math.cos(particleIncrement / 3f) * 0.25d, this.getZ() + Math.sin(particleIncrement / 3f) * 0.25d,
+								0d, 0d, 0d, ritual.getComplement().complementColorS(), ritual.getComplement().complementColorE(),
+								1f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR,
+								0.15f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR, 36, 0f);
+					}
+				} else {
+					ParticleMessages.spawnAdditiveParticle(world, ModParticleRegistry.GLOWING_PARTICLE,
+							this.getX() + Math.sin(particleIncrement / 3f) * 0.25d, this.getY(), this.getZ() + Math.cos(particleIncrement / 3f) * 0.25d,
+							0d, 0d, 0d, ritual.getComplement().complementColorS(), ritual.getComplement().complementColorE(),
+							1f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR,
+							0.15f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR, 36, 0f);
+				}
 			}
 		}
+
+		particleIncrement++;
 	}
 
 	@Override

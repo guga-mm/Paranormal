@@ -6,7 +6,6 @@ import io.github.qMartinz.paranormal.api.rituals.types.ProjectileRitual;
 import io.github.qMartinz.paranormal.api.rituals.types.RayTracingRitual;
 import io.github.qMartinz.paranormal.api.rituals.types.SelfRitual;
 import io.github.qMartinz.paranormal.networking.ParticleMessages;
-import io.github.qMartinz.paranormal.particle.GlowingParticle;
 import io.github.qMartinz.paranormal.registry.ModParticleRegistry;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
 import net.minecraft.entity.LivingEntity;
@@ -18,12 +17,10 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import team.lodestar.lodestone.systems.rendering.particle.Easing;
-import team.lodestar.lodestone.systems.rendering.particle.LodestoneWorldParticleTextureSheet;
-import team.lodestar.lodestone.systems.rendering.particle.WorldParticleBuilder;
-import team.lodestar.lodestone.systems.rendering.particle.data.ColorParticleData;
 
 public abstract class AbstractRitual {
 	private final ParanormalElement element;
+	private final ParanormalElement complement;
 	private final int tier;
 	private final float occultPointsCost;
 	private final double range;
@@ -31,6 +28,16 @@ public abstract class AbstractRitual {
 
 	protected AbstractRitual(ParanormalElement element, int tier, float occultPointsCost, double range, boolean mustHoldIngredient) {
 		this.element = element;
+		this.complement = element;
+		this.tier = Math.max(1, Math.min(tier, 4));
+		this.occultPointsCost = occultPointsCost;
+		this.range = range;
+		this.mustHoldIngredient = mustHoldIngredient;
+	}
+
+	protected AbstractRitual(ParanormalElement element, ParanormalElement complement, int tier, float occultPointsCost, double range, boolean mustHoldIngredient) {
+		this.element = element;
+		this.complement = complement;
 		this.tier = Math.max(1, Math.min(tier, 4));
 		this.occultPointsCost = occultPointsCost;
 		this.range = range;
@@ -59,6 +66,10 @@ public abstract class AbstractRitual {
 
 	public ParanormalElement getElement() {
 		return element;
+	}
+
+	public ParanormalElement getComplement() {
+		return complement;
 	}
 
 	public double getRange() {
@@ -107,16 +118,16 @@ public abstract class AbstractRitual {
 		if (caster.getWorld() instanceof ServerWorld world){
 			if (getElement() == ParanormalElement.DEATH){
 				ParticleMessages.spawnLumitransparentCircle(world, ModParticleRegistry.GLOWING_PARTICLE, caster.getX(),
-						caster.getY(), caster.getZ(), 0.5d, 12, 0d, 0.5d, 0d,
+						caster.getEyeY(), caster.getZ(), 0.5d, 12, 0d, 0.5d, 0d,
 						getElement().particleColorS(), getElement().particleColorE(), 1f, 0f, -1f,
 						1f, Easing.LINEAR, Easing.LINEAR, 0.3f, 0f, -1f, 1f,
-						Easing.LINEAR, Easing.LINEAR, 36, 0f);
+						Easing.LINEAR, Easing.LINEAR, 36, 1f);
 			} else {
 				ParticleMessages.spawnAdditiveCircle(world, ModParticleRegistry.GLOWING_PARTICLE, caster.getX(),
-						caster.getY(), caster.getZ(), 0.5d, 12, 0d, 0.5d, 0d,
+						caster.getEyeY(), caster.getZ(), 0.5d, 12, 0d, 0.5d, 0d,
 						getElement().particleColorS(), getElement().particleColorE(), 1f, 0f, -1f,
 						1f, Easing.LINEAR, Easing.LINEAR, 0.3f, 0f, -1f, 1f,
-						Easing.LINEAR, Easing.LINEAR, 36, 0f);
+						Easing.LINEAR, Easing.LINEAR, 36, 1f);
 			}
 		}
 	}
