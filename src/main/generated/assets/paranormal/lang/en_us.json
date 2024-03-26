@@ -2,7 +2,7 @@
   "block.paranormal.transcendance_altar": "Transcendance Altar",
   "item.paranormal.ashes": "Ashes",
   "item.paranormal.organ": "Organ",
-  "itemgroup.paranormal.items": "Paranormal",
+  "net.minecraft.item.ItemGroup@1f8ea182": "Paranormal",
   "paranormal.ritual.healing": "Healing",
   "paranormal.ritual.light": "Light",
   "paranormal.ritual.skinning": "Skinning",

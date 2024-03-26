@@ -24,7 +24,7 @@ public class ModBlockRegistry {
 
 	public static final Block LIGHT_BLOCK = Registry.register(Registries.BLOCK,
 			new Identifier(MODID, "light_block"),
-			new LightBlock(QuiltBlockSettings.copyOf(Blocks.GLOWSTONE).mapColor(MapColor.PURPLE)));
+			new LightBlock(QuiltBlockSettings.copyOf(Blocks.GLOWSTONE).mapColor(MapColor.PURPLE).breakInstantly()));
 
 	public static final BlockEntityType<LightBlockEntity> LIGHT_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
 			new Identifier(MODID, "light_block_entity"),

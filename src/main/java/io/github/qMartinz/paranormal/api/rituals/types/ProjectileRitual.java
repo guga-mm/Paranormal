@@ -13,7 +13,6 @@ public interface ProjectileRitual {
 	default boolean onShoot(LivingEntity caster, AbstractRitual ritual){
 		RitualProjectile projectile = new RitualProjectile(ModEntityRegistry.RITUAL_PROJECTILE, caster.getWorld(), caster, ritual);
 		projectile.setProperties(caster, caster.getPitch(), caster.getYaw(), 0, 0.3f, 1.0f);
-		Paranormal.LOGGER.info("Spawning Projectile!");
 		caster.getWorld().spawnEntity(projectile);
 		return true;
 	}

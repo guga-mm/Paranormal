@@ -40,7 +40,6 @@ public class ModMessages {
 		ServerPlayNetworking.registerGlobalReceiver(CAST_RITUAL_ID, (server, player, handler, buf, responseSender) -> {
 			PlayerData playerData = StateSaverAndLoader.getPlayerState(handler.player);
 			playerData.getRitual(buf.readInt()).onCast(player);
-			Paranormal.LOGGER.info("Cast ritual within message!");
 		});
 	}
 

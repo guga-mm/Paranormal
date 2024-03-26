@@ -1,7 +1,8 @@
 {
+    "texture_size": [16, 16],
 	"textures": {
-		"0": "ordemparanormal:block/luz_block",
-		"particle": "ordemparanormal:block/luz_block"
+		"0": "paranormal:block/light_block",
+		"particle": "paranormal:block/light_block"
 	},
 	"elements": []
 }

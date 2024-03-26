@@ -249,7 +249,7 @@ public class ParticleMessages {
 						.setLifetime(lifetime).setGravity(gravity)
 						.setColorData(ColorParticleData.create(new Color(colorS), new Color(colorE)).build())
 						.setRenderType(LodestoneWorldParticleTextureSheet.ADDITIVE)
-						.setMotion(xd, yd, zd)
+						.setRandomMotion(xd, yd, zd)
 						.repeatCircle(client.world, x, y, z, distance, times);
 			}
 		});
@@ -304,7 +304,7 @@ public class ParticleMessages {
 						.setLifetime(lifetime).setGravity(gravity)
 						.setColorData(ColorParticleData.create(new Color(colorS), new Color(colorE)).build())
 						.setRenderType(LodestoneWorldParticleTextureSheet.LUMITRANSPARENT)
-						.setMotion(xd, yd, zd)
+						.setRandomMotion(xd, yd, zd)
 						.repeatCircle(client.world, x, y, z, distance, times);
 			}
 		});
@@ -359,7 +359,7 @@ public class ParticleMessages {
 						.setLifetime(lifetime).setGravity(gravity)
 						.setColorData(ColorParticleData.create(new Color(colorS), new Color(colorE)).build())
 						.setRenderType(LodestoneWorldParticleTextureSheet.TRANSPARENT)
-						.setMotion(xd, yd, zd)
+						.setRandomMotion(xd, yd, zd)
 						.repeatCircle(client.world, x, y, z, distance, times);
 			}
 		});

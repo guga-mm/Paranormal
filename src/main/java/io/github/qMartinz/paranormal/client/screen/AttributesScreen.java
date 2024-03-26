@@ -111,7 +111,7 @@ public class AttributesScreen extends Screen {
 
 				guiGraphics.drawText(client.textRenderer, ritual.getDisplayName().asOrderedText(), (int) (tabX + 79 - client.textRenderer.getWidth(ritual.getDisplayName())/2f), tabY + 88, 0xFFFFFF, false);
 
-				text = String.valueOf(ritual.getOccultPointsCost());
+				text = String.valueOf((int) ritual.getOccultPointsCost());
 				guiGraphics.drawText(client.textRenderer, text, tabX + 11, tabY + tabHeight - 10, 0xFFFFFF, false);
 
 				guiGraphics.drawText(client.textRenderer, ritual.getElement().getDisplayName(), tabX + 156 - client.textRenderer.getWidth(ritual.getElement().getDisplayName()) - 2, tabY + tabHeight - 10, 0xFFFFFF, false);

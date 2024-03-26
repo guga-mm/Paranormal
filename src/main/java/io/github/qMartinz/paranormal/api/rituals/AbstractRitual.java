@@ -118,13 +118,13 @@ public abstract class AbstractRitual {
 		if (caster.getWorld() instanceof ServerWorld world){
 			if (getElement() == ParanormalElement.DEATH){
 				ParticleMessages.spawnLumitransparentCircle(world, ModParticleRegistry.GLOWING_PARTICLE, caster.getX(),
-						caster.getEyeY(), caster.getZ(), 0.5d, 12, 0d, 0.5d, 0d,
+						caster.getY() + 0.2d, caster.getZ(), 0.5d, 12, 0d, 0.25d, 0d,
 						getElement().particleColorS(), getElement().particleColorE(), 1f, 0f, -1f,
 						1f, Easing.LINEAR, Easing.LINEAR, 0.3f, 0f, -1f, 1f,
 						Easing.LINEAR, Easing.LINEAR, 36, 1f);
 			} else {
 				ParticleMessages.spawnAdditiveCircle(world, ModParticleRegistry.GLOWING_PARTICLE, caster.getX(),
-						caster.getEyeY(), caster.getZ(), 0.5d, 12, 0d, 0.5d, 0d,
+						caster.getY() + 0.2d, caster.getZ(), 0.5d, 12, 0d, 0.25d, 0d,
 						getElement().particleColorS(), getElement().particleColorE(), 1f, 0f, -1f,
 						1f, Easing.LINEAR, Easing.LINEAR, 0.3f, 0f, -1f, 1f,
 						Easing.LINEAR, Easing.LINEAR, 36, 1f);

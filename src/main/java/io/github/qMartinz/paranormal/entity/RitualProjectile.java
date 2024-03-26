@@ -57,7 +57,6 @@ public class RitualProjectile extends PersistentProjectileEntity {
 		this.iY = this.getY();
 		this.iZ = this.getZ();
 		this.setRotation(owner.getYaw(), owner.getPitch());
-		Paranormal.LOGGER.info("pitch: " + getPitch());
 		this.ritual = ritual;
 		this.setElement(ritual.getElement().index);
 	}
@@ -100,7 +99,6 @@ public class RitualProjectile extends PersistentProjectileEntity {
 					}
                 }
 				this.discard();
-				Paranormal.LOGGER.info("discarding: past ritual maximum range");
             }
         }
     }

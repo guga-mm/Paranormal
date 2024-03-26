@@ -2,7 +2,7 @@
   "block.paranormal.transcendance_altar": "Altar de Transcendência",
   "item.paranormal.ashes": "Cinzas",
   "item.paranormal.organ": "Órgao",
-  "itemgroup.paranormal.items": "Paranormal",
+  "net.minecraft.item.ItemGroup@1f8ea182": "Paranormal",
   "paranormal.ritual.healing": "Cicatrização",
   "paranormal.ritual.light": "Luz",
   "paranormal.ritual.skinning": "Descarnar",

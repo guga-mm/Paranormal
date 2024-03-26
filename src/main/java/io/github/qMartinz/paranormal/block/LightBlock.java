@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class LightBlock extends BlockWithEntity {
-	private static final VoxelShape SHAPE = VoxelShapes.cuboid(6D, 6D, 6D, 10D, 10D, 10D);
+	private static final VoxelShape SHAPE = VoxelShapes.cuboid(0.3125, 0.3125, 0.3125, 0.6875, 0.6875, 0.6875);
 
 	public LightBlock(Settings settings) {
 		super(settings);
@@ -30,10 +30,8 @@ public class LightBlock extends BlockWithEntity {
 
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return SHAPE;
+		return VoxelShapes.empty();
 	}
-
-
 
 	@Nullable
 	@Override
