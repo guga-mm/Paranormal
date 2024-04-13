@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.Optional;
 
 public class PowerRegistry {
-	public static final HashMap<Identifier, AbstractPower> powers = new HashMap<>();
+	public static final HashMap<Identifier, ParanormalPower> powers = new HashMap<>();
 
-	public static AbstractPower register(Identifier key, AbstractPower power) {
+	public static ParanormalPower register(Identifier key, ParanormalPower power) {
 		return powers.compute(key, (key2, old) -> {
 			if (old == null) {
 				return power;
@@ -18,10 +18,10 @@ public class PowerRegistry {
 		});
 	}
 
-	public static Optional<AbstractPower> getPower(Identifier key) {
+	public static Optional<ParanormalPower> getPower(Identifier key) {
 		return Optional.ofNullable(powers.get(key));
 	}
-	public static Identifier getId(AbstractPower value) {
+	public static Identifier getId(ParanormalPower value) {
 		return powers.entrySet().stream().filter(entry -> value.equals(entry.getValue()))
 				.map(Map.Entry::getKey).findFirst().orElse(null);
 	}

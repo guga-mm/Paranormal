@@ -1,6 +1,6 @@
 package io.github.qMartinz.paranormal.api;
 
-import io.github.qMartinz.paranormal.api.powers.AbstractPower;
+import io.github.qMartinz.paranormal.api.powers.ParanormalPower;
 import io.github.qMartinz.paranormal.api.powers.PowerRegistry;
 import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
 import io.github.qMartinz.paranormal.api.rituals.RitualRegistry;
@@ -15,8 +15,7 @@ import org.quiltmc.qsl.networking.api.PacketByteBufs;
 import org.quiltmc.qsl.networking.api.ServerPlayNetworking;
 import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PlayerData {
@@ -40,7 +39,8 @@ public class PlayerData {
 	// Rituals
 	public Set<AbstractRitual> rituals = new HashSet<>();
 	// Powers
-	public Set<AbstractPower> powers = new HashSet<>();
+	public Set<ParanormalPower> powers = new HashSet<>();
+	public Map<Integer, ParanormalPower> activePowers = new HashMap<>();
 
 	public void setPex(int amount){
 		pex = Math.max(0, Math.min(amount, 20));
@@ -167,20 +167,45 @@ public class PlayerData {
 		this.powers.clear();
 	}
 
-	public void addPower(AbstractPower power){
+	public Collection<ParanormalPower> getPowers() {
+		return powers;
+	}
+
+	public void addPower(ParanormalPower power){
 		this.powers.add(power);
 	}
 
-	public void removePower(AbstractPower power){
+	public void removePower(ParanormalPower power){
 		this.powers.remove(power);
 	}
 
-	public AbstractPower getPower(int index){
+	public ParanormalPower getPower(int index){
 		return powers.stream().toList().get(index);
 	}
 
-	public boolean hasPower(AbstractPower power){
+	public boolean hasPower(ParanormalPower power){
 		return this.powers.contains(power);
+	}
+
+	public void clearActivePowers(){
+		this.activePowers.clear();
+	}
+
+	public Map<Integer, ParanormalPower> getActivePowers() {
+		return activePowers;
+	}
+
+	public ParanormalPower getActivePower(int slot){
+		return activePowers.get(slot);
+	}
+
+	public void setActivePowers(Map<Integer, ParanormalPower> powers) {
+		this.activePowers = new HashMap<>(powers);
+	}
+
+	public void setActivePower(ParanormalPower power, int slot) {
+		activePowers.values().removeIf(ab -> ab.equals(power));
+		activePowers.put(slot, power);
 	}
 
 	public NbtCompound serializeRituals() {
@@ -194,7 +219,19 @@ public class PlayerData {
 	public NbtCompound serializePowers() {
 		NbtCompound nbt = new NbtCompound();
 
-		NBTUtil.writeStrings(nbt, "power", powers.stream().map(AbstractPower::getId).map(Identifier::toString).collect(Collectors.toList()));
+		NBTUtil.writeStrings(nbt, "power", powers.stream().map(ParanormalPower::getId).map(Identifier::toString).collect(Collectors.toList()));
+
+		return nbt;
+	}
+
+	public NbtCompound serializeActivePowers() {
+		NbtCompound nbt = new NbtCompound();
+
+		for (int i = 0; i < 5; i++){
+			if (activePowers.containsKey(i)) {
+				nbt.putString("active_power_" + i, getActivePower(i).getId().toString());
+			}
+		}
 
 		return nbt;
 	}
@@ -210,9 +247,20 @@ public class PlayerData {
 
 	public void deserializePowers(NbtCompound nbt) {
 		clearPowers();
+
 		for(String s : NBTUtil.readStrings(nbt, "power")){
 			if(PowerRegistry.powers.containsKey(Identifier.tryParse(s))){
 				powers.add(PowerRegistry.getPower(Identifier.tryParse(s)).get());
+			}
+		}
+	}
+
+	public void deserializeActivePowers(NbtCompound nbt) {
+		clearActivePowers();
+
+		for (int i = 0; i < 5; i++){
+			if (nbt.contains("active_power_" + i) && powers.contains(PowerRegistry.powers.get(Identifier.tryParse(nbt.getString("active_power_" + i))))){
+				this.setActivePower(PowerRegistry.powers.get(Identifier.tryParse(nbt.getString("active_power_" + i))), i);
 			}
 		}
 	}
@@ -231,6 +279,7 @@ public class PlayerData {
 
 		data.writeNbt(playerState.serializeRituals());
 		data.writeNbt(playerState.serializePowers());
+		data.writeNbt(playerState.serializeActivePowers());
 
 		ServerPlayNetworking.send(player, ModMessages.PLAYER_DATA_SYNC_ID, data);
 	}
@@ -247,6 +296,7 @@ public class PlayerData {
 
 		data.writeNbt(serializeRituals());
 		data.writeNbt(serializePowers());
+		data.writeNbt(serializeActivePowers());
 
 		ClientPlayNetworking.send(ModMessages.PLAYER_DATA_SYNC_ID, data);
 	}

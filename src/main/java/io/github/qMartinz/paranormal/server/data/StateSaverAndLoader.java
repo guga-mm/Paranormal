@@ -42,8 +42,14 @@ public class StateSaverAndLoader extends PersistentState {
 				powers.putString("power_" + i, playerData.powers.stream().toList().get(i).getId().toString());
 			}
 
+			NbtCompound activePowers = new NbtCompound();
+			for (int i = 0; i < playerData.activePowers.size(); i++) {
+				powers.putString("active_power_" + i, playerData.activePowers.values().stream().toList().get(i).getId().toString());
+			}
+
 			playerNbt.put("rituals", rituals);
 			playerNbt.put("powers", powers);
+			playerNbt.put("active_powers", activePowers);
 
 			playersNbt.put(uuid.toString(), playerNbt);
 		});
@@ -81,6 +87,12 @@ public class StateSaverAndLoader extends PersistentState {
 				playerData.powers.add(PowerRegistry.getPower(new Identifier(powers.getString("power_" + i))).orElse(null));
 			}
 
+			playerData.activePowers.clear();
+			NbtCompound activePowers = nbt.getCompound("active_powers");
+			for (int i = 0; i < activePowers.getKeys().size(); i++){
+				playerData.activePowers.put(i, PowerRegistry.getPower(new Identifier(powers.getString("active_power_" + i))).orElse(null));
+			}
+
 			UUID uuid = UUID.fromString(key);
 			state.players.put(uuid, playerData);
 		});
@@ -101,7 +113,7 @@ public class StateSaverAndLoader extends PersistentState {
 	public static PlayerData getPlayerState(LivingEntity player) {
 		StateSaverAndLoader serverState = getServerState(player.getServer());
 
-		// Either get the player by the uuid, or we don't have data for him yet, make a new player state
+		// Either get the player by the uuid, or we don't have data for them yet, make a new player state
 		PlayerData playerState = serverState.players.computeIfAbsent(player.getUuid(), uuid -> new PlayerData());
 
 		return playerState;

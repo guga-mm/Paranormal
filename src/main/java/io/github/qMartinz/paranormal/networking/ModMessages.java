@@ -35,6 +35,7 @@ public class ModMessages {
 
 			playerData.deserializeRituals(buf.readNbt());
 			playerData.deserializePowers(buf.readNbt());
+			playerData.deserializeActivePowers(buf.readNbt());
 		});
 
 		ServerPlayNetworking.registerGlobalReceiver(CAST_RITUAL_ID, (server, player, handler, buf, responseSender) -> {
@@ -56,6 +57,7 @@ public class ModMessages {
 
 			ParanormalClient.playerData.deserializeRituals(buf.readNbt());
 			ParanormalClient.playerData.deserializePowers(buf.readNbt());
+			ParanormalClient.playerData.deserializeActivePowers(buf.readNbt());
 		});
 
 		ClientPlayNetworking.registerGlobalReceiver(SPAWN_PARTICLE_ID,  (client, handler, buf, responseSender) -> {

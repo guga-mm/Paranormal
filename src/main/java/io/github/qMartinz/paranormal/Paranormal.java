@@ -25,6 +25,7 @@ public class Paranormal implements ModInitializer {
 		ModItemRegistry.init();
 		ModBlockRegistry.init();
 		ModRitualRegistry.init();
+		ModPowerRegistry.init();
 		ModCommandRegistry.registerCommands();
 
 		ModMessages.registerC2SPackets();
