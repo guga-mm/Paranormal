@@ -48,7 +48,7 @@ public class PowersScreen extends Screen {
 
 		powerIcons.forEach(button -> iconsX.put(button, button.getX()));
 		powerIcons.forEach(button -> iconsY.put(button, button.getY()));
-		powerIcons.forEach(this::addDrawableChild);
+		powerIcons.forEach(this::addSelectableChild);
 
 		this.addSelectableChild(ButtonWidget.builder(Text.empty(), button -> {
 			if (xOffset < -350) xOffset = 0;
@@ -196,10 +196,10 @@ public class PowersScreen extends Screen {
 		if (power != null) {
 			MinecraftClient minecraftClient = MinecraftClient.getInstance();
 			int tooltipHeight = 4;
-			List<OrderedText> splitLines = minecraftClient.textRenderer.wrapLines(power.getDescription(),
-					122);
+			List<OrderedText> splitLines = new ArrayList<>(minecraftClient.textRenderer.wrapLines(power.getDescription(),
+					122));
 
-			if (!power.getPowerRequirements().isEmpty() || !Arrays.equals(power.getAttributesRequired(), new int[]{0, 0, 0}) || power.getPexRequired() != 0) {
+			if (!power.getPowerRequirements().isEmpty() || Arrays.stream(power.getAttributesRequired()).anyMatch(i -> i > 0) || power.getPexRequired() != 0) {
 				List<MutableText> requisites = new ArrayList<>();
 
 				if (!power.getPowerRequirements().isEmpty()) power.getPowerRequirements().forEach(req -> requisites.add(req.getDisplayName().copyContentOnly()));
@@ -208,20 +208,20 @@ public class PowersScreen extends Screen {
 					int nex = power.getPexRequired() * 5 - (power.getPexRequired() == 20 ? 1 : 0);
 					requisites.add(CommonText.PEX_ABBREVIATION.copyContentOnly().append(" " + nex + "%"));
 				}
-				if (power.getAttributeRequired(0) != 0)
-					requisites.add(ParanormalAttribute.STRENGTH.getDisplayName().copyContentOnly().append(" " + power.getAttributeRequired(0)));
+				if (power.getAttributeRequired(ParanormalAttribute.STRENGTH) != 0)
+					requisites.add(ParanormalAttribute.STRENGTH.getDisplayName().copyContentOnly().append(" " + power.getAttributeRequired(ParanormalAttribute.STRENGTH)));
 
-				if (power.getAttributeRequired(1) != 0)
-					requisites.add(ParanormalAttribute.VIGOR.getDisplayName().copyContentOnly().append(" " + power.getAttributeRequired(1)));
+				if (power.getAttributeRequired(ParanormalAttribute.VIGOR) != 0)
+					requisites.add(ParanormalAttribute.VIGOR.getDisplayName().copyContentOnly().append(" " + power.getAttributeRequired(ParanormalAttribute.VIGOR)));
 
-				if (power.getAttributeRequired(2) != 0)
-					requisites.add(ParanormalAttribute.PRESENCE.getDisplayName().copyContentOnly().append(" " + power.getAttributeRequired(2)));
+				if (power.getAttributeRequired(ParanormalAttribute.PRESENCE) != 0)
+					requisites.add(ParanormalAttribute.PRESENCE.getDisplayName().copyContentOnly().append(" " + power.getAttributeRequired(ParanormalAttribute.PRESENCE)));
 
 				Iterator<MutableText> iterator = requisites.iterator();
 				MutableText requisitesComponent = CommonText.REQUISITES.copyContentOnly().append(": ").append(iterator.next());
 				iterator.forEachRemaining(req -> requisitesComponent.append(", " + req.getString()));
 
-				splitLines.add(Text.empty().asOrderedText());
+				splitLines.add(OrderedText.EMPTY);
 				splitLines.addAll(minecraftClient.textRenderer.wrapLines(requisitesComponent, 122));
 			}
 

@@ -11,7 +11,7 @@ public class EnergyPowerScreen extends PowersScreen {
 	}
 
 	@Override
-	protected void init() {
+	public void initContents() {
 		int tabWidth = this.width - 41;
 		addPowerIcon(new PowerButton(tabWidth/2 + 27, height/2 - 10, ModPowerRegistry.ENERGY_AFFINITY));
 	}

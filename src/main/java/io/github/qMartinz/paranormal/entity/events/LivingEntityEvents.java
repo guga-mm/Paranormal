@@ -1,5 +1,6 @@
 package io.github.qMartinz.paranormal.entity.events;
 
+import io.github.qMartinz.paranormal.api.ParanormalAttribute;
 import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.entity.CorpseEntity;
 import io.github.qMartinz.paranormal.registry.ModEntityRegistry;
@@ -29,7 +30,7 @@ public class LivingEntityEvents {
 		if (entity instanceof ServerPlayerEntity player && player.isSleeping()){
 			PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 			playerData.setOccultPoints(playerData.getOccultPoints() +
-					(0.025d * (playerData.getAttribute(2) * 0.25d + 1)));
+					(0.025d * (playerData.getAttribute(ParanormalAttribute.PRESENCE) * 0.25d + 1)));
 			playerData.syncToClient(player);
 		}
 	}

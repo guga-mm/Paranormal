@@ -1,5 +1,6 @@
 package io.github.qMartinz.paranormal.api.powers;
 
+import io.github.qMartinz.paranormal.api.ParanormalAttribute;
 import io.github.qMartinz.paranormal.api.ParanormalElement;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.MutableText;
@@ -17,15 +18,17 @@ public class ParanormalPower {
 	private final boolean isActive;
 	private final int occultPointsCost;
 	private final int pexRequired;
-	private final int[] attributesRequired;
+	private final int[] attributesRequired = new int[]{0, 0, 0};
 	private final Set<ParanormalPower> powerRequirements;
 
-	protected ParanormalPower(ParanormalElement element, boolean isActive, int occultPointsCost, int pexRequired, int[] attributesRequired, ParanormalPower... powerRequirements) {
+	protected ParanormalPower(ParanormalElement element, boolean isActive, int occultPointsCost, int pexRequired, int strengthRequired, int vigorRequired, int presenceRequired, ParanormalPower... powerRequirements) {
 		this.element = element;
 		this.isActive = isActive;
 		this.occultPointsCost = occultPointsCost;
 		this.pexRequired = pexRequired;
-		this.attributesRequired = attributesRequired;
+		this.attributesRequired[ParanormalAttribute.STRENGTH.index] = strengthRequired;
+		this.attributesRequired[ParanormalAttribute.VIGOR.index] = vigorRequired;
+		this.attributesRequired[ParanormalAttribute.PRESENCE.index] = presenceRequired;
 		this.powerRequirements = new HashSet<>(List.of(powerRequirements));
 	}
 
@@ -63,8 +66,8 @@ public class ParanormalPower {
 	 * <p>1 = vig
 	 * <p>2 = pre
 	 */
-	public int getAttributeRequired(int index) {
-		return attributesRequired[index];
+	public int getAttributeRequired(ParanormalAttribute attribute) {
+		return attributesRequired[attribute.index];
 	}
 
 	public Collection<ParanormalPower> getPowerRequirements() {

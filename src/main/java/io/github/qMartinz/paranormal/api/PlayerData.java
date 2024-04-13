@@ -98,8 +98,8 @@ public class PlayerData {
 	 * <p>1 = vig
 	 * <p>2 = pre
 	 */
-	public void setAttribute(int index, int value) {
-		this.attributes[index] = value;
+	public void setAttribute(ParanormalAttribute attribute, int value) {
+		this.attributes[attribute.index] = value;
 	}
 
 	/**
@@ -107,8 +107,8 @@ public class PlayerData {
 	 * <p>1 = vig
 	 * <p>2 = pre
 	 */
-	public int getAttribute(int index){
-		return attributes[index];
+	public int getAttribute(ParanormalAttribute attribute){
+		return attributes[attribute.index];
 	}
 
 	public void setPowerPoints(int powerPoints) {

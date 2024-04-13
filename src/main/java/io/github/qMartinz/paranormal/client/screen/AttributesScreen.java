@@ -3,10 +3,12 @@ package io.github.qMartinz.paranormal.client.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.qMartinz.paranormal.Paranormal;
 import io.github.qMartinz.paranormal.ParanormalClient;
+import io.github.qMartinz.paranormal.api.ParanormalAttribute;
 import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
 import io.github.qMartinz.paranormal.client.screen.elements.SelectedRitual;
 import io.github.qMartinz.paranormal.client.screen.elements.button.AttributeButton;
+import io.github.qMartinz.paranormal.client.screen.elements.button.PowersScreenButton;
 import io.github.qMartinz.paranormal.client.screen.elements.button.SelectRitualButtons;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screen.Screen;
@@ -32,15 +34,15 @@ public class AttributesScreen extends Screen {
 		int tabX = screenX + 110;
 		int screenY = (this.height/2) - (this.screenHeight/2);
 
-		addDrawableChild(new AttributeButton(screenX + 33, screenY + 12, 0));
-		addDrawableChild(new AttributeButton(screenX + 33, screenY + 75, 1));
-		addDrawableChild(new AttributeButton(screenX + 33, screenY + 138, 2));
+		addDrawableChild(new AttributeButton(screenX + 33, screenY + 12, ParanormalAttribute.STRENGTH));
+		addDrawableChild(new AttributeButton(screenX + 33, screenY + 75, ParanormalAttribute.VIGOR));
+		addDrawableChild(new AttributeButton(screenX + 33, screenY + 138, ParanormalAttribute.PRESENCE));
 		addDrawableChild(new SelectedRitual(tabX + 46, screenY + 7));
 
 		addDrawableChild(new SelectRitualButtons.PreviousRitual(tabX + 44, screenY + 75, 8, 8));
 		addDrawableChild(new SelectRitualButtons.NextRitual(tabX + 104, screenY + 75, 8, 8));
 
-		//addDrawableChild(new PowerScreenButton(screenX + 39, screenY + 195, 20, 20));
+		addDrawableChild(new PowersScreenButton(screenX + 39, screenY + 195, 20, 20));
 	}
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {

@@ -3,6 +3,7 @@ package io.github.qMartinz.paranormal.registry;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import io.github.qMartinz.paranormal.api.ParanormalAttribute;
 import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.api.powers.PowerRegistry;
 import io.github.qMartinz.paranormal.api.rituals.RitualRegistry;
@@ -46,9 +47,9 @@ public class ModCommandRegistry {
 								playerData.setRitualSlots(0);
 								playerData.setMaxOccultPoints(4d);
 								playerData.setOccultPoints(4d);
-								playerData.setAttribute(0, 0);
-								playerData.setAttribute(1, 0);
-								playerData.setAttribute(2, 0);
+								playerData.setAttribute(ParanormalAttribute.STRENGTH, 0);
+								playerData.setAttribute(ParanormalAttribute.VIGOR, 0);
+								playerData.setAttribute(ParanormalAttribute.PRESENCE, 0);
 								playerData.clearRituals();
 								playerData.clearPowers();
 								playerData.syncToClient(player);
@@ -112,7 +113,7 @@ public class ModCommandRegistry {
 												PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 												final int amount = IntegerArgumentType.getInteger(context, "amount");
 
-												playerData.setAttribute(0, playerData.getAttribute(0) + amount);
+												playerData.setAttribute(ParanormalAttribute.STRENGTH, playerData.getAttribute(ParanormalAttribute.STRENGTH) + amount);
 												playerData.syncToClient(player);
 												return 1;
 											})))
@@ -123,7 +124,7 @@ public class ModCommandRegistry {
 												PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 												final int amount = IntegerArgumentType.getInteger(context, "amount");
 
-												playerData.setAttribute(0, playerData.getAttribute(0) - amount);
+												playerData.setAttribute(ParanormalAttribute.STRENGTH, playerData.getAttribute(ParanormalAttribute.STRENGTH) - amount);
 												playerData.syncToClient(player);
 												return 1;
 											}))))
@@ -135,7 +136,7 @@ public class ModCommandRegistry {
 												PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 												final int amount = IntegerArgumentType.getInteger(context, "amount");
 
-												playerData.setAttribute(1, playerData.getAttribute(1) + amount);
+												playerData.setAttribute(ParanormalAttribute.VIGOR, playerData.getAttribute(ParanormalAttribute.VIGOR) + amount);
 												playerData.syncToClient(player);
 												return 1;
 											})))
@@ -146,7 +147,7 @@ public class ModCommandRegistry {
 												PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 												final int amount = IntegerArgumentType.getInteger(context, "amount");
 
-												playerData.setAttribute(1, playerData.getAttribute(1) - amount);
+												playerData.setAttribute(ParanormalAttribute.VIGOR, playerData.getAttribute(ParanormalAttribute.VIGOR) - amount);
 												playerData.syncToClient(player);
 												return 1;
 											}))))
@@ -158,7 +159,7 @@ public class ModCommandRegistry {
 												PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 												final int amount = IntegerArgumentType.getInteger(context, "amount");
 
-												playerData.setAttribute(2, playerData.getAttribute(2) + amount);
+												playerData.setAttribute(ParanormalAttribute.PRESENCE, playerData.getAttribute(ParanormalAttribute.PRESENCE) + amount);
 												playerData.syncToClient(player);
 												return 1;
 											})))
@@ -169,7 +170,7 @@ public class ModCommandRegistry {
 												PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 												final int amount = IntegerArgumentType.getInteger(context, "amount");
 
-												playerData.setAttribute(2, playerData.getAttribute(2) - amount);
+												playerData.setAttribute(ParanormalAttribute.PRESENCE, playerData.getAttribute(ParanormalAttribute.PRESENCE) - amount);
 												playerData.syncToClient(player);
 												return 1;
 											})))

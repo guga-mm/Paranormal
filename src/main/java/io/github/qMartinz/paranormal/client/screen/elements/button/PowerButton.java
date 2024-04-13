@@ -2,6 +2,7 @@ package io.github.qMartinz.paranormal.client.screen.elements.button;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.qMartinz.paranormal.ParanormalClient;
+import io.github.qMartinz.paranormal.api.ParanormalAttribute;
 import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.api.powers.ParanormalPower;
 import io.github.qMartinz.paranormal.client.screen.PowersScreen;
@@ -32,9 +33,9 @@ public class PowerButton extends ButtonWidget {
 		float alpha = 1f;
 		boolean powerRequirement = power.getPowerRequirements().stream().allMatch(playerData::hasPower) || power.getPowerRequirements().isEmpty();
 		boolean requirements = playerData.getPex() >= power.getPexRequired() &&
-				playerData.getAttribute(0) >= power.getAttributeRequired(0) &&
-				playerData.getAttribute(1) >= power.getAttributeRequired(1) &&
-				playerData.getAttribute(2) >= power.getAttributeRequired(2) &&
+				playerData.getAttribute(ParanormalAttribute.STRENGTH) >= power.getAttributeRequired(ParanormalAttribute.STRENGTH) &&
+				playerData.getAttribute(ParanormalAttribute.VIGOR) >= power.getAttributeRequired(ParanormalAttribute.VIGOR) &&
+				playerData.getAttribute(ParanormalAttribute.PRESENCE) >= power.getAttributeRequired(ParanormalAttribute.PRESENCE) &&
 				powerRequirement;
 		if (power instanceof Affinity && playerData.getPowers().stream().anyMatch(p -> p instanceof Affinity && p != power)) requirements = false;
 		if (!requirements) alpha -= 0.5f;
@@ -96,9 +97,9 @@ public class PowerButton extends ButtonWidget {
 
 			boolean powerRequirement = power.getPowerRequirements().stream().allMatch(playerData::hasPower) || power.getPowerRequirements().isEmpty();
 			boolean requirements = playerData.getPex() >= power.getPexRequired() &&
-					playerData.getAttribute(0) >= power.getAttributeRequired(0) &&
-					playerData.getAttribute(1) >= power.getAttributeRequired(1) &&
-					playerData.getAttribute(2) >= power.getAttributeRequired(2) &&
+					playerData.getAttribute(ParanormalAttribute.STRENGTH) >= power.getAttributeRequired(ParanormalAttribute.STRENGTH) &&
+					playerData.getAttribute(ParanormalAttribute.VIGOR) >= power.getAttributeRequired(ParanormalAttribute.VIGOR) &&
+					playerData.getAttribute(ParanormalAttribute.PRESENCE) >= power.getAttributeRequired(ParanormalAttribute.PRESENCE) &&
 					powerRequirement;
 
 
