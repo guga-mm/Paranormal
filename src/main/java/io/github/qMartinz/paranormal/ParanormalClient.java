@@ -1,15 +1,15 @@
 package io.github.qMartinz.paranormal;
 
+import io.github.qMartinz.paranormal.api.ParanormalElement;
 import io.github.qMartinz.paranormal.api.PlayerData;
+import io.github.qMartinz.paranormal.api.events.InitPowerScreenContentsCallback;
 import io.github.qMartinz.paranormal.client.event.KeyInputHandler;
 import io.github.qMartinz.paranormal.client.hud.PexHud;
 import io.github.qMartinz.paranormal.client.hud.RitualHud;
 import io.github.qMartinz.paranormal.client.screen.AttributesScreen;
+import io.github.qMartinz.paranormal.client.screen.elements.button.PowerButton;
 import io.github.qMartinz.paranormal.networking.ModMessages;
-import io.github.qMartinz.paranormal.registry.ModBlockRegistry;
-import io.github.qMartinz.paranormal.registry.ModEntityRegistry;
-import io.github.qMartinz.paranormal.registry.ModModelLayerRegistry;
-import io.github.qMartinz.paranormal.registry.ModParticleRegistry;
+import io.github.qMartinz.paranormal.registry.*;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.client.MinecraftClient;
@@ -46,6 +46,26 @@ public class ParanormalClient implements ClientModInitializer {
 			}
 			return ActionResult.PASS;
 		});
+
+		InitPowerScreenContentsCallback.EVENT.register((screen -> {
+			int tabWidth = screen.width - 41;
+
+			if (screen.element == ParanormalElement.BLOOD){
+				screen.addPowerIcon(new PowerButton((tabWidth/2) + 27, screen.height/2 - 10, ModPowerRegistry.BLOOD_AFFINITY));
+			}
+
+			if (screen.element == ParanormalElement.DEATH){
+				screen.addPowerIcon(new PowerButton((tabWidth/2) + 27, screen.height/2 - 10, ModPowerRegistry.DEATH_AFFINITY));
+			}
+
+			if (screen.element == ParanormalElement.WISDOM){
+				screen.addPowerIcon(new PowerButton((tabWidth/2) + 27, screen.height/2 - 10, ModPowerRegistry.WISDOM_AFFINITY));
+			}
+
+			if (screen.element == ParanormalElement.ENERGY){
+				screen.addPowerIcon(new PowerButton((tabWidth/2) + 27, screen.height/2 - 10, ModPowerRegistry.ENERGY_AFFINITY));
+			}
+		}));
 	}
 
 	private void setBlockRenderLayers(){

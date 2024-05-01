@@ -5,6 +5,7 @@ import io.github.qMartinz.paranormal.ParanormalClient;
 import io.github.qMartinz.paranormal.api.ParanormalAttribute;
 import io.github.qMartinz.paranormal.api.ParanormalElement;
 import io.github.qMartinz.paranormal.api.PlayerData;
+import io.github.qMartinz.paranormal.api.events.InitPowerScreenContentsCallback;
 import io.github.qMartinz.paranormal.api.powers.ParanormalPower;
 import io.github.qMartinz.paranormal.client.screen.elements.button.PowerButton;
 import io.github.qMartinz.paranormal.client.screen.elements.button.PowerSlotButton;
@@ -34,7 +35,7 @@ public class PowersScreen extends Screen {
 	public double yOffset;
 	public int selectedSlot = 5;
 
-	protected PowersScreen(ParanormalElement element) {
+	public PowersScreen(ParanormalElement element) {
 		super(Text.empty());
 		this.element = element;
 	}
@@ -285,7 +286,9 @@ public class PowersScreen extends Screen {
 		return icon;
 	}
 
-	public void initContents(){}
+	public void initContents(){
+		InitPowerScreenContentsCallback.EVENT.invoker().initContents(this);
+	}
 
 	public void renderContents(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick){}
 

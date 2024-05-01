@@ -1,8 +1,9 @@
 package io.github.qMartinz.paranormal.client.screen.elements.button;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import io.github.qMartinz.paranormal.api.ParanormalElement;
 import io.github.qMartinz.paranormal.client.screen.AttributesScreen;
-import io.github.qMartinz.paranormal.client.screen.powerscreen.BloodPowerScreen;
+import io.github.qMartinz.paranormal.client.screen.PowersScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -10,9 +11,8 @@ import net.minecraft.text.Text;
 
 public class PowersScreenButton extends ButtonWidget {
 	public PowersScreenButton(int x, int y, int width, int height) {
-		super(x, y, width, height, Text.empty(), (b) -> {
-			MinecraftClient.getInstance().setScreen(new BloodPowerScreen());
-		}, DEFAULT_NARRATION);
+		super(x, y, width, height, Text.empty(), (b) ->
+				MinecraftClient.getInstance().setScreen(new PowersScreen(ParanormalElement.BLOOD)), DEFAULT_NARRATION);
 	}
 
 	@Override

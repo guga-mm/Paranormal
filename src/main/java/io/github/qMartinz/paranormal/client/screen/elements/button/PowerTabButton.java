@@ -3,10 +3,6 @@ package io.github.qMartinz.paranormal.client.screen.elements.button;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.qMartinz.paranormal.api.ParanormalElement;
 import io.github.qMartinz.paranormal.client.screen.PowersScreen;
-import io.github.qMartinz.paranormal.client.screen.powerscreen.BloodPowerScreen;
-import io.github.qMartinz.paranormal.client.screen.powerscreen.DeathPowerScreen;
-import io.github.qMartinz.paranormal.client.screen.powerscreen.EnergyPowerScreen;
-import io.github.qMartinz.paranormal.client.screen.powerscreen.WisdomPowerScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -46,13 +42,7 @@ public class PowerTabButton extends ButtonWidget {
 		@Override
 		public void onPress(ButtonWidget buttonWidget) {
 			if (buttonWidget instanceof PowerTabButton powerTabButton) {
-				PowersScreen screen = switch (powerTabButton.element) {
-					case DEATH -> new DeathPowerScreen();
-					case ENERGY -> new EnergyPowerScreen();
-					case WISDOM -> new WisdomPowerScreen();
-					default -> new BloodPowerScreen();
-				};
-
+				PowersScreen screen = new PowersScreen(powerTabButton.element);
 				MinecraftClient.getInstance().setScreen(screen);
 			}
 		}

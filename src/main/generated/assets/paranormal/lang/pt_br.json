@@ -2,16 +2,12 @@
   "block.paranormal.transcendance_altar": "Altar de Transcendência",
   "item.paranormal.ashes": "Cinzas",
   "item.paranormal.organ": "Órgao",
-  "net.minecraft.item.ItemGroup@1f8ea182": "Paranormal",
+  "net.minecraft.item.ItemGroup@63926250": "Paranormal",
+  "paranormal.attribute.presence": "Presença",
+  "paranormal.attribute.strength": "Força",
+  "paranormal.attribute.vigor": "Vigor",
   "paranormal.ritual.healing": "Cicatrização",
   "paranormal.ritual.light": "Luz",
   "paranormal.ritual.skinning": "Descarnar",
-  "paranormal.screen.attributes_screen": "Atributos",
-  "paranormal.screen.attributes_screen.attPoints": "Pontos de Atributo",
-  "paranormal.screen.attributes_screen.attribute_0": "Força",
-  "paranormal.screen.attributes_screen.attribute_1": "Vigor",
-  "paranormal.screen.attributes_screen.attribute_2": "Presença",
-  "paranormal.screen.attributes_screen.increase_attribute_0": "Aumentar Força",
-  "paranormal.screen.attributes_screen.increase_attribute_1": "Aumentar Vigor",
-  "paranormal.screen.attributes_screen.increase_attribute_2": "Aumentar Presença"
+  "paranormal.screen.attributes_screen": "Atributos"
 }

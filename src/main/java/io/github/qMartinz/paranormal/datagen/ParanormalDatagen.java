@@ -1,6 +1,7 @@
 package io.github.qMartinz.paranormal.datagen;
 
 import io.github.qMartinz.paranormal.Paranormal;
+import io.github.qMartinz.paranormal.api.ParanormalAttribute;
 import io.github.qMartinz.paranormal.registry.ModBlockRegistry;
 import io.github.qMartinz.paranormal.registry.ModItemGroupRegistry;
 import io.github.qMartinz.paranormal.registry.ModItemRegistry;
@@ -83,12 +84,9 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 			translationBuilder.add(ModItemGroupRegistry.PARANORMAL.toString(), "Paranormal");
 			translationBuilder.add("paranormal.screen.attributes_screen", "Attributes");
 			translationBuilder.add("paranormal.screen.attributes_screen.attPoints", "Attribute Points");
-			translationBuilder.add("paranormal.screen.attributes_screen.increase_attribute_0", "Increase Strength");
-			translationBuilder.add("paranormal.screen.attributes_screen.increase_attribute_1", "Increase Vigor");
-			translationBuilder.add("paranormal.screen.attributes_screen.increase_attribute_2", "Increase Presence");
-			translationBuilder.add("paranormal.screen.attributes_screen.attribute_0", "Strength");
-			translationBuilder.add("paranormal.screen.attributes_screen.attribute_1", "Vigor");
-			translationBuilder.add("paranormal.screen.attributes_screen.attribute_2", "Presence");
+			translationBuilder.add(ParanormalAttribute.STRENGTH.name, "Strength");
+			translationBuilder.add(ParanormalAttribute.VIGOR.name, "Vigor");
+			translationBuilder.add(ParanormalAttribute.PRESENCE.name, "Presence");
 
 			// Rituals
 			translationBuilder.add(ModRitualRegistry.HEALING.getTranslationKey(), "Healing");
@@ -110,13 +108,9 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 			translationBuilder.add(ModBlockRegistry.TRANSCENDANCE_ALTAR, "Altar de Transcendência");
 			translationBuilder.add(ModItemGroupRegistry.PARANORMAL.toString(), "Paranormal");
 			translationBuilder.add("paranormal.screen.attributes_screen", "Atributos");
-			translationBuilder.add("paranormal.screen.attributes_screen.attPoints", "Pontos de Atributo");
-			translationBuilder.add("paranormal.screen.attributes_screen.increase_attribute_0", "Aumentar Força");
-			translationBuilder.add("paranormal.screen.attributes_screen.increase_attribute_1", "Aumentar Vigor");
-			translationBuilder.add("paranormal.screen.attributes_screen.increase_attribute_2", "Aumentar Presença");
-			translationBuilder.add("paranormal.screen.attributes_screen.attribute_0", "Força");
-			translationBuilder.add("paranormal.screen.attributes_screen.attribute_1", "Vigor");
-			translationBuilder.add("paranormal.screen.attributes_screen.attribute_2", "Presença");
+			translationBuilder.add(ParanormalAttribute.STRENGTH.name, "Força");
+			translationBuilder.add(ParanormalAttribute.VIGOR.name, "Vigor");
+			translationBuilder.add(ParanormalAttribute.PRESENCE.name, "Presença");
 
 			// Rituals
 			translationBuilder.add(ModRitualRegistry.HEALING.getTranslationKey(), "Cicatrização");
