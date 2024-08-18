@@ -6,6 +6,7 @@ import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -129,8 +130,6 @@ public class ParanormalPower {
 	/**
 	 * Chamado quando o usuário usa um item
 	 *
-	 * Use: {@link Item#use(World, PlayerEntity, Hand) use}
-	 *
 	 * @param world o mundo em que o item foi utilizado
 	 * @param player quem utilizou
 	 * @param hand a mão em que o item está
@@ -144,8 +143,6 @@ public class ParanormalPower {
 	/**
 	 * Chamado quando o usuário termina de usar algum item
 	 *
-	 * Use: {@link Item#finishUsing(ItemStack, World, LivingEntity) finishingUsing}
-	 *
 	 * @param stack o item utilizado
 	 * @param world o mundo em que o item foi utilizado
 	 * @param user quem utilizou o item
@@ -157,8 +154,6 @@ public class ParanormalPower {
 
 	/**
 	 * Chamado a cada tick quando o usuário está usando um item
-	 *
-	 * Use: {@link Item#usageTick(World, LivingEntity, ItemStack, int) usageTick}
 	 *
 	 * @param world o mundo em que o item está sendo utilizado
 	 * @param user quem utilizou o item
@@ -186,23 +181,19 @@ public class ParanormalPower {
 	/**
 	 * Chamado quando o usuário quebra um bloco
 	 *
-	 * Use: {@link PlayerBlockBreakEvents#BEFORE before}
-	 *
 	 * @param player quem quebrou
 	 * @param world o world onde o bloco foi quebrado
 	 * @param pos a posição do bloco
 	 * @param state o bloco quebrado
-	 * @param exp o exp ganho por quebrar o bloco
+	 * @param blockEntity a entidade do bloco
 	 * @return o exp ganho após o poder ser ativo
 	 */
-	public int onBlockBreak(PlayerEntity player, World world, BlockPos pos, BlockState state, int exp){
-		return exp;
+	public boolean onBlockBreak(PlayerEntity player, World world, BlockPos pos, BlockState state, BlockEntity blockEntity){
+		return true;
 	}
 
 	/**
 	 * Chamado quando o usuário recebe exp
-	 *
-	 * Use: {@link PlayerEntity#addExperience(int) addExperience}
 	 *
 	 * @param player quem recebeu o exp
 	 * @param exp o exp ganho
@@ -214,8 +205,6 @@ public class ParanormalPower {
 
 	/**
 	 * Chamado quando o usuário recebe levels
-	 *
-	 * Use: {@link PlayerEntity#addExperienceLevels(int) addExperienceLevels}
 	 *
 	 * @param player quem recebeu os levels
 	 * @param levels os levels ganho

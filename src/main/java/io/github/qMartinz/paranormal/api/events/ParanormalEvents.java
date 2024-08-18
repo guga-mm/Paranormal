@@ -2,9 +2,12 @@ package io.github.qMartinz.paranormal.api.events;
 
 import io.github.qMartinz.paranormal.api.powers.ParanormalPower;
 import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
-import io.github.qMartinz.paranormal.client.screen.PowersScreen;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
+import net.minecraft.world.World;
 import org.quiltmc.qsl.base.api.event.Event;
 
 public class ParanormalEvents {
@@ -47,6 +50,49 @@ public class ParanormalEvents {
 				}
 			});
 
+	public static final Event<UseItem> USE_ITEM = Event.create(UseItem.class,
+			(listeners) -> (world, player, hand, result) -> {
+				for (UseItem listener : listeners){
+					return listener.useItem(world, player, hand, result);
+				}
+
+				return result;
+			});
+
+	public static final Event<FinishUsingItem> FINISH_USING_ITEM = Event.create(FinishUsingItem.class,
+			(listeners) -> (stack, world, user) -> {
+				for (FinishUsingItem listener : listeners){
+					return listener.finishUsingItem(stack, world, user);
+				}
+
+				return stack;
+			});
+
+	public static final Event<TickUseItem> TICK_USE_ITEM = Event.create(TickUseItem.class,
+			(listeners) -> (world, user, stack, remainingUseTicks) -> {
+				for (TickUseItem listener : listeners){
+					listener.tickUseItem(world, user, stack, remainingUseTicks);
+				}
+			});
+
+	public static final Event<AddExperience> ADD_EXPERIENCE = Event.create(AddExperience.class,
+			(listeners) -> (player, experience) -> {
+				for (AddExperience listener : listeners){
+					experience = listener.addExperience(player, experience);
+				}
+
+				return experience;
+			});
+
+	public static final Event<AddExperienceLevels> ADD_EXPERIENCE_LEVELS = Event.create(AddExperienceLevels.class,
+			(listeners) -> (player, levels) -> {
+				for (AddExperienceLevels listener : listeners){
+					levels = listener.addExperienceLevels(player, levels);
+				}
+
+				return levels;
+			});
+
 	public interface PowerAdded {
 		void powerAdded(ParanormalPower power, PlayerEntity player);
 	}
@@ -61,5 +107,25 @@ public class ParanormalEvents {
 
 	public interface TakenShieldHit {
 		void takenShieldHit(LivingEntity attacker, LivingEntity target);
+	}
+
+	public interface UseItem {
+		TypedActionResult<ItemStack> useItem(World world, PlayerEntity player, Hand hand, TypedActionResult<ItemStack> result);
+	}
+
+	public interface FinishUsingItem {
+		ItemStack finishUsingItem(ItemStack stack, World world, LivingEntity user);
+	}
+
+	public interface TickUseItem {
+		void tickUseItem(World world, LivingEntity user, ItemStack stack, int remainingUseTicks);
+	}
+
+	public interface AddExperience {
+		int addExperience(PlayerEntity player, int experience);
+	}
+
+	public interface AddExperienceLevels {
+		int addExperienceLevels(PlayerEntity player, int levels);
 	}
 }

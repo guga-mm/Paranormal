@@ -11,6 +11,7 @@ import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import org.quiltmc.loader.api.ModContainer;
@@ -88,6 +89,62 @@ public class Paranormal implements ModInitializer {
 					p.onShieldBlock(player, attacker);
 				}
 			}
+		}));
+
+		ParanormalEvents.USE_ITEM.register(((world, player, hand, result) -> {
+			PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+			for (ParanormalPower p : playerData.powers) {
+				return p.onUseItem(world, player, hand, result);
+			}
+
+			return result;
+		}));
+
+		ParanormalEvents.FINISH_USING_ITEM.register(((stack, world, user) -> {
+			PlayerData playerData = StateSaverAndLoader.getPlayerState(user);
+			for (ParanormalPower p : playerData.powers) {
+				return p.onFinishUseItem(stack, world, user);
+			}
+
+			return stack;
+		}));
+
+		ParanormalEvents.TICK_USE_ITEM.register(((world, user, stack, remainingUseTicks) -> {
+			PlayerData playerData = StateSaverAndLoader.getPlayerState(user);
+			for (ParanormalPower p : playerData.powers) {
+				p.onTickUseItem(world, user, stack, remainingUseTicks);
+			}
+		}));
+
+		ParanormalEvents.ADD_EXPERIENCE.register(((player, experience) -> {
+			PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+			for (ParanormalPower p : playerData.powers){
+				experience = p.onXPChange(player, experience);
+			}
+
+			return experience;
+		}));
+
+		ParanormalEvents.ADD_EXPERIENCE_LEVELS.register(((player, levels) -> {
+			PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+			for (ParanormalPower p : playerData.powers){
+				levels = p.onXPLevelChange(player, levels);
+			}
+
+			return levels;
+		}));
+
+		PlayerBlockBreakEvents.BEFORE.register(((world, player, pos, state, blockEntity) -> {
+			PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+			for (ParanormalPower p : playerData.powers) {
+				boolean result = p.onBlockBreak(player, world, pos, state, blockEntity);
+
+				if (!result) {
+					return false;
+				}
+			}
+
+			return true;
 		}));
 	}
 }

@@ -4,6 +4,7 @@
   "package": "io.github.qMartinz.paranormal.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ItemEventsMixin",
     "PlayerEventsMixin",
     "VillagerFearMixin"
   ],
