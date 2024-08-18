@@ -41,15 +41,14 @@ public class StateSaverAndLoader extends PersistentState {
 			for (int i = 0; i < playerData.powers.size(); i++) {
 				powers.putString("power_" + i, playerData.powers.stream().toList().get(i).getId().toString());
 			}
-
-			NbtCompound activePowers = new NbtCompound();
-			for (int i = 0; i < playerData.activePowers.size(); i++) {
-				powers.putString("active_power_" + i, playerData.activePowers.values().stream().toList().get(i).getId().toString());
+			NbtCompound affinities = new NbtCompound();
+			for (int i = 0; i < playerData.affinities.size(); i++) {
+				affinities.putString("affinity_" + i, playerData.affinities.stream().toList().get(i).getId().toString());
 			}
 
 			playerNbt.put("rituals", rituals);
 			playerNbt.put("powers", powers);
-			playerNbt.put("active_powers", activePowers);
+			playerNbt.put("affinities", affinities);
 
 			playersNbt.put(uuid.toString(), playerNbt);
 		});
@@ -87,10 +86,10 @@ public class StateSaverAndLoader extends PersistentState {
 				playerData.powers.add(PowerRegistry.getPower(new Identifier(powers.getString("power_" + i))).orElse(null));
 			}
 
-			playerData.activePowers.clear();
-			NbtCompound activePowers = nbt.getCompound("active_powers");
-			for (int i = 0; i < activePowers.getKeys().size(); i++){
-				playerData.activePowers.put(i, PowerRegistry.getPower(new Identifier(powers.getString("active_power_" + i))).orElse(null));
+			playerData.affinities.clear();
+			NbtCompound affinities = nbt.getCompound("affinities");
+			for (int i = 0; i < affinities.getKeys().size(); i++){
+				playerData.affinities.add(PowerRegistry.getPower(new Identifier(affinities.getString("affinity_" + i))).orElse(null));
 			}
 
 			UUID uuid = UUID.fromString(key);

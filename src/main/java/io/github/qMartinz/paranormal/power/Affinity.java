@@ -6,6 +6,6 @@ import io.github.qMartinz.paranormal.api.powers.ParanormalPower;
 public class Affinity extends ParanormalPower {
 
 	public Affinity(ParanormalElement element) {
-		super(element, false, 0, 10, 0, 0, 0);
+		super(element, 10, 0, 0, 0);
 	}
 }

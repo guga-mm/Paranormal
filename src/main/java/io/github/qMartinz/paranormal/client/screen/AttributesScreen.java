@@ -4,15 +4,15 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.qMartinz.paranormal.Paranormal;
 import io.github.qMartinz.paranormal.ParanormalClient;
 import io.github.qMartinz.paranormal.api.ParanormalAttribute;
+import io.github.qMartinz.paranormal.api.ParanormalElement;
 import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
 import io.github.qMartinz.paranormal.client.screen.elements.SelectedRitual;
 import io.github.qMartinz.paranormal.client.screen.elements.button.AttributeButton;
-import io.github.qMartinz.paranormal.client.screen.elements.button.PowersScreenButton;
+import io.github.qMartinz.paranormal.client.screen.elements.button.ChangeScreenButton;
 import io.github.qMartinz.paranormal.client.screen.elements.button.SelectRitualButtons;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -42,7 +42,7 @@ public class AttributesScreen extends Screen {
 		addDrawableChild(new SelectRitualButtons.PreviousRitual(tabX + 44, screenY + 75, 8, 8));
 		addDrawableChild(new SelectRitualButtons.NextRitual(tabX + 104, screenY + 75, 8, 8));
 
-		addDrawableChild(new PowersScreenButton(screenX + 39, screenY + 195, 20, 20));
+		addDrawableChild(new ChangeScreenButton(screenX + 39, screenY + 195, 20, 20, new PowersScreen(ParanormalElement.BLOOD)));
 	}
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {

@@ -40,7 +40,7 @@ public class PlayerData {
 	public Set<AbstractRitual> rituals = new HashSet<>();
 	// Powers
 	public Set<ParanormalPower> powers = new HashSet<>();
-	public Map<Integer, ParanormalPower> activePowers = new HashMap<>();
+	public Set<ParanormalPower> affinities = new HashSet<>();
 
 	public void setPex(int amount){
 		pex = Math.max(0, Math.min(amount, 20));
@@ -167,45 +167,48 @@ public class PlayerData {
 		this.powers.clear();
 	}
 
+	public void clearAffinities(){
+		this.affinities.clear();
+	}
+
 	public Collection<ParanormalPower> getPowers() {
 		return powers;
+	}
+
+	public Collection<ParanormalPower> getAffinities() {
+		return affinities;
 	}
 
 	public void addPower(ParanormalPower power){
 		this.powers.add(power);
 	}
 
+	public void addAffinity(ParanormalPower power){
+		if (hasPower(power)) this.affinities.add(power);
+	}
+
 	public void removePower(ParanormalPower power){
 		this.powers.remove(power);
+	}
+
+	public void removeAffinity(ParanormalPower power){
+		this.affinities.remove(power);
 	}
 
 	public ParanormalPower getPower(int index){
 		return powers.stream().toList().get(index);
 	}
 
+	public ParanormalPower getAffinity(int index){
+		return affinities.stream().toList().get(index);
+	}
+
 	public boolean hasPower(ParanormalPower power){
 		return this.powers.contains(power);
 	}
 
-	public void clearActivePowers(){
-		this.activePowers.clear();
-	}
-
-	public Map<Integer, ParanormalPower> getActivePowers() {
-		return activePowers;
-	}
-
-	public ParanormalPower getActivePower(int slot){
-		return activePowers.get(slot);
-	}
-
-	public void setActivePowers(Map<Integer, ParanormalPower> powers) {
-		this.activePowers = new HashMap<>(powers);
-	}
-
-	public void setActivePower(ParanormalPower power, int slot) {
-		activePowers.values().removeIf(ab -> ab.equals(power));
-		activePowers.put(slot, power);
+	public boolean hasAffinity(ParanormalPower power){
+		return this.affinities.contains(power);
 	}
 
 	public NbtCompound serializeRituals() {
@@ -224,14 +227,10 @@ public class PlayerData {
 		return nbt;
 	}
 
-	public NbtCompound serializeActivePowers() {
+	public NbtCompound serializeAffinities() {
 		NbtCompound nbt = new NbtCompound();
 
-		for (int i = 0; i < 5; i++){
-			if (activePowers.containsKey(i)) {
-				nbt.putString("active_power_" + i, getActivePower(i).getId().toString());
-			}
-		}
+		NBTUtil.writeStrings(nbt, "affinity", affinities.stream().map(ParanormalPower::getId).map(Identifier::toString).collect(Collectors.toList()));
 
 		return nbt;
 	}
@@ -255,12 +254,12 @@ public class PlayerData {
 		}
 	}
 
-	public void deserializeActivePowers(NbtCompound nbt) {
-		clearActivePowers();
+	public void deserializeAffinities(NbtCompound nbt) {
+		clearAffinities();
 
-		for (int i = 0; i < 5; i++){
-			if (nbt.contains("active_power_" + i) && powers.contains(PowerRegistry.powers.get(Identifier.tryParse(nbt.getString("active_power_" + i))))){
-				this.setActivePower(PowerRegistry.powers.get(Identifier.tryParse(nbt.getString("active_power_" + i))), i);
+		for(String s : NBTUtil.readStrings(nbt, "affinity")){
+			if(PowerRegistry.powers.containsKey(Identifier.tryParse(s))){
+				affinities.add(PowerRegistry.getPower(Identifier.tryParse(s)).get());
 			}
 		}
 	}
@@ -279,7 +278,7 @@ public class PlayerData {
 
 		data.writeNbt(playerState.serializeRituals());
 		data.writeNbt(playerState.serializePowers());
-		data.writeNbt(playerState.serializeActivePowers());
+		data.writeNbt(playerState.serializeAffinities());
 
 		ServerPlayNetworking.send(player, ModMessages.PLAYER_DATA_SYNC_ID, data);
 	}
@@ -296,7 +295,7 @@ public class PlayerData {
 
 		data.writeNbt(serializeRituals());
 		data.writeNbt(serializePowers());
-		data.writeNbt(serializeActivePowers());
+		data.writeNbt(serializeAffinities());
 
 		ClientPlayNetworking.send(ModMessages.PLAYER_DATA_SYNC_ID, data);
 	}

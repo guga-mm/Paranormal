@@ -40,6 +40,11 @@ repositories {
 		}
 	}
 
+	maven {
+		name = 'BlameJared Maven (CrT / Bookshelf)'
+		url = 'https://maven.blamejared.com'
+	}
+
 	//maven {
 	//	name = 'GeckoLib'
 	//	url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
@@ -99,6 +104,10 @@ dependencies {
 		transitive = false
 	}
 	include(libs.lodestoneLib)
+
+	implementation("foundry.veil:Veil-common-${project.minecraft_version}:${project.veil_version}") {
+		exclude group: "maven.modrinth"
+	}
 
 	//modImplementation "software.bernie.geckolib:geckolib-quilt-${minecraft_version}:${geckolib_version}"
 }

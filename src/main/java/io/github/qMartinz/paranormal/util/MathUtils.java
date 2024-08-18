@@ -9,11 +9,15 @@ public class MathUtils {
 	 * @param pMax The upper bound for the clamp.
 	 */
 	public static double clamp(double pValue, double pMin, double pMax) {
-		if (pValue < pMin) {
-			return pMin;
-		} else {
-			return pValue > pMax ? pMax : pValue;
-		}
+		return Math.max(pMin, Math.min(pMax, pValue));
+	}
+
+	public static float clamp(float pValue, float pMin, float pMax) {
+		return Math.max(pMin, Math.min(pMax, pValue));
+	}
+
+	public static int clamp(int pValue, int pMin, int pMax) {
+		return Math.max(pMin, Math.min(pMax, pValue));
 	}
 
 	public static int Oscillate(int input, int min, int max) {

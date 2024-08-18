@@ -2,11 +2,25 @@ package io.github.qMartinz.paranormal.api.powers;
 
 import io.github.qMartinz.paranormal.api.ParanormalAttribute;
 import io.github.qMartinz.paranormal.api.ParanormalElement;
+import io.github.qMartinz.paranormal.api.PlayerData;
+import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -15,16 +29,12 @@ import java.util.Set;
 
 public class ParanormalPower {
 	private final ParanormalElement element;
-	private final boolean isActive;
-	private final int occultPointsCost;
 	private final int pexRequired;
 	private final int[] attributesRequired = new int[]{0, 0, 0};
 	private final Set<ParanormalPower> powerRequirements;
 
-	protected ParanormalPower(ParanormalElement element, boolean isActive, int occultPointsCost, int pexRequired, int strengthRequired, int vigorRequired, int presenceRequired, ParanormalPower... powerRequirements) {
+	public ParanormalPower(ParanormalElement element, int pexRequired, int strengthRequired, int vigorRequired, int presenceRequired, ParanormalPower... powerRequirements) {
 		this.element = element;
-		this.isActive = isActive;
-		this.occultPointsCost = occultPointsCost;
 		this.pexRequired = pexRequired;
 		this.attributesRequired[ParanormalAttribute.STRENGTH.index] = strengthRequired;
 		this.attributesRequired[ParanormalAttribute.VIGOR.index] = vigorRequired;
@@ -38,14 +48,6 @@ public class ParanormalPower {
 
 	public ParanormalElement getElement() {
 		return element;
-	}
-
-	public boolean isActive() {
-		return isActive;
-	}
-
-	public int getOccultPointsCost() {
-		return occultPointsCost;
 	}
 
 	public int getPexRequired() {
@@ -85,11 +87,157 @@ public class ParanormalPower {
 	}
 
 	/**
-	 * Utilizado para checar se o jogador pode colocar este poder em um slot de poder ativo.
+	 * Chamado quando o poder é adicionado ao jogador por um {@link io.github.qMartinz.paranormal.client.screen.elements.button.PowerSlotButton}
 	 *
-	 * @param player o jogador que equipou o poder
+	 * @param player o jogador que adquiriu o poder
 	 */
-	public boolean canEquip(PlayerEntity player){
+	public void onAdded(PlayerEntity player){}
+
+	/**
+	 * Chamado a cada tick
+	 *
+	 * @param player o jogador que possui o poder
+	 */
+	public void onTick(PlayerEntity player){}
+
+	/**
+	 * Chamado quando o usuário ataca
+	 *
+	 * @param player quem atacou
+	 * @param amount quanto dano foi causado
+	 * @param target o alvo do ataque
+	 * @param source o tipo de dano causado
+	 * @return verdadeiro caso o dano seja causado
+	 */
+	public boolean onAttack(PlayerEntity player, float amount, Entity target, DamageSource source){
 		return true;
+	}
+
+	/**
+	 * Chamado quando o usuário sofre dano
+	 *
+	 * @param player quem sofreu dano
+	 * @param amount quanto dano foi sofrido
+	 * @param attacker quem causou o dano
+	 * @param source o tipo de dano causado
+	 * @return verdadeiro caso o dano seja tomado
+	 */
+	public boolean onHurt(PlayerEntity player, float amount, @Nullable Entity attacker, DamageSource source){
+		return true;
+	}
+
+	/**
+	 * Chamado quando o usuário usa um item
+	 *
+	 * Use: {@link Item#use(World, PlayerEntity, Hand) use}
+	 *
+	 * @param world o mundo em que o item foi utilizado
+	 * @param player quem utilizou
+	 * @param hand a mão em que o item está
+	 * @param result o resultado original da ação
+	 * @return o resultado da ação
+	 */
+	public TypedActionResult<ItemStack> onUseItem(World world, PlayerEntity player, Hand hand, TypedActionResult<ItemStack> result){
+		return result;
+	}
+
+	/**
+	 * Chamado quando o usuário termina de usar algum item
+	 *
+	 * Use: {@link Item#finishUsing(ItemStack, World, LivingEntity) finishingUsing}
+	 *
+	 * @param stack o item utilizado
+	 * @param world o mundo em que o item foi utilizado
+	 * @param user quem utilizou o item
+	 * @return o item resultante do uso
+	 */
+	public ItemStack onFinishUseItem(ItemStack stack, World world, LivingEntity user){
+		return stack;
+	}
+
+	/**
+	 * Chamado a cada tick quando o usuário está usando um item
+	 *
+	 * Use: {@link Item#usageTick(World, LivingEntity, ItemStack, int) usageTick}
+	 *
+	 * @param world o mundo em que o item está sendo utilizado
+	 * @param user quem utilizou o item
+	 * @param stack o item sendo utilizado
+	 * @param remainingUseTicks a duração restante da utilização
+	 */
+	public void onTickUseItem(World world, LivingEntity user, ItemStack stack, int remainingUseTicks){}
+
+	/**
+	 * Chamado quando o usuário bloqueia um ataque com um escudo
+	 *
+	 * Use: PlayerEntity#takeShieldHit
+	 *
+	 * @param player quem bloqueou
+	 * @param attacker quem atacou
+	 * @param source o tipo de dano
+	 * @param originalBlockedDamage o dano bloqueado
+	 * @param blockedDamage o dano bloqueado
+	 * @return o dano bloqueado pelo escudo
+	 */
+	public float onShieldBlock(PlayerEntity player, @Nullable Entity attacker, DamageSource source, float originalBlockedDamage, float blockedDamage){
+		return originalBlockedDamage;
+	}
+
+	/**
+	 * Chamado quando o usuário ataca, mas seu ataque é bloqueado por um escudo
+	 *
+	 * Use: PlayerEntity#takeShieldHit
+	 *
+	 * @param player quem atacou
+	 * @param target quem bloqueou
+	 * @param source o tipo de dano
+	 * @param originalBlockedDamage o dano bloqueado
+	 * @param blockedDamage o dano bloqueado
+	 * @return o dano bloqueado pelo escudo
+	 */
+	public float onAttackBlocked(PlayerEntity player, LivingEntity target, DamageSource source, float originalBlockedDamage, float blockedDamage){
+		return originalBlockedDamage;
+	}
+
+	/**
+	 * Chamado quando o usuário quebra um bloco
+	 *
+	 * Use: {@link PlayerBlockBreakEvents#BEFORE before}
+	 *
+	 * @param player quem quebrou
+	 * @param world o world onde o bloco foi quebrado
+	 * @param pos a posição do bloco
+	 * @param state o bloco quebrado
+	 * @param exp o exp ganho por quebrar o bloco
+	 * @return o exp ganho após o poder ser ativo
+	 */
+	public int onBlockBreak(PlayerEntity player, World world, BlockPos pos, BlockState state, int exp){
+		return exp;
+	}
+
+	/**
+	 * Chamado quando o usuário recebe exp
+	 *
+	 * Use: {@link PlayerEntity#addExperience(int) addExperience}
+	 *
+	 * @param player quem recebeu o exp
+	 * @param exp o exp ganho
+	 * @return o exp ganho após o poder ser ativo
+	 */
+	public int onXPChange(PlayerEntity player, int exp){
+		return exp;
+	}
+
+	/**
+	 * Chamado quando o usuário recebe levels
+	 *
+	 * Use: {@link PlayerEntity#addExperienceLevels(int) addExperienceLevels}
+	 *
+	 * @param player quem recebeu os levels
+	 * @param levels os levels ganho
+	 * @return os levels ganho após o poder ser ativo
+	 */
+	public int onXPLevelChange(PlayerEntity player, int levels){
+		return levels;
 	}
 }

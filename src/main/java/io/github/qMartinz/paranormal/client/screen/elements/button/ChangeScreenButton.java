@@ -6,13 +6,14 @@ import io.github.qMartinz.paranormal.client.screen.AttributesScreen;
 import io.github.qMartinz.paranormal.client.screen.PowersScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 
-public class PowersScreenButton extends ButtonWidget {
-	public PowersScreenButton(int x, int y, int width, int height) {
+public class ChangeScreenButton extends ButtonWidget {
+	public ChangeScreenButton(int x, int y, int width, int height, Screen screen) {
 		super(x, y, width, height, Text.empty(), (b) ->
-				MinecraftClient.getInstance().setScreen(new PowersScreen(ParanormalElement.BLOOD)), DEFAULT_NARRATION);
+				MinecraftClient.getInstance().setScreen(screen), DEFAULT_NARRATION);
 	}
 
 	@Override

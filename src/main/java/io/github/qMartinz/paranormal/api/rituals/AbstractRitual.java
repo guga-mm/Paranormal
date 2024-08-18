@@ -2,6 +2,7 @@ package io.github.qMartinz.paranormal.api.rituals;
 
 import io.github.qMartinz.paranormal.api.ParanormalElement;
 import io.github.qMartinz.paranormal.api.PlayerData;
+import io.github.qMartinz.paranormal.api.events.ParanormalEvents;
 import io.github.qMartinz.paranormal.api.rituals.types.ProjectileRitual;
 import io.github.qMartinz.paranormal.api.rituals.types.RayTracingRitual;
 import io.github.qMartinz.paranormal.api.rituals.types.SelfRitual;
@@ -90,7 +91,8 @@ public abstract class AbstractRitual {
 
 	public void onCast(LivingEntity caster){
 		PlayerData playerData = StateSaverAndLoader.getPlayerState(caster);
-		if (canCast(caster) && (playerData.getOccultPoints() >= getOccultPointsCost() || (caster instanceof PlayerEntity player && player.isCreative()))){
+		if (canCast(caster) && (playerData.getOccultPoints() >= getOccultPointsCost() || (caster instanceof PlayerEntity player && player.isCreative())) &&
+				ParanormalEvents.RITUAL_CAST.invoker().ritualCast(this, caster)){
 			boolean cast = false;
 
 			if (this instanceof SelfRitual ritual) cast = ritual.useOnSelf(caster);

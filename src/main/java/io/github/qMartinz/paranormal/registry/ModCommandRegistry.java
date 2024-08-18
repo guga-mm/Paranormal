@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import io.github.qMartinz.paranormal.api.ParanormalAttribute;
 import io.github.qMartinz.paranormal.api.PlayerData;
+import io.github.qMartinz.paranormal.api.events.ParanormalEvents;
 import io.github.qMartinz.paranormal.api.powers.PowerRegistry;
 import io.github.qMartinz.paranormal.api.rituals.RitualRegistry;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
@@ -213,7 +214,10 @@ public class ModCommandRegistry {
 						PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 						final Identifier id = IdentifierArgumentType.getIdentifier(context, "id");
 
-						if (playerData.rituals.size() < playerData.getRitualSlots()) RitualRegistry.getRitual(id).ifPresent(playerData::addRitual);
+						if (playerData.rituals.size() < playerData.getRitualSlots()) RitualRegistry.getRitual(id).ifPresent(ritual -> {
+							playerData.addRitual(ritual);
+							ParanormalEvents.RITUAL_ADDED.invoker().ritualAdded(ritual, player);
+						});
 						playerData.syncToClient(player);
 						return 1;
 					})))
@@ -271,7 +275,10 @@ public class ModCommandRegistry {
 						PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 						final Identifier id = IdentifierArgumentType.getIdentifier(context, "id");
 
-						PowerRegistry.getPower(id).ifPresent(playerData::addPower);
+						PowerRegistry.getPower(id).ifPresent((power -> {
+							playerData.addPower(power);
+							ParanormalEvents.POWER_ADDED.invoker().powerAdded(power, player);
+						}));
 						playerData.syncToClient(player);
 						return 1;
 					})))

@@ -3,6 +3,9 @@ package io.github.qMartinz.paranormal.networking;
 import io.github.qMartinz.paranormal.Paranormal;
 import io.github.qMartinz.paranormal.ParanormalClient;
 import io.github.qMartinz.paranormal.api.PlayerData;
+import io.github.qMartinz.paranormal.api.events.ParanormalEvents;
+import io.github.qMartinz.paranormal.api.powers.ParanormalPower;
+import io.github.qMartinz.paranormal.api.powers.PowerRegistry;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.DefaultParticleType;
@@ -20,6 +23,7 @@ public class ModMessages {
 	public static final Identifier PLAYER_DATA_SYNC_ID = new Identifier(Paranormal.MODID, "player_data_sync");
 	public static final Identifier CAST_RITUAL_ID = new Identifier(Paranormal.MODID, "cast_ritual");
 	public static final Identifier SPAWN_PARTICLE_ID = new Identifier(Paranormal.MODID, "spawn_particle");
+	public static final Identifier ON_ADDED_POWER_TRIGGER_ID = new Identifier(Paranormal.MODID, "on_added_power_trigger");
 
 	public static void registerC2SPackets() {
 		ServerPlayNetworking.registerGlobalReceiver(PLAYER_DATA_SYNC_ID, (server, player, handler, buf, responseSender) -> {
@@ -35,12 +39,21 @@ public class ModMessages {
 
 			playerData.deserializeRituals(buf.readNbt());
 			playerData.deserializePowers(buf.readNbt());
-			playerData.deserializeActivePowers(buf.readNbt());
+			playerData.deserializeAffinities(buf.readNbt());
 		});
 
 		ServerPlayNetworking.registerGlobalReceiver(CAST_RITUAL_ID, (server, player, handler, buf, responseSender) -> {
 			PlayerData playerData = StateSaverAndLoader.getPlayerState(handler.player);
 			playerData.getRitual(buf.readInt()).onCast(player);
+		});
+
+		ServerPlayNetworking.registerGlobalReceiver(ON_ADDED_POWER_TRIGGER_ID, (server, player, handler, buf, responseSender) -> {
+			Identifier id = buf.readIdentifier();
+			PowerRegistry.getPower(id).ifPresent(power -> {
+				power.onAdded(player);
+				ParanormalEvents.POWER_ADDED.invoker().powerAdded(power, player);
+			});
+
 		});
 	}
 
@@ -57,7 +70,7 @@ public class ModMessages {
 
 			ParanormalClient.playerData.deserializeRituals(buf.readNbt());
 			ParanormalClient.playerData.deserializePowers(buf.readNbt());
-			ParanormalClient.playerData.deserializeActivePowers(buf.readNbt());
+			ParanormalClient.playerData.deserializeAffinities(buf.readNbt());
 		});
 
 		ClientPlayNetworking.registerGlobalReceiver(SPAWN_PARTICLE_ID,  (client, handler, buf, responseSender) -> {

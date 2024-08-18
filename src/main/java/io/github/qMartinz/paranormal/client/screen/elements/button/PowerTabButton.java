@@ -20,7 +20,7 @@ public class PowerTabButton extends ButtonWidget {
 
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-		graphics.drawTexture(PowersScreen.TEXTURE, getX(), getY(), 14 + 32 * (element.index - 1), selected ? 32 : 0, 32, 32);
+		graphics.drawTexture(PowersScreen.TEXTURE, getX(), getY(), 52 + 32 * (element.index - 1), selected ? 176 : 144, 32, 32);
 
 		if (isMouseOver(mouseX, mouseY) && !selected){
 			RenderSystem.enableBlend();
@@ -29,7 +29,7 @@ public class PowerTabButton extends ButtonWidget {
 			RenderSystem.disableDepthTest();
 
 			RenderSystem.setShaderColor(1f, 1f, 1f, 0.5f);
-			graphics.drawTexture(PowersScreen.TEXTURE, getX(), getY(), 14 + 32 * (element.index - 1), 32, 32, 32);
+			graphics.drawTexture(PowersScreen.TEXTURE, getX(), getY(), 52 + 32 * (element.index - 1), 176, 32, 32);
 			RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
 			RenderSystem.enableDepthTest();
