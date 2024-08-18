@@ -170,34 +170,18 @@ public class ParanormalPower {
 	/**
 	 * Chamado quando o usuário bloqueia um ataque com um escudo
 	 *
-	 * Use: PlayerEntity#takeShieldHit
-	 *
 	 * @param player quem bloqueou
 	 * @param attacker quem atacou
-	 * @param source o tipo de dano
-	 * @param originalBlockedDamage o dano bloqueado
-	 * @param blockedDamage o dano bloqueado
-	 * @return o dano bloqueado pelo escudo
 	 */
-	public float onShieldBlock(PlayerEntity player, @Nullable Entity attacker, DamageSource source, float originalBlockedDamage, float blockedDamage){
-		return originalBlockedDamage;
-	}
+	public void onShieldBlock(PlayerEntity player, @Nullable Entity attacker){}
 
 	/**
 	 * Chamado quando o usuário ataca, mas seu ataque é bloqueado por um escudo
 	 *
-	 * Use: PlayerEntity#takeShieldHit
-	 *
 	 * @param player quem atacou
 	 * @param target quem bloqueou
-	 * @param source o tipo de dano
-	 * @param originalBlockedDamage o dano bloqueado
-	 * @param blockedDamage o dano bloqueado
-	 * @return o dano bloqueado pelo escudo
 	 */
-	public float onAttackBlocked(PlayerEntity player, LivingEntity target, DamageSource source, float originalBlockedDamage, float blockedDamage){
-		return originalBlockedDamage;
-	}
+	public void onAttackBlocked(PlayerEntity player, LivingEntity target){}
 
 	/**
 	 * Chamado quando o usuário quebra um bloco

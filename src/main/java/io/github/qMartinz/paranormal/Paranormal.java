@@ -1,6 +1,7 @@
 package io.github.qMartinz.paranormal;
 
 import io.github.qMartinz.paranormal.api.PlayerData;
+import io.github.qMartinz.paranormal.api.events.ParanormalEvents;
 import io.github.qMartinz.paranormal.api.powers.ParanormalPower;
 import io.github.qMartinz.paranormal.entity.events.LivingEntityEvents;
 import io.github.qMartinz.paranormal.entity.events.VillagerFearEvents;
@@ -71,5 +72,22 @@ public class Paranormal implements ModInitializer {
 
 			return allowDamage;
 		});
+
+		ParanormalEvents.TAKEN_SHIELD_HIT.register(((attacker, target) -> {
+			PlayerData playerDataAttacker = StateSaverAndLoader.getPlayerState(attacker);
+			PlayerData playerDataTarget = StateSaverAndLoader.getPlayerState(target);
+
+			if (attacker instanceof PlayerEntity player) {
+				for (ParanormalPower p : playerDataAttacker.powers) {
+					p.onAttackBlocked(player, target);
+				}
+			}
+
+			if (target instanceof PlayerEntity player) {
+				for (ParanormalPower p : playerDataTarget.powers) {
+					p.onShieldBlock(player, attacker);
+				}
+			}
+		}));
 	}
 }

@@ -40,6 +40,13 @@ public class ParanormalEvents {
 				return true;
 			});
 
+	public static final Event<TakenShieldHit> TAKEN_SHIELD_HIT = Event.create(TakenShieldHit.class,
+			(listeners) -> (attacker, target) -> {
+				for (TakenShieldHit listener : listeners){
+					listener.takenShieldHit(attacker, target);
+				}
+			});
+
 	public interface PowerAdded {
 		void powerAdded(ParanormalPower power, PlayerEntity player);
 	}
@@ -50,5 +57,9 @@ public class ParanormalEvents {
 
 	public interface RitualCast {
 		boolean ritualCast(AbstractRitual ritual, LivingEntity caster);
+	}
+
+	public interface TakenShieldHit {
+		void takenShieldHit(LivingEntity attacker, LivingEntity target);
 	}
 }
