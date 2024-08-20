@@ -159,7 +159,7 @@ public class PlayerData {
 		return rituals.stream().toList().get(index);
 	}
 
-	public boolean hasRituals(AbstractRitual ritual){
+	public boolean hasRitual(AbstractRitual ritual){
 		return this.powers.contains(ritual);
 	}
 

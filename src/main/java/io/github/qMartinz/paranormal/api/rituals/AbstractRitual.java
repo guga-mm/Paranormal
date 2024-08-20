@@ -17,6 +17,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Rarity;
 import team.lodestar.lodestone.systems.rendering.particle.Easing;
 
 public abstract class AbstractRitual {
@@ -79,6 +80,24 @@ public abstract class AbstractRitual {
 
 	public int getTier() {
 		return tier;
+	}
+
+	public Rarity getRarity(){
+		return switch (getTier()){
+			case 2 -> Rarity.UNCOMMON;
+			case 3 -> Rarity.RARE;
+			case 4 -> Rarity.EPIC;
+			default -> Rarity.COMMON;
+		};
+	}
+
+	public int getPresenceRequired(){
+		return switch (tier) {
+			case 2 -> 2;
+			case 3 -> 4;
+			case 4 -> 6;
+			default -> 0;
+		};
 	}
 
 	public boolean mustHoldIngredient() {

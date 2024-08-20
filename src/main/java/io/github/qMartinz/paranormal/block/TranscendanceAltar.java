@@ -1,19 +1,33 @@
 package io.github.qMartinz.paranormal.block;
 
+import io.github.qMartinz.paranormal.api.ParanormalAttribute;
+import io.github.qMartinz.paranormal.api.PlayerData;
+import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
+import io.github.qMartinz.paranormal.item.RitualItem;
+import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockRotation;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 
 public class TranscendanceAltar extends Block {
 	public static DirectionProperty FACING = Properties.HORIZONTAL_FACING;
@@ -70,6 +84,49 @@ public class TranscendanceAltar extends Block {
 	}
 
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		builder.add(new Property[]{FACING});
+		builder.add(FACING);
+	}
+
+	@Override
+	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+		if (world.isClient()) return super.onUse(state, world, pos, player, hand, hit);
+		PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+
+		if (!(player.getStackInHand(hand).getItem() instanceof RitualItem)) return super.onUse(state, world, pos, player, hand, hit);
+
+		AbstractRitual ritual = ((RitualItem) player.getStackInHand(hand).getItem()).getRitual();
+		ItemStack stack = player.getStackInHand(hand);
+
+		if (playerData.hasRitual(ritual) && player.isSneaking()) {
+			if (stack.getOrCreateNbt().getBoolean("ritualLearned")){
+				NbtCompound tag = new NbtCompound();
+				tag.putBoolean("ritualLearned", false);
+				stack.setNbt(tag);
+			}
+			playerData.removeRitual(ritual);
+			playerData.syncToClient((ServerPlayerEntity) player);
+			//world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), OPSounds.RITUAL_FORGOTTEN.get(), SoundCategory.BLOCKS, 0.5f, 1f); TODO sons de ritual
+			//world.playSound(null, pPos.getX(), pPos.getY(), pPos.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.BLOCKS, 1f, 1f); sons de ritual
+			return ActionResult.CONSUME;
+		}
+
+		if (playerData.getAttribute(ParanormalAttribute.PRESENCE) >= ((RitualItem) stack.getItem()).getRitual().getPresenceRequired() &&
+				playerData.rituals.size() < playerData.getRitualSlots() &&
+				!stack.getOrCreateNbt().getBoolean("ritualLearned")) {
+			NbtCompound tag = new NbtCompound();
+			tag.putBoolean("ritualLearned", true);
+			stack.setNbt(tag);
+			playerData.addRitual(ritual);
+			playerData.syncToClient((ServerPlayerEntity) player);
+
+			//world.playSound(null, pPos.getX(), pPos.getY(), pPos.getZ(), OPSounds.RITUAL_LEARNED.get(), SoundSource.BLOCKS, 0.5f, 1f); sons de ritual
+			//world.playSound(null, pPos.getX(), pPos.getY(), pPos.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.BLOCKS, 1f, 1f); sons de ritual
+
+			//OPTriggers.LEARN_RITUAL.trigger(serverPlayer); TODO conquista
+
+			return ActionResult.CONSUME;
+		}
+
+		return super.onUse(state, world, pos, player, hand, hit);
 	}
 }
