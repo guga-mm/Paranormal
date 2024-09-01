@@ -25,6 +25,7 @@ public class ParanormalClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient(ModContainer mod) {
 		ModEntityRegistry.registerRenderers();
+		ModBlockRegistry.registerRenderers();
 		ModParticleRegistry.registerFactories();
 		ModModelLayerRegistry.init();
 
