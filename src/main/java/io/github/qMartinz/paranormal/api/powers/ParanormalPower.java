@@ -3,6 +3,7 @@ package io.github.qMartinz.paranormal.api.powers;
 import io.github.qMartinz.paranormal.api.ParanormalAttribute;
 import io.github.qMartinz.paranormal.api.ParanormalElement;
 import io.github.qMartinz.paranormal.api.PlayerData;
+import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.block.BlockState;
@@ -110,8 +111,8 @@ public class ParanormalPower {
 	 * @param source o tipo de dano causado
 	 * @return verdadeiro caso o dano seja causado
 	 */
-	public boolean onAttack(PlayerEntity player, float amount, Entity target, DamageSource source){
-		return true;
+	public float onAttack(PlayerEntity player, float amount, Entity target, DamageSource source){
+		return amount;
 	}
 
 	/**
@@ -123,8 +124,8 @@ public class ParanormalPower {
 	 * @param source o tipo de dano causado
 	 * @return verdadeiro caso o dano seja tomado
 	 */
-	public boolean onHurt(PlayerEntity player, float amount, @Nullable Entity attacker, DamageSource source){
-		return true;
+	public float onHurt(PlayerEntity player, float amount, @Nullable Entity attacker, DamageSource source){
+		return amount;
 	}
 
 	/**
@@ -186,7 +187,7 @@ public class ParanormalPower {
 	 * @param pos a posição do bloco
 	 * @param state o bloco quebrado
 	 * @param blockEntity a entidade do bloco
-	 * @return o exp ganho após o poder ser ativo
+	 * @return true se o bloco for quebrado
 	 */
 	public boolean onBlockBreak(PlayerEntity player, World world, BlockPos pos, BlockState state, BlockEntity blockEntity){
 		return true;
@@ -212,5 +213,28 @@ public class ParanormalPower {
 	 */
 	public int onXPLevelChange(PlayerEntity player, int levels){
 		return levels;
+	}
+
+	/**
+	 * Chamado quando o usuário utiliza um ritual
+	 *
+	 * @param player o usuário
+	 * @param ritual o ritual utilizado
+	 * @return true se o ritual foi utilizado
+	 */
+	public boolean onCastRitual(PlayerEntity player, AbstractRitual ritual){
+		return true;
+	}
+
+	/**
+	 * Chamado quando o usuário é alvo de um ritual
+	 *
+	 * @param player o usuário
+	 * @param ritual o ritual utilizado
+	 * @param caster o usuário do ritual
+	 * @return true se o ritual foi utilizado
+	 */
+	public boolean onTargetRitual(PlayerEntity player, AbstractRitual ritual, LivingEntity caster){
+		return true;
 	}
 }

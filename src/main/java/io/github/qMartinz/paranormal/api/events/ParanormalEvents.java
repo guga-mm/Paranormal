@@ -36,11 +36,22 @@ public class ParanormalEvents {
 	 */
 	public static final Event<RitualCast> RITUAL_CAST = Event.create(RitualCast.class,
 			(listeners) -> (ritual, caster) -> {
+				boolean allowCasting = true;
 				for (RitualCast listener : listeners) {
-					return listener.ritualCast(ritual, caster);
+					allowCasting = allowCasting && listener.ritualCast(ritual, caster);
 				}
 
-				return true;
+				return allowCasting;
+			});
+
+	public static final Event<RitualTarget> RITUAL_TARGET = Event.create(RitualTarget.class,
+			(listeners) -> (ritual, caster, target) -> {
+				boolean allowCasting = true;
+				for (RitualTarget listener : listeners) {
+					allowCasting = allowCasting && listener.ritualTarget(ritual, caster, target);
+				}
+
+				return allowCasting;
 			});
 
 	public static final Event<TakenShieldHit> TAKEN_SHIELD_HIT = Event.create(TakenShieldHit.class,
@@ -103,6 +114,10 @@ public class ParanormalEvents {
 
 	public interface RitualCast {
 		boolean ritualCast(AbstractRitual ritual, LivingEntity caster);
+	}
+
+	public interface RitualTarget {
+		boolean ritualTarget(AbstractRitual ritual, LivingEntity caster, LivingEntity target);
 	}
 
 	public interface TakenShieldHit {

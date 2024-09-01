@@ -1,6 +1,7 @@
 package io.github.qMartinz.paranormal;
 
 import io.github.qMartinz.paranormal.api.PlayerData;
+import io.github.qMartinz.paranormal.api.curses.CurseHelper;
 import io.github.qMartinz.paranormal.api.events.ParanormalEvents;
 import io.github.qMartinz.paranormal.api.powers.ParanormalPower;
 import io.github.qMartinz.paranormal.entity.events.LivingEntityEvents;
@@ -12,7 +13,13 @@ import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.util.ActionResult;
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
@@ -47,31 +54,37 @@ public class Paranormal implements ModInitializer {
 		ServerEntityTickCallback.EVENT.register(VillagerFearEvents::onTick);
 		ServerEntityTickCallback.EVENT.register(LivingEntityEvents::onTick);
 
-		ServerEntityTickCallback.EVENT.register((e, b) -> {
-			if (e instanceof PlayerEntity player) {
+		ServerEntityTickCallback.EVENT.register((entity, b) -> {
+			if (entity instanceof PlayerEntity player) {
 				PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 				playerData.powers.forEach(p -> p.onTick(player));
 			}
+
+			if (entity instanceof LivingEntity livingEntity) CurseHelper.doTickEffects(livingEntity);
 		});
 
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
-			boolean allowDamage = true;
+			if (source.getSource() instanceof LivingEntity living) {
+				amount = CurseHelper.doPostAttackEffects(living, entity, amount, source);
+			}
+
+			amount = CurseHelper.doPostHurtEffects(entity, source.getSource(), amount, source);
 
 			if (source.getAttacker() instanceof PlayerEntity playerAttacker) {
 				PlayerData playerDataAttacker = StateSaverAndLoader.getPlayerState(playerAttacker);
 				for (ParanormalPower p : playerDataAttacker.powers) {
-					allowDamage = allowDamage && p.onAttack(playerAttacker, amount, entity, source);
+					amount = p.onAttack(playerAttacker, amount, entity, source);
 				}
 			}
 
 			if (entity instanceof PlayerEntity playerTarget) {
 				PlayerData playerDataTarget = StateSaverAndLoader.getPlayerState(playerTarget);
 				for (ParanormalPower p : playerDataTarget.powers) {
-					allowDamage = allowDamage && p.onHurt(playerTarget, amount, source.getAttacker(), source);
+					amount = p.onHurt(playerTarget, amount, source.getAttacker(), source);
 				}
 			}
 
-			return allowDamage;
+			return true;
 		});
 
 		ParanormalEvents.TAKEN_SHIELD_HIT.register(((attacker, target) -> {
@@ -136,15 +149,47 @@ public class Paranormal implements ModInitializer {
 
 		PlayerBlockBreakEvents.BEFORE.register(((world, player, pos, state, blockEntity) -> {
 			PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+			boolean allowBreak = true;
 			for (ParanormalPower p : playerData.powers) {
 				boolean result = p.onBlockBreak(player, world, pos, state, blockEntity);
+				allowBreak = allowBreak && result;
+			}
 
-				if (!result) {
-					return false;
+			allowBreak = allowBreak && CurseHelper.doBlockBreakEffects(player, pos, state);
+
+			return allowBreak;
+		}));
+
+		ParanormalEvents.RITUAL_CAST.register((ritual, caster) -> {
+			PlayerData playerData = StateSaverAndLoader.getPlayerState(caster);
+			boolean allowCasting = true;
+
+			if (caster instanceof PlayerEntity player){
+				for (ParanormalPower p : playerData.powers) {
+					boolean result = p.onCastRitual(player, ritual);
+					allowCasting = allowCasting && result;
 				}
 			}
 
-			return true;
-		}));
+			allowCasting = allowCasting && CurseHelper.isRitualCasterEffects(caster, ritual);
+
+			return allowCasting;
+		});
+
+		ParanormalEvents.RITUAL_TARGET.register((ritual, caster, target) -> {
+			PlayerData playerData = StateSaverAndLoader.getPlayerState(caster);
+			boolean allowCasting = true;
+
+			if (caster instanceof PlayerEntity player){
+				for (ParanormalPower p : playerData.powers) {
+					boolean result = p.onTargetRitual(player, ritual, caster);
+					allowCasting = allowCasting && result;
+				}
+			}
+
+			allowCasting = allowCasting && CurseHelper.isRitualTargetEffects(target, ritual, caster);
+
+			return allowCasting;
+		});
 	}
 }

@@ -20,7 +20,7 @@ public class SkinningRitual extends AbstractRitual implements ProjectileRitual {
 	@Override
 	public void onEntityHit(LivingEntity caster, EntityHitResult hitResult) {
 		if (hitResult.getEntity() instanceof LivingEntity livingEntity){
-			livingEntity.damage(ModDamageTypes.getSource(livingEntity.getDamageSources(), ModDamageTypes.RITUAL, caster), 4f);
+			livingEntity.damage(getElement().getDamage(livingEntity.getDamageSources(), caster), 4f);
 		}
 	}
 

@@ -1,5 +1,9 @@
 package io.github.qMartinz.paranormal.util;
 
+import io.github.qMartinz.paranormal.api.ParanormalElement;
+import io.github.qMartinz.paranormal.registry.ModDamageTypes;
+import net.minecraft.entity.LivingEntity;
+
 public class MathUtils {
 	/**
 	 * Returns the given value if between the lower and the upper bound. If the value is less than the lower bound,
@@ -23,5 +27,10 @@ public class MathUtils {
 	public static int Oscillate(int input, int min, int max) {
 		int range = max - min ;
 		return min + Math.abs(((input + range) % (range * 2)) - range);
+	}
+
+	public static float calcParanormalDmg(float dmg, LivingEntity target, ParanormalElement element){
+		return dmg * (ModDamageTypes.isEntityWeakTo(target, element.getDamage(target.getDamageSources())) ? 2f : 1f)
+				/ (ModDamageTypes.isEntityResistant(target, element.getDamage(target.getDamageSources())) ? 2f : 1f);
 	}
 }
