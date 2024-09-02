@@ -1,7 +1,6 @@
 package io.github.qMartinz.paranormal.block;
 
 import io.github.qMartinz.paranormal.api.ParanormalElement;
-import io.github.qMartinz.paranormal.block.CurseTable;
 import io.github.qMartinz.paranormal.block.entities.CurseTableEntity;
 import io.github.qMartinz.paranormal.registry.ModBlockRegistry;
 import net.minecraft.block.BlockState;
@@ -19,6 +18,6 @@ public class CurseTableEnergy extends CurseTable {
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-		return checkType(type, ModBlockRegistry.CURSE_TABLE_ENERGY_ENTITY, CurseTableEntity::tick);
+		return checkType(type, ModBlockRegistry.ENERGY_TABLE_ENTITY, CurseTableEntity::tick);
 	}
 }

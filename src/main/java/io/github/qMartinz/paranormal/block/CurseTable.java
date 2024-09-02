@@ -1,9 +1,12 @@
 package io.github.qMartinz.paranormal.block;
 
+import io.github.qMartinz.paranormal.Paranormal;
 import io.github.qMartinz.paranormal.api.ParanormalElement;
 import io.github.qMartinz.paranormal.api.curses.CurseHelper;
 import io.github.qMartinz.paranormal.api.curses.CurseInstance;
 import io.github.qMartinz.paranormal.block.entities.CurseTableEntity;
+import io.github.qMartinz.paranormal.networking.ParticleMessages;
+import io.github.qMartinz.paranormal.registry.ModParticleRegistry;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.ItemEntity;
@@ -11,6 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
@@ -27,6 +31,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import team.lodestar.lodestone.systems.rendering.particle.Easing;
 
 public class CurseTable extends BlockWithEntity {
 	public static final BooleanProperty HAS_ITEM;
@@ -60,6 +65,7 @@ public class CurseTable extends BlockWithEntity {
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
 		builder.add(FACING);
 		builder.add(HAS_ITEM);
+		builder.add(FUEL);
 	}
 
 	@Override
@@ -87,63 +93,76 @@ public class CurseTable extends BlockWithEntity {
 
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+		if (world.isClient() || !(world.getBlockEntity(pos) instanceof CurseTableEntity curseTableEntity) || hand != Hand.MAIN_HAND) return super.onUse(state, world, pos, player, hand, hit);
 
-		if (world.isClient() || !(world.getBlockEntity(pos) instanceof CurseTableEntity curseTableEntity)) return ActionResult.PASS;
-
-		if (!curseTableEntity.getStack(0).isEmpty() && player.getStackInHand(hand).isEmpty()){
-			ItemEntity item = new ItemEntity(world, player.getX(), player.getY(), player.getZ(), curseTableEntity.getStack(0));
+		if (!curseTableEntity.getItem().isEmpty() && player.getMainHandStack().isEmpty()){
+			Paranormal.LOGGER.info("Taking Item");
+			ItemEntity item = new ItemEntity(world, player.getX(), player.getY(), player.getZ(), curseTableEntity.getItem());
 			world.spawnEntity(item);
-			curseTableEntity.setStack(0, ItemStack.EMPTY);
-			return ActionResult.SUCCESS;
+			curseTableEntity.setItem(ItemStack.EMPTY);
+			return ActionResult.CONSUME;
 		}
 
-		if (!player.getStackInHand(hand).isEmpty() && curseTableEntity.getStack(0).isEmpty()){
-			curseTableEntity.setStack(0, player.getInventory().removeStack(player.getInventory().selectedSlot, 1));
-			return ActionResult.SUCCESS;
+		if (!player.getMainHandStack().isEmpty() && curseTableEntity.getItem().isEmpty()){
+			Paranormal.LOGGER.info("Setting item");
+			curseTableEntity.setItem(player.getMainHandStack());
+			player.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
+			return ActionResult.CONSUME;
 		}
 
-		boolean hasCursableItemInSlot = CurseHelper.getCurses(curseTableEntity.getStack(0)).stream().filter(inst -> !inst.getCurse().isTemporary()).toList().size() < 4;
+		boolean hasCursableItemInSlot = CurseHelper.getCurses(curseTableEntity.getItem()).stream().filter(inst -> !inst.getCurse().isTemporary()).toList().size() < 4;
 
-		boolean hasCursedItemInHand = CurseHelper.getCurses(player.getStackInHand(hand)).stream().anyMatch(inst ->
-				inst.getCurse().canCurse(curseTableEntity.getStack(0)) &&
+		boolean hasCursedItemInHand = CurseHelper.getCurses(player.getMainHandStack()).stream().anyMatch(inst ->
+				inst.getCurse().canCurse(curseTableEntity.getItem()) &&
 						inst.getCurse().getMaxUses() == 0 &&
-						CurseHelper.getCurses(curseTableEntity.getStack(0)).stream().noneMatch(inst2 -> inst.getCurse() == inst2.getCurse()) &&
+						CurseHelper.getCurses(curseTableEntity.getItem()).stream().noneMatch(inst2 -> inst.getCurse() == inst2.getCurse()) &&
 						inst.getCurse().getElement() == element);
 
-		boolean accept = !curseTableEntity.getStack(0).isEmpty() &&
+		boolean accept = !curseTableEntity.getItem().isEmpty() &&
 				hasCursableItemInSlot && hasCursedItemInHand && curseTableEntity.getFuel() >= 4;
 
-		if (!player.getStackInHand(hand).isEmpty() && !curseTableEntity.getStack(0).isEmpty() && accept){
-			ItemStack result = curseTableEntity.getStack(0).copy();
+		if (!player.getMainHandStack().isEmpty() && !curseTableEntity.getItem().isEmpty() && accept){
+			Paranormal.LOGGER.info("Cursing item");
+			ItemStack result = curseTableEntity.getItem().copy();
 
-			for (CurseInstance curse : CurseHelper.getCurses(player.getStackInHand(hand))) {
+			for (CurseInstance curse : CurseHelper.getCurses(player.getMainHandStack())) {
 				if (curse.getCurse().getElement() == element &&
-						CurseHelper.getCurses(curseTableEntity.getStack(0)).stream().noneMatch(inst -> inst.getCurse() == curse.getCurse())) {
+						CurseHelper.getCurses(curseTableEntity.getItem()).stream().noneMatch(inst -> inst.getCurse() == curse.getCurse())) {
 					CurseHelper.addCurse(result, curse);
 				}
 			}
 
-			for (CurseInstance curse : CurseHelper.getCurses(player.getStackInHand(hand))) {
+			for (CurseInstance curse : CurseHelper.getCurses(player.getMainHandStack())) {
 				if (curse.getCurse().getElement() == element &&
-						CurseHelper.getCurses(curseTableEntity.getStack(0)).stream().noneMatch(inst -> inst.getCurse() == curse.getCurse())) {
-					CurseHelper.removeCurse(player.getStackInHand(hand), curse.getCurse());
+						CurseHelper.getCurses(curseTableEntity.getItem()).stream().noneMatch(inst -> inst.getCurse() == curse.getCurse())) {
+					CurseHelper.removeCurse(player.getMainHandStack(), curse.getCurse());
 				}
 			}
 
-			curseTableEntity.setStack(0, result);
+			curseTableEntity.setItem(result);
 			curseTableEntity.setFuel(curseTableEntity.getFuel() - 4);
 
-			curseParticles();
+			if (world instanceof ServerWorld serverWorld) curseParticles(serverWorld, pos);
+
+			return ActionResult.CONSUME;
 		}
 
-		return ActionResult.PASS;
+		return super.onUse(state, world, pos, player, hand, hit);
 	}
 
-	public void curseParticles(){
-		for (int i = 0; i < 360; i++) {
-			if (i % 20 == 0) {
-				// TODO Curse particles
-			}
+	public void curseParticles(ServerWorld world, BlockPos pos){
+		if (element == ParanormalElement.DEATH){
+			ParticleMessages.spawnLumitransparentCircle(world, ModParticleRegistry.GLOWING_PARTICLE, pos.getX() + 0.5d,
+					pos.getY() + 1.25d, pos.getZ() + 0.5d, 0.5d, 12, 0d, 0.25d, 0d,
+					element.particleColorS(), element.particleColorE(), 1f, 0f, -1f,
+					1f, Easing.LINEAR, Easing.LINEAR, 0.3f, 0f, -1f, 1f,
+					Easing.LINEAR, Easing.LINEAR, 36, 1f);
+		} else {
+			ParticleMessages.spawnAdditiveCircle(world, ModParticleRegistry.GLOWING_PARTICLE, pos.getX() + 0.5d,
+					pos.getY() + 1.25d, pos.getZ() + 0.5d, 0.5d, 12, 0d, 0.25d, 0d,
+					element.particleColorS(), element.particleColorE(), 1f, 0f, -1f,
+					1f, Easing.LINEAR, Easing.LINEAR, 0.3f, 0f, -1f, 1f,
+					Easing.LINEAR, Easing.LINEAR, 36, 1f);
 		}
 	}
 

@@ -53,7 +53,6 @@ public class ModMessages {
 				power.onAdded(player);
 				ParanormalEvents.POWER_ADDED.invoker().powerAdded(power, player);
 			});
-
 		});
 	}
 

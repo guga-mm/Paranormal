@@ -104,31 +104,6 @@ public class Paranormal implements ModInitializer {
 			}
 		}));
 
-		ParanormalEvents.USE_ITEM.register(((world, player, hand, result) -> {
-			PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-			for (ParanormalPower p : playerData.powers) {
-				return p.onUseItem(world, player, hand, result);
-			}
-
-			return result;
-		}));
-
-		ParanormalEvents.FINISH_USING_ITEM.register(((stack, world, user) -> {
-			PlayerData playerData = StateSaverAndLoader.getPlayerState(user);
-			for (ParanormalPower p : playerData.powers) {
-				return p.onFinishUseItem(stack, world, user);
-			}
-
-			return stack;
-		}));
-
-		ParanormalEvents.TICK_USE_ITEM.register(((world, user, stack, remainingUseTicks) -> {
-			PlayerData playerData = StateSaverAndLoader.getPlayerState(user);
-			for (ParanormalPower p : playerData.powers) {
-				p.onTickUseItem(world, user, stack, remainingUseTicks);
-			}
-		}));
-
 		ParanormalEvents.ADD_EXPERIENCE.register(((player, experience) -> {
 			PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 			for (ParanormalPower p : playerData.powers){

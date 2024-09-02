@@ -31,43 +31,43 @@ public class ModBlockRegistry {
 			new Identifier(MODID, "light_block_entity"),
 			QuiltBlockEntityTypeBuilder.create(LightBlockEntity::new, LIGHT_BLOCK).build());
 
-	public static final Block CURSE_TABLE_BLOOD = Registry.register(Registries.BLOCK,
-			new Identifier(MODID, "curse_table_blood"),
+	public static final Block BLOOD_TABLE = Registry.register(Registries.BLOCK,
+			new Identifier(MODID, "blood_table"),
 			new CurseTableBlood());
 
-	public static final BlockEntityType<CurseTableEntity> CURSE_TABLE_BLOOD_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
-			new Identifier(MODID, "curse_table_blood_entity"),
-			QuiltBlockEntityTypeBuilder.create((pos, state) -> new CurseTableEntity(pos, state, ParanormalElement.BLOOD), CURSE_TABLE_BLOOD).build());
+	public static final BlockEntityType<CurseTableEntity> BLOOD_TABLE_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
+			new Identifier(MODID, "blood_table_entity"),
+			QuiltBlockEntityTypeBuilder.create((pos, state) -> new CurseTableEntity(pos, state, ParanormalElement.BLOOD), BLOOD_TABLE).build());
 
-	public static final Block CURSE_TABLE_DEATH = Registry.register(Registries.BLOCK,
-			new Identifier(MODID, "curse_table_death"),
+	public static final Block DEATH_TABLE = Registry.register(Registries.BLOCK,
+			new Identifier(MODID, "death_table"),
 			new CurseTableDeath());
 
-	public static final BlockEntityType<CurseTableEntity> CURSE_TABLE_DEATH_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
-			new Identifier(MODID, "curse_table_death_entity"),
-			QuiltBlockEntityTypeBuilder.create((pos, state) -> new CurseTableEntity(pos, state, ParanormalElement.DEATH), CURSE_TABLE_DEATH).build());
+	public static final BlockEntityType<CurseTableEntity> DEATH_TABLE_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
+			new Identifier(MODID, "death_table_entity"),
+			QuiltBlockEntityTypeBuilder.create((pos, state) -> new CurseTableEntity(pos, state, ParanormalElement.DEATH), DEATH_TABLE).build());
 
-	public static final Block CURSE_TABLE_ENERGY = Registry.register(Registries.BLOCK,
-			new Identifier(MODID, "curse_table_energy"),
+	public static final Block ENERGY_TABLE = Registry.register(Registries.BLOCK,
+			new Identifier(MODID, "energy_table"),
 			new CurseTableEnergy());
 
-	public static final BlockEntityType<CurseTableEntity> CURSE_TABLE_ENERGY_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
-			new Identifier(MODID, "curse_table_energy_entity"),
-			QuiltBlockEntityTypeBuilder.create((pos, state) -> new CurseTableEntity(pos, state, ParanormalElement.ENERGY), CURSE_TABLE_ENERGY).build());
+	public static final BlockEntityType<CurseTableEntity> ENERGY_TABLE_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
+			new Identifier(MODID, "energy_table_entity"),
+			QuiltBlockEntityTypeBuilder.create((pos, state) -> new CurseTableEntity(pos, state, ParanormalElement.ENERGY), ENERGY_TABLE).build());
 
-	public static final Block CURSE_TABLE_WISDOM = Registry.register(Registries.BLOCK,
-			new Identifier(MODID, "curse_table_wisdom"),
+	public static final Block WISDOM_TABLE = Registry.register(Registries.BLOCK,
+			new Identifier(MODID, "wisdom_table"),
 			new CurseTableWisdom());
 
-	public static final BlockEntityType<CurseTableEntity> CURSE_TABLE_WISDOM_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
-			new Identifier(MODID, "curse_table_wisdom_entity"),
-			QuiltBlockEntityTypeBuilder.create((pos, state) -> new CurseTableEntity(pos, state, ParanormalElement.WISDOM), CURSE_TABLE_WISDOM).build());
+	public static final BlockEntityType<CurseTableEntity> WISDOM_TABLE_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
+			new Identifier(MODID, "wisdom_table_entity"),
+			QuiltBlockEntityTypeBuilder.create((pos, state) -> new CurseTableEntity(pos, state, ParanormalElement.WISDOM), WISDOM_TABLE).build());
 
 	public static void registerRenderers(){
-		BlockEntityRendererFactories.register(CURSE_TABLE_BLOOD_ENTITY, CurseTableRenderer::new);
-		BlockEntityRendererFactories.register(CURSE_TABLE_DEATH_ENTITY, CurseTableRenderer::new);
-		BlockEntityRendererFactories.register(CURSE_TABLE_ENERGY_ENTITY, CurseTableRenderer::new);
-		BlockEntityRendererFactories.register(CURSE_TABLE_WISDOM_ENTITY, CurseTableRenderer::new);
+		BlockEntityRendererFactories.register(BLOOD_TABLE_ENTITY, CurseTableRenderer::new);
+		BlockEntityRendererFactories.register(DEATH_TABLE_ENTITY, CurseTableRenderer::new);
+		BlockEntityRendererFactories.register(ENERGY_TABLE_ENTITY, CurseTableRenderer::new);
+		BlockEntityRendererFactories.register(WISDOM_TABLE_ENTITY, CurseTableRenderer::new);
 	}
 
 	public static void init() {

@@ -18,6 +18,6 @@ public class CurseTableBlood extends CurseTable{
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-		return checkType(type, ModBlockRegistry.CURSE_TABLE_BLOOD_ENTITY, CurseTableEntity::tick);
+		return checkType(type, ModBlockRegistry.BLOOD_TABLE_ENTITY, CurseTableEntity::tick);
 	}
 }

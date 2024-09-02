@@ -2,6 +2,8 @@ package io.github.qMartinz.paranormal;
 
 import io.github.qMartinz.paranormal.api.ParanormalElement;
 import io.github.qMartinz.paranormal.api.PlayerData;
+import io.github.qMartinz.paranormal.api.events.ParanormalEvents;
+import io.github.qMartinz.paranormal.api.powers.ParanormalPower;
 import io.github.qMartinz.paranormal.api.powers.PowerRegistry;
 import io.github.qMartinz.paranormal.client.event.ClientEvents;
 import io.github.qMartinz.paranormal.client.event.KeyInputHandler;
@@ -10,6 +12,7 @@ import io.github.qMartinz.paranormal.client.hud.RitualHud;
 import io.github.qMartinz.paranormal.client.screen.AttributesScreen;
 import io.github.qMartinz.paranormal.networking.ModMessages;
 import io.github.qMartinz.paranormal.registry.*;
+import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.client.MinecraftClient;
@@ -70,6 +73,31 @@ public class ParanormalClient implements ClientModInitializer {
 				screen.addPower(ModPowerRegistry.TESTE_R);
 			}
 		});
+
+		ParanormalEvents.USE_ITEM.register(((world, player, hand, result) -> {
+			PlayerData playerData = ParanormalClient.playerData;
+			for (ParanormalPower p : playerData.powers) {
+				return p.onUseItem(world, player, hand, result);
+			}
+
+			return result;
+		}));
+
+		ParanormalEvents.FINISH_USING_ITEM.register(((stack, world, user) -> {
+			PlayerData playerData = ParanormalClient.playerData;
+			for (ParanormalPower p : playerData.powers) {
+				return p.onFinishUseItem(stack, world, user);
+			}
+
+			return stack;
+		}));
+
+		ParanormalEvents.TICK_USE_ITEM.register(((world, user, stack, remainingUseTicks) -> {
+			PlayerData playerData = ParanormalClient.playerData;
+			for (ParanormalPower p : playerData.powers) {
+				p.onTickUseItem(world, user, stack, remainingUseTicks);
+			}
+		}));
 	}
 
 	private void setBlockRenderLayers(){

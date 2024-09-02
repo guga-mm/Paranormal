@@ -34,6 +34,22 @@ public class ModItemRegistry {
 			new Identifier(MODID, "transcendance_altar"),
 			new BlockItem(ModBlockRegistry.TRANSCENDANCE_ALTAR, new QuiltItemSettings().rarity(Rarity.UNCOMMON)));
 
+	public static final Item BLOOD_TABLE = Registry.register(Registries.ITEM,
+			new Identifier(MODID, "blood_table"),
+			new BlockItem(ModBlockRegistry.BLOOD_TABLE, new QuiltItemSettings().rarity(Rarity.RARE)));
+
+	public static final Item DEATH_TABLE = Registry.register(Registries.ITEM,
+			new Identifier(MODID, "death_table"),
+			new BlockItem(ModBlockRegistry.DEATH_TABLE, new QuiltItemSettings().rarity(Rarity.RARE)));
+
+	public static final Item ENERGY_TABLE = Registry.register(Registries.ITEM,
+			new Identifier(MODID, "energy_table"),
+			new BlockItem(ModBlockRegistry.ENERGY_TABLE, new QuiltItemSettings().rarity(Rarity.RARE)));
+
+	public static final Item WISDOM_TABLE = Registry.register(Registries.ITEM,
+			new Identifier(MODID, "wisdom_table"),
+			new BlockItem(ModBlockRegistry.WISDOM_TABLE, new QuiltItemSettings().rarity(Rarity.RARE)));
+
 	public static void addToItemGroup(ItemGroup group, Item item) {
 		ItemGroupEvents.modifyEntriesEvent(Registries.ITEM_GROUP.getKey(group).orElse(null)).register(entries -> entries.addItem(item));
 	}
@@ -42,6 +58,10 @@ public class ModItemRegistry {
 		addToItemGroup(ModItemGroupRegistry.PARANORMAL, ORGAN);
 		addToItemGroup(ModItemGroupRegistry.PARANORMAL, ASHES);
 		addToItemGroup(ModItemGroupRegistry.PARANORMAL, ModBlockRegistry.TRANSCENDANCE_ALTAR.asItem());
+		addToItemGroup(ModItemGroupRegistry.PARANORMAL, ModBlockRegistry.BLOOD_TABLE.asItem());
+		addToItemGroup(ModItemGroupRegistry.PARANORMAL, ModBlockRegistry.ENERGY_TABLE.asItem());
+		addToItemGroup(ModItemGroupRegistry.PARANORMAL, ModBlockRegistry.WISDOM_TABLE.asItem());
+		addToItemGroup(ModItemGroupRegistry.PARANORMAL, ModBlockRegistry.DEATH_TABLE.asItem());
 	}
 
 	public static void init() {

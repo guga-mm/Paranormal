@@ -1,6 +1,10 @@
 {
   "replace": false,
   "values": [
-    "paranormal:transcendance_altar"
+    "paranormal:transcendance_altar",
+    "paranormal:blood_table",
+    "paranormal:death_table",
+    "paranormal:energy_table",
+    "paranormal:wisdom_table"
   ]
 }

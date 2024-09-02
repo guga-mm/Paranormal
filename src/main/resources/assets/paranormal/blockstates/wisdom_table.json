@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "paranormal:block/wisdom_table",
+      "y": 180
+    },
+    "facing=north": {
+      "model": "paranormal:block/wisdom_table",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "paranormal:block/wisdom_table",
+      "y": 270
+    },
+    "facing=west": {
+      "model": "paranormal:block/wisdom_table"
+    }
+  }
+}

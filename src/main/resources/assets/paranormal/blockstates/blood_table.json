@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "paranormal:block/blood_table",
+      "y": 180
+    },
+    "facing=north": {
+      "model": "paranormal:block/blood_table",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "paranormal:block/blood_table",
+      "y": 270
+    },
+    "facing=west": {
+      "model": "paranormal:block/blood_table"
+    }
+  }
+}
