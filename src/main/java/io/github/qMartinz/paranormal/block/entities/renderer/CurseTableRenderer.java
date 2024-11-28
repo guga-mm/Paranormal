@@ -8,6 +8,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.item.ItemRenderer;
@@ -31,23 +32,15 @@ public class CurseTableRenderer implements BlockEntityRenderer<CurseTableEntity>
 		float xOffset = 0.5f;
 		float zOffset = 0.5f;
 		ItemStack item = entity.getItem();
-		ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 
 		if (!item.isEmpty()) {
 			matrices.push();
 			matrices.translate(xOffset, yOffset, zOffset);
 			matrices.scale(0.5f, 0.5f, 0.5f);
-			matrices.multiply(Axis.Y_POSITIVE.rotationDegrees((System.currentTimeMillis() / 10f) % 360));
-			Paranormal.LOGGER.info("rendering: " + item);
+			matrices.multiply(Axis.Y_POSITIVE.rotationDegrees((entity.getWorld().getTime() + tickDelta) * 4));
 			// TODO fix rendering
-			itemRenderer.renderItem(item,
-					ModelTransformationMode.FIXED,
-					getLightLevel(entity.getWorld(), entity.getPos()),
-					OverlayTexture.DEFAULT_UV,
-					matrices,
-					vertexConsumers,
-					entity.getWorld(),
-					1);
+			int lightAbove = WorldRenderer.getLightmapCoordinates(entity.getWorld(), entity.getPos().up());
+			MinecraftClient.getInstance().getItemRenderer().renderItem(item, ModelTransformationMode.FIXED, lightAbove, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, entity.getWorld(), 0);
 			matrices.pop();
 		}
 	}

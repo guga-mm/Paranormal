@@ -37,11 +37,11 @@ public class Paranormal implements ModInitializer {
 		// Registry
 		ModEntityRegistry.init();
 		ModParticleRegistry.init();
-		ModItemGroupRegistry.registerItemGroup();
 		ModItemRegistry.init();
 		ModBlockRegistry.init();
 		ModRitualRegistry.init();
 		ModPowerRegistry.init();
+		ModItemGroupRegistry.init();
 		ModCommandRegistry.registerCommands();
 
 		ModMessages.registerC2SPackets();

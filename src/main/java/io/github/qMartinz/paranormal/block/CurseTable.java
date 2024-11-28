@@ -100,12 +100,16 @@ public class CurseTable extends BlockWithEntity {
 			ItemEntity item = new ItemEntity(world, player.getX(), player.getY(), player.getZ(), curseTableEntity.getItem());
 			world.spawnEntity(item);
 			curseTableEntity.setItem(ItemStack.EMPTY);
+			curseTableEntity.markDirty();
+			world.updateListeners(pos, state, state, 0);
 			return ActionResult.CONSUME;
 		}
 
 		if (!player.getMainHandStack().isEmpty() && curseTableEntity.getItem().isEmpty()){
 			Paranormal.LOGGER.info("Setting item");
 			curseTableEntity.setItem(player.getMainHandStack());
+			curseTableEntity.markDirty();
+			world.updateListeners(pos, state, state, 0);
 			player.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
 			return ActionResult.CONSUME;
 		}
@@ -141,6 +145,8 @@ public class CurseTable extends BlockWithEntity {
 
 			curseTableEntity.setItem(result);
 			curseTableEntity.setFuel(curseTableEntity.getFuel() - 4);
+			curseTableEntity.markDirty();
+			world.updateListeners(pos, state, state, 0);
 
 			if (world instanceof ServerWorld serverWorld) curseParticles(serverWorld, pos);
 

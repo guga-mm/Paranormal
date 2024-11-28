@@ -11,6 +11,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -83,6 +84,7 @@ public class CurseTableEntity extends BlockEntity implements CurseTableInventory
 		ItemStack itemStack = Objects.requireNonNullElse(this.inventory.get(slot), ItemStack.EMPTY);
 		this.inventory.set(slot, ItemStack.EMPTY);
 		if (!itemStack.isEmpty()) this.setHasItem(null, false);
+		markDirty();
 		return itemStack;
 	}
 
@@ -102,7 +104,6 @@ public class CurseTableEntity extends BlockEntity implements CurseTableInventory
 	@Override
 	public void markDirty() {
 		world.updateListeners(pos, getCachedState(), getCachedState(), 3);
-		super.markDirty();
 	}
 
 	public static void tick(World world, BlockPos pos, BlockState state, CurseTableEntity be) {
@@ -156,9 +157,26 @@ public class CurseTableEntity extends BlockEntity implements CurseTableInventory
 		});
 	}
 
-	@Nullable
 	@Override
-	public Packet<ClientPlayPacketListener> toUpdatePacket() {
+	public void readNbt(NbtCompound nbt) {
+		super.readNbt(nbt);
+		inventory.clear();
+		Inventories.readNbt(nbt, inventory);
+	}
+
+	@Override
+	protected void writeNbt(NbtCompound nbt) {
+		Inventories.writeNbt(nbt, inventory, true);
+		super.writeNbt(nbt);
+	}
+
+	public BlockEntityUpdateS2CPacket toUpdatePacket() {
 		return BlockEntityUpdateS2CPacket.of(this);
+	}
+
+	public NbtCompound toSyncedNbt() {
+		NbtCompound nbtCompound = new NbtCompound();
+		Inventories.writeNbt(nbtCompound, inventory, true);
+		return nbtCompound;
 	}
 }

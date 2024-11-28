@@ -50,22 +50,7 @@ public class ModItemRegistry {
 			new Identifier(MODID, "wisdom_table"),
 			new BlockItem(ModBlockRegistry.WISDOM_TABLE, new QuiltItemSettings().rarity(Rarity.RARE)));
 
-	public static void addToItemGroup(ItemGroup group, Item item) {
-		ItemGroupEvents.modifyEntriesEvent(Registries.ITEM_GROUP.getKey(group).orElse(null)).register(entries -> entries.addItem(item));
-	}
-
-	public static void addItemsToItemGroup(){
-		addToItemGroup(ModItemGroupRegistry.PARANORMAL, ORGAN);
-		addToItemGroup(ModItemGroupRegistry.PARANORMAL, ASHES);
-		addToItemGroup(ModItemGroupRegistry.PARANORMAL, ModBlockRegistry.TRANSCENDANCE_ALTAR.asItem());
-		addToItemGroup(ModItemGroupRegistry.PARANORMAL, ModBlockRegistry.BLOOD_TABLE.asItem());
-		addToItemGroup(ModItemGroupRegistry.PARANORMAL, ModBlockRegistry.ENERGY_TABLE.asItem());
-		addToItemGroup(ModItemGroupRegistry.PARANORMAL, ModBlockRegistry.WISDOM_TABLE.asItem());
-		addToItemGroup(ModItemGroupRegistry.PARANORMAL, ModBlockRegistry.DEATH_TABLE.asItem());
-	}
-
 	public static void init() {
 		Paranormal.LOGGER.info("Registering items for " + MODID);
-		addItemsToItemGroup();
 	}
 }
