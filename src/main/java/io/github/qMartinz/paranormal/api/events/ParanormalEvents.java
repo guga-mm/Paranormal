@@ -2,6 +2,8 @@ package io.github.qMartinz.paranormal.api.events;
 
 import io.github.qMartinz.paranormal.api.powers.ParanormalPower;
 import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.Entity;
@@ -11,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
+import org.quiltmc.loader.api.minecraft.DedicatedServerOnly;
 
 public class ParanormalEvents {
 	/**

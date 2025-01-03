@@ -27,7 +27,6 @@ public class VillagerCorpseRenderer extends EntityRenderer<CorpseEntity> {
 					   VertexConsumerProvider vertexConsumers, int light) {
 		VertexConsumer vertexconsumer = ItemRenderer.getDirectItemGlintConsumer(vertexConsumers, this.model.getLayer(TEXTURE), false, false);
 		this.model.method_2828(matrices, vertexconsumer, light, OverlayTexture.DEFAULT_UV, 1);
-
 		super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light);
 	}
 

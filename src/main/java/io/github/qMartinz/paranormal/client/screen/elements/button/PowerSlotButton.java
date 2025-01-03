@@ -145,7 +145,7 @@ public class PowerSlotButton extends ButtonWidget {
 					}
 				}
 
-				playerData.syncAllToServer();
+				playerData.syncPowersToServer();
 			}
 		}
 	}

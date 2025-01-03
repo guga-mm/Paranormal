@@ -11,6 +11,8 @@ import io.github.qMartinz.paranormal.client.screen.elements.SelectedRitual;
 import io.github.qMartinz.paranormal.client.screen.elements.button.AttributeButton;
 import io.github.qMartinz.paranormal.client.screen.elements.button.ChangeScreenButton;
 import io.github.qMartinz.paranormal.client.screen.elements.button.SelectRitualButtons;
+import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.StringVisitable;
@@ -34,22 +36,33 @@ public class AttributesScreen extends Screen {
 		int tabX = screenX + 110;
 		int screenY = (this.height/2) - (this.screenHeight/2);
 
-		addDrawable(new AttributeButton(screenX + 33, screenY + 12, ParanormalAttribute.STRENGTH));
-		addDrawable(new AttributeButton(screenX + 33, screenY + 75, ParanormalAttribute.VIGOR));
-		addDrawable(new AttributeButton(screenX + 33, screenY + 138, ParanormalAttribute.PRESENCE));
-		addDrawable(new SelectedRitual(tabX + 46, screenY + 7));
+		addDrawableSelectableElement(new AttributeButton(screenX + 33, screenY + 12, ParanormalAttribute.STRENGTH));
+		addDrawableSelectableElement(new AttributeButton(screenX + 33, screenY + 75, ParanormalAttribute.VIGOR));
+		addDrawableSelectableElement(new AttributeButton(screenX + 33, screenY + 138, ParanormalAttribute.PRESENCE));
+		addDrawableSelectableElement(new SelectedRitual(tabX + 46, screenY + 7));
 
-		addDrawable(new SelectRitualButtons.PreviousRitual(tabX + 44, screenY + 75, 8, 8));
-		addDrawable(new SelectRitualButtons.NextRitual(tabX + 104, screenY + 75, 8, 8));
+		addDrawableSelectableElement(new SelectRitualButtons.PreviousRitual(tabX + 44, screenY + 75, 8, 8));
+		addDrawableSelectableElement(new SelectRitualButtons.NextRitual(tabX + 104, screenY + 75, 8, 8));
 
-		addDrawable(new ChangeScreenButton(screenX + 39, screenY + 195, 20, 20, new PowersScreen(ParanormalElement.BLOOD)));
+		addDrawableSelectableElement(new ChangeScreenButton(screenX + 39, screenY + 195, 20, 20, new PowersScreen(ParanormalElement.BLOOD)));
 	}
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(graphics, mouseX, mouseY, partialTicks);
+
+		int screenX = (this.width/2) - 266/2;
+		int screenY = (this.height/2) - (this.screenHeight/2);
+
 		PlayerData playerData = ParanormalClient.playerData;
 
-		renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
+		String label = Text.translatable("paranormal.screen.attributes_screen.attPoints").getString();
+		String value = String.valueOf(playerData.getAttPoints());
+		graphics.drawText(client.textRenderer, label, (int) (screenX + 98/2f - textRenderer.getWidth(label)/2f), screenY - 2 - textRenderer.fontHeight*2, 0xFFFFFF, false);
+		graphics.drawText(client.textRenderer, value, (int) (screenX + 98/2f - textRenderer.getWidth(value)/2f), screenY - 1 - textRenderer.fontHeight, 0xFFFFFF, false);
+	}
 
+	@Override
+	protected void renderMenuBackground(GuiGraphics graphics) {
 		int screenX = (this.width/2) - 266/2;
 		int screenY = (this.height/2) - (this.screenHeight/2);
 
@@ -58,22 +71,15 @@ public class AttributesScreen extends Screen {
 		RenderSystem.depthMask(false);
 		RenderSystem.disableDepthTest();
 
-		guiGraphics.drawTexture(TEXTURES, screenX + 98/2 - 27, screenY + 174, 174, 0, 54, 63);
+		graphics.drawTexture(TEXTURES, screenX + 98/2 - 27, screenY + 174, 174, 0, 54, 63);
 
-		guiGraphics.drawTexture(TEXTURES, screenX, screenY, 0, 0, 98, this.screenHeight);
+		graphics.drawTexture(TEXTURES, screenX, screenY, 0, 0, 98, this.screenHeight);
 
-		String label = Text.translatable("paranormal.screen.attributes_screen.attPoints").getString();
-		String value = String.valueOf(playerData.getAttPoints());
-		guiGraphics.drawText(client.textRenderer, label, (int) (screenX + 98/2f - textRenderer.getWidth(label)/2f), screenY - 2 - textRenderer.fontHeight*2, 0xFFFFFF, false);
-		guiGraphics.drawText(client.textRenderer, value, (int) (screenX + 98/2f - textRenderer.getWidth(value)/2f), screenY - 1 - textRenderer.fontHeight, 0xFFFFFF, false);
-
-		this.renderRitualTab(guiGraphics);
+		this.renderRitualTab(graphics);
 
 		RenderSystem.enableDepthTest();
 		RenderSystem.depthMask(true);
 		RenderSystem.disableBlend();
-
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
 	public void renderRitualTab(GuiGraphics guiGraphics){

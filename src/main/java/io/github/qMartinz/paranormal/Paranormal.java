@@ -7,13 +7,18 @@ import io.github.qMartinz.paranormal.api.powers.ParanormalPower;
 import io.github.qMartinz.paranormal.entity.events.LivingEntityEvents;
 import io.github.qMartinz.paranormal.entity.events.VillagerFearEvents;
 import io.github.qMartinz.paranormal.networking.ModMessages;
+import io.github.qMartinz.paranormal.networking.Payloads;
 import io.github.qMartinz.paranormal.registry.*;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
-import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import org.quiltmc.loader.api.ModContainer;
+import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +27,7 @@ public class Paranormal implements ModInitializer {
 	public static final String MODID = "paranormal";
 
 	@Override
-	public void onInitialize() {
+	public void onInitialize(ModContainer modContainer) {
 		// Registry
 		ModEntityRegistry.init();
 		ModParticleRegistry.init();
@@ -34,6 +39,7 @@ public class Paranormal implements ModInitializer {
 		ModCommandRegistry.registerCommands();
 		ModComponentsRegistry.initialize();
 
+		Payloads.registerPayloads();
 		ModMessages.registerC2SPackets();
 
 		registerEvents();

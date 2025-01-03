@@ -75,6 +75,8 @@ dependencies {
 
 	modImplementation libs.quilted.fabric.api
 
+	modImplementation libs.quilt.standard.libraries
+
 	implementation("foundry.veil:veil-common-${veil}") {
 		exclude group: "maven.modrinth"
 	}

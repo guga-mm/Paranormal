@@ -41,6 +41,7 @@ public class AttributeButton extends ButtonWidget {
 		public IncreaseAttribute(ParanormalAttribute attribute){
 			this.attribute = attribute;
 		}
+
 		@Override
 		public void onPress(ButtonWidget buttonWidget) {
 			PlayerData playerData = ParanormalClient.playerData;
@@ -53,7 +54,7 @@ public class AttributeButton extends ButtonWidget {
 					playerData.setOccultPoints(playerData.getOccultPoints() + 1d);
 				}
 
-				playerData.syncAllToServer();
+				playerData.syncAttributesToServer();
 			}
 		}
 	}

@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-// TODO switch ItemStack NBT to ItemStack components
 public class CurseHelper {
 	private static final String PREFIX = "curse_";
 

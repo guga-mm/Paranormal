@@ -40,10 +40,9 @@ public class FogEntity extends Entity {
 
 	@Override
 	protected void initDataTracker(DataTracker.Builder builder) {
-
-		this.dataTracker.set(FOG_INTENSITY, 1);
-		this.dataTracker.set(FOG_LIFE, getMaxLife());
-		this.dataTracker.set(FOG_RADIUS, 15);
+		builder.add(FOG_INTENSITY, 1);
+		builder.add(FOG_LIFE, getMaxLife());
+		builder.add(FOG_RADIUS, 15);
 	}
 
 	public void setRadius(int size) {

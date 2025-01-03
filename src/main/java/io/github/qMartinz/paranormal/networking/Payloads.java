@@ -1,5 +1,8 @@
 package io.github.qMartinz.paranormal.networking;
 
+import io.github.qMartinz.paranormal.Paranormal;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -8,6 +11,24 @@ import net.minecraft.network.packet.payload.CustomPayload;
 import net.minecraft.util.Identifier;
 
 public class Payloads {
+	public static void registerPayloads(){
+		Paranormal.LOGGER.info("Registering payloads for " + Paranormal.MODID);
+
+		PayloadTypeRegistry.playC2S().register(PexPayload.ID, PexPayload.CODEC);
+		PayloadTypeRegistry.playC2S().register(AttributesPayload.ID, AttributesPayload.CODEC);
+		PayloadTypeRegistry.playC2S().register(PowersPayload.ID, PowersPayload.CODEC);
+		PayloadTypeRegistry.playC2S().register(RitualsPayload.ID, RitualsPayload.CODEC);
+		PayloadTypeRegistry.playC2S().register(OccultPointsPayload.ID, OccultPointsPayload.CODEC);
+		PayloadTypeRegistry.playC2S().register(CastPayload.ID, CastPayload.CODEC);
+		PayloadTypeRegistry.playC2S().register(AddedPowerTriggerPayload.ID, AddedPowerTriggerPayload.CODEC);
+
+		PayloadTypeRegistry.playS2C().register(PexPayload.ID, PexPayload.CODEC);
+		PayloadTypeRegistry.playS2C().register(AttributesPayload.ID, AttributesPayload.CODEC);
+		PayloadTypeRegistry.playS2C().register(PowersPayload.ID, PowersPayload.CODEC);
+		PayloadTypeRegistry.playS2C().register(RitualsPayload.ID, RitualsPayload.CODEC);
+		PayloadTypeRegistry.playS2C().register(OccultPointsPayload.ID, OccultPointsPayload.CODEC);
+	}
+
 	public record PexPayload(int pex, int xp) implements CustomPayload {
 		public static final CustomPayload.Id<PexPayload> ID = new Id<>(ModMessages.PEX_SYNC_ID);
 		public static final PacketCodec<RegistryByteBuf, PexPayload> CODEC = PacketCodec.tuple(

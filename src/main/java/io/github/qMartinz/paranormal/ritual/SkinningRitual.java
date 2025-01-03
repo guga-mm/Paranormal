@@ -3,6 +3,7 @@ package io.github.qMartinz.paranormal.ritual;
 import io.github.qMartinz.paranormal.api.ParanormalElement;
 import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
 import io.github.qMartinz.paranormal.api.rituals.types.ProjectileRitual;
+import io.github.qMartinz.paranormal.registry.ModDamageTypes;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
@@ -19,7 +20,7 @@ public class SkinningRitual extends AbstractRitual implements ProjectileRitual {
 	@Override
 	public void onEntityHit(LivingEntity caster, EntityHitResult hitResult) {
 		if (hitResult.getEntity() instanceof LivingEntity livingEntity){
-			livingEntity.damage(getElement().getDamage(livingEntity.getDamageSources(), caster), 4f);
+			livingEntity.damage(getElement().getDamage(caster.getWorld()), 4f);
 		}
 	}
 

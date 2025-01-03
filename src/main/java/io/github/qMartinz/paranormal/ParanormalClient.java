@@ -11,20 +11,21 @@ import io.github.qMartinz.paranormal.client.hud.RitualHud;
 import io.github.qMartinz.paranormal.client.screen.AttributesScreen;
 import io.github.qMartinz.paranormal.networking.ModMessages;
 import io.github.qMartinz.paranormal.registry.*;
-import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.ActionResult;
+import org.quiltmc.loader.api.ModContainer;
+import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
 
 public class ParanormalClient implements ClientModInitializer {
 	public static PlayerData playerData = new PlayerData();
 	public static RitualHud ritualHud = new RitualHud();
 
 	@Override
-	public void onInitializeClient() {
+	public void onInitializeClient(ModContainer modContainer) {
 		ModEntityRegistry.registerRenderers();
 		ModBlockRegistry.registerRenderers();
 		ModParticleRegistry.registerFactories();

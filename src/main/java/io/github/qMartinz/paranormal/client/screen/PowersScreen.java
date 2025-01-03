@@ -44,40 +44,30 @@ public class PowersScreen extends Screen {
 		int x = width/2 - guiWidth/2;
 		int y = height/2 - guiHeight/2;
 
-		this.addDrawable(new PowerTabButton(x + 10, y + 10, 32, 32, ParanormalElement.BLOOD, element == ParanormalElement.BLOOD));
-		this.addDrawable(new PowerTabButton(x + 10, y + 45, 32, 32, ParanormalElement.DEATH, element == ParanormalElement.DEATH));
-		this.addDrawable(new PowerTabButton(x + 10, y + 80, 32, 32, ParanormalElement.ENERGY, element == ParanormalElement.ENERGY));
-		this.addDrawable(new PowerTabButton(x + 10, y + 115, 32, 32, ParanormalElement.WISDOM, element == ParanormalElement.WISDOM));
+		this.addDrawableSelectableElement(new PowerTabButton(x + 10, y + 10, 32, 32, ParanormalElement.BLOOD, element == ParanormalElement.BLOOD));
+		this.addDrawableSelectableElement(new PowerTabButton(x + 10, y + 45, 32, 32, ParanormalElement.DEATH, element == ParanormalElement.DEATH));
+		this.addDrawableSelectableElement(new PowerTabButton(x + 10, y + 80, 32, 32, ParanormalElement.ENERGY, element == ParanormalElement.ENERGY));
+		this.addDrawableSelectableElement(new PowerTabButton(x + 10, y + 115, 32, 32, ParanormalElement.WISDOM, element == ParanormalElement.WISDOM));
 
-		this.addDrawable(new ChangeScreenButton(x + 16, y + 151, 20, 20, new AttributesScreen()));
+		this.addDrawableSelectableElement(new ChangeScreenButton(x + 16, y + 151, 20, 20, new AttributesScreen()));
 
 		ClientEvents.POWER_SCREEN_INIT.invoker().powerScreenInit(this);
 
 		for (int i = 0; i < 5; i++) {
 			PowerSlotButton newSlot = new PowerSlotButton(x + 61, y + 5 + (27 * i));
 			slots.add(newSlot);
-			this.addDrawable(newSlot);
+			this.addDrawableSelectableElement(newSlot);
 		}
 
-		this.addDrawable(new PowerScrollBar(width/2 - guiWidth/2 + 234, height/2 - guiHeight/2 + 6));
+		this.addDrawableSelectableElement(new PowerScrollBar(width/2 - guiWidth/2 + 234, height/2 - guiHeight/2 + 6));
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-		PlayerData playerData = ParanormalClient.playerData;
-		MinecraftClient minecraftClient = MinecraftClient.getInstance();
-		int x = width/2 - guiWidth/2;
-		int y = height/2 - guiHeight/2;
-
-		renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
-
-		guiGraphics.drawTexture(TEXTURE, x, y, 0, 0, 52, 173);
-		guiGraphics.drawTexture(TEXTURE, x + 56, y, 52, 0, 199, 144);
-
-		super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(graphics, mouseX, mouseY, partialTicks);
 
 		for (Element e : children()){
-			if (e instanceof PowerSlotButton slotButton && slotButton.isMouseOver(pMouseX, pMouseY) && slotButton.getPower() != null){
+			if (e instanceof PowerSlotButton slotButton && slotButton.isMouseOver(mouseX, mouseY) && slotButton.getPower() != null){
 				ParanormalPower power = slotButton.getPower();
 				List<OrderedText> splitLines = client.textRenderer.wrapLines(power.getDescription(), 122);
 				List<OrderedText> lines = Lists.newArrayList();
@@ -88,18 +78,27 @@ public class PowersScreen extends Screen {
 				int tooltipHeight = client.textRenderer.fontHeight * lines.size() + 6;
 				int width = 129;
 
-				guiGraphics.fill(pMouseX + 4, pMouseY + 4, pMouseX + 4 + width, pMouseY + 4 + tooltipHeight, 0xFF602c2c);
-				guiGraphics.fill(pMouseX + 4, pMouseY + 4, pMouseX + 4 + width, pMouseY + 4 + 1, 0xFFde9e41);
-				guiGraphics.fill(pMouseX + 4, pMouseY + 4, pMouseX + 4 + 1, pMouseY + 4 + tooltipHeight, 0xFFde9e41);
-				guiGraphics.fill(pMouseX + 4, pMouseY + 5 + tooltipHeight, pMouseX + 4 + width, pMouseY + 4 + tooltipHeight, 0xFFde9e41);
-				guiGraphics.fill(pMouseX + 4 + width, pMouseY + 4, pMouseX + 5 + width, pMouseY + 4 + tooltipHeight, 0xFFde9e41);
+				graphics.fill(mouseX + 4, mouseY + 4, mouseX + 4 + width, mouseY + 4 + tooltipHeight, 0xFF602c2c);
+				graphics.fill(mouseX + 4, mouseY + 4, mouseX + 4 + width, mouseY + 4 + 1, 0xFFde9e41);
+				graphics.fill(mouseX + 4, mouseY + 4, mouseX + 4 + 1, mouseY + 4 + tooltipHeight, 0xFFde9e41);
+				graphics.fill(mouseX + 4, mouseY + 5 + tooltipHeight, mouseX + 4 + width, mouseY + 4 + tooltipHeight, 0xFFde9e41);
+				graphics.fill(mouseX + 4 + width, mouseY + 4, mouseX + 5 + width, mouseY + 4 + tooltipHeight, 0xFFde9e41);
 
 				for (int i = 0; i < lines.size(); i++) {
-					guiGraphics.drawText(client.textRenderer, lines.get(i), pMouseX + 7, pMouseY + 7 + client.textRenderer.fontHeight * i,
+					graphics.drawText(client.textRenderer, lines.get(i), mouseX + 7, mouseY + 7 + client.textRenderer.fontHeight * i,
 							0xFFFFFF, false);
 				}
 			}
 		}
+	}
+
+	@Override
+	protected void renderMenuBackground(GuiGraphics graphics) {
+		int x = width/2 - guiWidth/2;
+		int y = height/2 - guiHeight/2;
+
+		graphics.drawTexture(TEXTURE, x, y, 0, 0, 52, 173);
+		graphics.drawTexture(TEXTURE, x + 56, y, 52, 0, 199, 144);
 	}
 
 	@Override

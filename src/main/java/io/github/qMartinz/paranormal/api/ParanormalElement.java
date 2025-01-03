@@ -6,6 +6,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageSources;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.text.Text;
+import net.minecraft.world.World;
 
 import java.awt.*;
 
@@ -110,33 +111,13 @@ public enum ParanormalElement {
 		};
 	}
 
-	public DamageSource getDamage(DamageSources damageSources) {
+	public DamageSource getDamage(World world) {
 		return switch (this){
-			case FEAR -> ModDamageTypes.getSource(damageSources, ModDamageTypes.FEAR_DAMAGE);
-			case BLOOD -> ModDamageTypes.getSource(damageSources, ModDamageTypes.BLOOD_DAMAGE);
-			case WISDOM -> ModDamageTypes.getSource(damageSources, ModDamageTypes.WISDOM_DAMAGE);
-			case DEATH -> ModDamageTypes.getSource(damageSources, ModDamageTypes.DEATH_DAMAGE);
-			case ENERGY -> ModDamageTypes.getSource(damageSources, ModDamageTypes.ENERGY_DAMAGE);
-		};
-	}
-
-	public DamageSource getDamage(DamageSources damageSources, Entity source) {
-		return switch (this){
-			case FEAR -> ModDamageTypes.getSource(damageSources, ModDamageTypes.FEAR_DAMAGE, source);
-			case BLOOD -> ModDamageTypes.getSource(damageSources, ModDamageTypes.BLOOD_DAMAGE, source);
-			case WISDOM -> ModDamageTypes.getSource(damageSources, ModDamageTypes.WISDOM_DAMAGE, source);
-			case DEATH -> ModDamageTypes.getSource(damageSources, ModDamageTypes.DEATH_DAMAGE, source);
-			case ENERGY -> ModDamageTypes.getSource(damageSources, ModDamageTypes.ENERGY_DAMAGE, source);
-		};
-	}
-
-	public DamageSource getDamage(DamageSources damageSources, Entity source, Entity attacker) {
-		return switch (this){
-			case FEAR -> ModDamageTypes.getSource(damageSources, ModDamageTypes.FEAR_DAMAGE, source, attacker);
-			case BLOOD -> ModDamageTypes.getSource(damageSources, ModDamageTypes.BLOOD_DAMAGE, source, attacker);
-			case WISDOM -> ModDamageTypes.getSource(damageSources, ModDamageTypes.WISDOM_DAMAGE, source, attacker);
-			case DEATH -> ModDamageTypes.getSource(damageSources, ModDamageTypes.DEATH_DAMAGE, source, attacker);
-			case ENERGY -> ModDamageTypes.getSource(damageSources, ModDamageTypes.ENERGY_DAMAGE, source, attacker);
+			case FEAR -> ModDamageTypes.getDamageSource(ModDamageTypes.FEAR_DAMAGE, world);
+			case BLOOD -> ModDamageTypes.getDamageSource(ModDamageTypes.BLOOD_DAMAGE, world);
+			case WISDOM -> ModDamageTypes.getDamageSource(ModDamageTypes.WISDOM_DAMAGE, world);
+			case DEATH -> ModDamageTypes.getDamageSource(ModDamageTypes.DEATH_DAMAGE, world);
+			case ENERGY -> ModDamageTypes.getDamageSource(ModDamageTypes.ENERGY_DAMAGE, world);
 		};
 	}
 }

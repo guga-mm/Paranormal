@@ -30,7 +30,7 @@ public class MathUtils {
 	}
 
 	public static float calcParanormalDmg(float dmg, LivingEntity target, ParanormalElement element){
-		return dmg * (ModDamageTypes.isEntityWeakTo(target, element.getDamage(target.getDamageSources())) ? 2f : 1f)
-				/ (ModDamageTypes.isEntityResistant(target, element.getDamage(target.getDamageSources())) ? 2f : 1f);
+		return dmg * (ModDamageTypes.isEntityWeakTo(target, element.getDamage(target.getWorld())) ? 2f : 1f)
+				/ (ModDamageTypes.isEntityResistant(target, element.getDamage(target.getWorld())) ? 2f : 1f);
 	}
 }

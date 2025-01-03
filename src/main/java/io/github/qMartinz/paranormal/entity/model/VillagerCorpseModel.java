@@ -42,6 +42,6 @@ public class VillagerCorpseModel extends EntityModel<CorpseEntity> {
 
 	@Override
 	public void method_2828(MatrixStack matrices, VertexConsumer vertexConsumer, int i, int j, int k) {
-		body.method_22699(matrices, vertexConsumer, i, j, k);
+		body.render(matrices, vertexConsumer, i, j);
 	}
 }

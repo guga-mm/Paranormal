@@ -29,7 +29,7 @@ public class CorpseEntity extends Entity {
 
 	@Override
 	protected void initDataTracker(DataTracker.Builder builder) {
-		this.dataTracker.set(EXPOSURE, 0);
+		builder.add(EXPOSURE, 0);
 	}
 
 	public void setExposure(int exposure){

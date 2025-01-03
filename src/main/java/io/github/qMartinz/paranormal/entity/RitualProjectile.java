@@ -44,7 +44,7 @@ public class RitualProjectile extends PersistentProjectileEntity {
 	}
 
 	public RitualProjectile(EntityType<? extends RitualProjectile> entityType, World world, LivingEntity owner, AbstractRitual ritual) {
-		super(entityType, owner, world, ItemStack.EMPTY, ItemStack.EMPTY);
+		super(entityType, owner, world, ItemStack.EMPTY, null);
 		this.pickupType = PickupPermission.DISALLOWED;
 		this.iX = this.getX();
 		this.iY = this.getY();
@@ -57,7 +57,7 @@ public class RitualProjectile extends PersistentProjectileEntity {
 	@Override
 	protected void initDataTracker(DataTracker.Builder builder) {
 		super.initDataTracker(builder);
-		this.dataTracker.set(DATA_ELEMENT, 0);
+		builder.add(DATA_ELEMENT, 0);
 	}
 
 	static{
