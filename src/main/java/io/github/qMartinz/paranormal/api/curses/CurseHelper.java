@@ -1,6 +1,7 @@
 package io.github.qMartinz.paranormal.api.curses;
 
 import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
+import io.github.qMartinz.paranormal.registry.ModComponentsRegistry;
 import io.github.qMartinz.paranormal.util.MathUtils;
 import io.github.qMartinz.paranormal.util.NBTUtil;
 import net.minecraft.block.BlockState;
@@ -14,10 +15,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
+// TODO switch ItemStack NBT to ItemStack components
 public class CurseHelper {
 	private static final String PREFIX = "curse_";
 
@@ -30,12 +30,28 @@ public class CurseHelper {
 	}
 
 	public static Set<CurseInstance> getCurses(ItemStack pStack) {
-		NbtCompound nbt = pStack.getNbt() != null ? pStack.getNbt().getCompound("Curses") : new NbtCompound();
+		NbtCompound nbt = new NbtCompound();
+		for (int i = 0; i < pStack.getOrDefault(ModComponentsRegistry.ITEM_CURSES, new ArrayList<ModComponentsRegistry.CurseComponent>()).size(); i++) {
+			ModComponentsRegistry.CurseComponent curse = pStack.getOrDefault(ModComponentsRegistry.ITEM_CURSES, new ArrayList<ModComponentsRegistry.CurseComponent>()).get(i);
+			NbtCompound curseNbt = new NbtCompound();
+			curseNbt.putString("id", curse.id());
+			curseNbt.putInt("uses", curse.uses());
+			nbt.put(PREFIX + i, curseNbt);
+		}
+
 		return deserializeCurses(nbt);
 	}
 
 	public static CurseInstance getCurse(ItemStack stack, AbstractCurse curse){
-		NbtCompound nbt = stack.getNbt() != null ? stack.getNbt().getCompound("Curses") : new NbtCompound();
+		NbtCompound nbt = new NbtCompound();
+		for (int i = 0; i < stack.getOrDefault(ModComponentsRegistry.ITEM_CURSES, new ArrayList<ModComponentsRegistry.CurseComponent>()).size(); i++) {
+			ModComponentsRegistry.CurseComponent curseComponent = stack.getOrDefault(ModComponentsRegistry.ITEM_CURSES, new ArrayList<ModComponentsRegistry.CurseComponent>()).get(i);
+			NbtCompound curseNbt = new NbtCompound();
+			curseNbt.putString("id", curseComponent.id());
+			curseNbt.putInt("uses", curseComponent.uses());
+			nbt.put(PREFIX + i, curseNbt);
+		}
+
 		for (int i = 0; i < nbt.getSize(); i++){
 			NbtCompound curseTag = nbt.getCompound(PREFIX + i);
 			if (getCurseId(curseTag).equals(curse.getId())) {
@@ -61,9 +77,15 @@ public class CurseHelper {
 		for (int i = 0; i < pCurses.size(); i++) nbt.put(PREFIX + i, pCurses.stream().toList().get(i).serializeNBT());
 
 		if (nbt.isEmpty()) {
-			pStack.removeSubNbt("Curses");
+			pStack.set(ModComponentsRegistry.ITEM_CURSES, new ArrayList<>());
 		} else {
-			pStack.setSubNbt("Curses", nbt);
+			List<ModComponentsRegistry.CurseComponent> itemCurses = new ArrayList<>();
+			for (int i = 0; i < nbt.getSize(); i++){
+				NbtCompound curseTag = nbt.getCompound(PREFIX + i);
+				itemCurses.add(new ModComponentsRegistry.CurseComponent(curseTag.getString("id"), curseTag.getInt("uses")));
+			}
+
+			pStack.set(ModComponentsRegistry.ITEM_CURSES, itemCurses);
 		}
 	}
 
@@ -111,7 +133,7 @@ public class CurseHelper {
 	public static float doPostHurtEffects(LivingEntity pTarget, @Nullable Entity pAttacker, float pAmount, DamageSource source){
 		float f = pAmount;
 		if (pTarget != null) {
-			for (ItemStack item : pTarget.getItemsEquipped()) {
+			for (ItemStack item : pTarget.getEquippedItems()) {
 				for (CurseInstance curseInstance : getCurses(item)) {
 					if (curseInstance != null) {
 						f = curseInstance.getCurse().doPostHurt(item, pTarget, pAttacker, f, source);
@@ -126,7 +148,7 @@ public class CurseHelper {
 
 	public static void doTickEffects(LivingEntity pUser){
 		if (pUser != null) {
-			for (ItemStack item : pUser.getItemsEquipped()) {
+			for (ItemStack item : pUser.getEquippedItems()) {
 				for (CurseInstance curse : getCurses(item)) {
 					if (curse != null) curse.getCurse().doTick(item, pUser);
 				}
@@ -136,7 +158,7 @@ public class CurseHelper {
 
 	public static boolean doBlockBreakEffects(PlayerEntity pUser, BlockPos pPos, BlockState pState){
 		if (pUser != null) {
-			for (ItemStack item : pUser.getItemsEquipped()) {
+			for (ItemStack item : pUser.getEquippedItems()) {
 				boolean allowBreak = true;
 				for (CurseInstance curse : getCurses(item)) {
 					if (curse != null) allowBreak = allowBreak && curse.getCurse().doBlockBreak(pUser, pUser.getWorld(), pPos, pState);
@@ -149,7 +171,7 @@ public class CurseHelper {
 
 	public static boolean isRitualTargetEffects(LivingEntity target, AbstractRitual ritual, LivingEntity caster){
 		if (target != null) {
-			for (ItemStack item : target.getItemsEquipped()) {
+			for (ItemStack item : target.getEquippedItems()) {
 				boolean allowCasting = true;
 				for (CurseInstance curse : getCurses(item)) {
 					if (curse != null) allowCasting = allowCasting && curse.getCurse().isRitualTarget(target, target.getWorld(), ritual, caster);
@@ -162,7 +184,7 @@ public class CurseHelper {
 
 	public static boolean isRitualCasterEffects(LivingEntity caster, AbstractRitual ritual){
 		if (caster != null) {
-			for (ItemStack item : caster.getItemsEquipped()) {
+			for (ItemStack item : caster.getEquippedItems()) {
 				boolean allowCasting = true;
 				for (CurseInstance curse : getCurses(item)) {
 					if (curse != null) allowCasting = allowCasting && curse.getCurse().isRitualCaster(caster, caster.getWorld(), ritual);

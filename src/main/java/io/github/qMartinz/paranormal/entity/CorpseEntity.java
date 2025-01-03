@@ -28,8 +28,8 @@ public class CorpseEntity extends Entity {
 	}
 
 	@Override
-	protected void initDataTracker() {
-		this.dataTracker.startTracking(EXPOSURE, 0);
+	protected void initDataTracker(DataTracker.Builder builder) {
+		this.dataTracker.set(EXPOSURE, 0);
 	}
 
 	public void setExposure(int exposure){

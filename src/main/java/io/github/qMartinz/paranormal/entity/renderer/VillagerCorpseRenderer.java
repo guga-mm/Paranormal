@@ -14,7 +14,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 public class VillagerCorpseRenderer extends EntityRenderer<CorpseEntity> {
-	public static final Identifier TEXTURE = new Identifier(Paranormal.MODID, "textures/entity/villager_corpse.png");
+	public static final Identifier TEXTURE = Identifier.of(Paranormal.MODID, "textures/entity/villager_corpse.png");
 	protected VillagerCorpseModel model;
 
 	public VillagerCorpseRenderer(EntityRendererFactory.Context ctx) {
@@ -26,7 +26,7 @@ public class VillagerCorpseRenderer extends EntityRenderer<CorpseEntity> {
 	public void render(CorpseEntity entity, float yaw, float tickDelta, MatrixStack matrices,
 					   VertexConsumerProvider vertexConsumers, int light) {
 		VertexConsumer vertexconsumer = ItemRenderer.getDirectItemGlintConsumer(vertexConsumers, this.model.getLayer(TEXTURE), false, false);
-		this.model.render(matrices, vertexconsumer, light, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
+		this.model.method_2828(matrices, vertexconsumer, light, OverlayTexture.DEFAULT_UV, 1);
 
 		super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light);
 	}

@@ -5,15 +5,14 @@ import io.github.qMartinz.paranormal.api.powers.PowerRegistry;
 import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
 import io.github.qMartinz.paranormal.api.rituals.RitualRegistry;
 import io.github.qMartinz.paranormal.networking.ModMessages;
+import io.github.qMartinz.paranormal.networking.Payloads;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
 import io.github.qMartinz.paranormal.util.NBTUtil;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import org.quiltmc.qsl.networking.api.PacketByteBufs;
-import org.quiltmc.qsl.networking.api.ServerPlayNetworking;
-import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -264,39 +263,65 @@ public class PlayerData {
 		}
 	}
 
-	public void syncToClient(ServerPlayerEntity player){
+	public void syncAllToClient(ServerPlayerEntity player){
 		PlayerData playerState = StateSaverAndLoader.getPlayerState(player);
-		PacketByteBuf data = PacketByteBufs.create();
-		data.writeInt(playerState.pex);
-		data.writeInt(playerState.xp);
-		data.writeInt(playerState.attPoints);
-		data.writeIntArray(playerState.attributes);
-		data.writeInt(playerState.ritualSlots);
-		data.writeInt(playerState.powerPoints);
-		data.writeDouble(playerState.maxOccultPoints);
-		data.writeDouble(playerState.occultPoints);
-
-		data.writeNbt(playerState.serializeRituals());
-		data.writeNbt(playerState.serializePowers());
-		data.writeNbt(playerState.serializeAffinities());
-
-		ServerPlayNetworking.send(player, ModMessages.PLAYER_DATA_SYNC_ID, data);
+		ServerPlayNetworking.send(player, new Payloads.PexPayload(playerState.pex, playerState.xp));
+		ServerPlayNetworking.send(player, new Payloads.AttributesPayload(playerState.attPoints, playerState.attributes[0], playerState.attributes[1], playerState.attributes[2]));
+		ServerPlayNetworking.send(player, new Payloads.PowersPayload(playerState.powerPoints, playerState.serializePowers(), playerState.serializeAffinities()));
+		ServerPlayNetworking.send(player, new Payloads.RitualsPayload(playerState.ritualSlots, playerState.serializeRituals()));
+		ServerPlayNetworking.send(player, new Payloads.OccultPointsPayload(playerState.maxOccultPoints, playerState.occultPoints));
 	}
-	public void syncToServer(){
-		PacketByteBuf data = PacketByteBufs.create();
-		data.writeInt(pex);
-		data.writeInt(xp);
-		data.writeInt(attPoints);
-		data.writeIntArray(attributes);
-		data.writeInt(ritualSlots);
-		data.writeInt(powerPoints);
-		data.writeDouble(maxOccultPoints);
-		data.writeDouble(occultPoints);
 
-		data.writeNbt(serializeRituals());
-		data.writeNbt(serializePowers());
-		data.writeNbt(serializeAffinities());
+	public void syncPexToClient(ServerPlayerEntity player){
+		PlayerData playerState = StateSaverAndLoader.getPlayerState(player);
+		ServerPlayNetworking.send(player, new Payloads.PexPayload(playerState.pex, playerState.xp));
+	}
 
-		ClientPlayNetworking.send(ModMessages.PLAYER_DATA_SYNC_ID, data);
+	public void syncAttributesToClient(ServerPlayerEntity player){
+		PlayerData playerState = StateSaverAndLoader.getPlayerState(player);
+		ServerPlayNetworking.send(player, new Payloads.AttributesPayload(playerState.attPoints, playerState.attributes[0], playerState.attributes[1], playerState.attributes[2]));
+	}
+
+	public void syncPowersToClient(ServerPlayerEntity player){
+		PlayerData playerState = StateSaverAndLoader.getPlayerState(player);
+		ServerPlayNetworking.send(player, new Payloads.PowersPayload(playerState.powerPoints, playerState.serializePowers(), playerState.serializeAffinities()));
+	}
+
+	public void synRitualsToClient(ServerPlayerEntity player){
+		PlayerData playerState = StateSaverAndLoader.getPlayerState(player);
+		ServerPlayNetworking.send(player, new Payloads.RitualsPayload(playerState.ritualSlots, playerState.serializeRituals()));
+	}
+
+	public void syncOccultPointsToClient(ServerPlayerEntity player){
+		PlayerData playerState = StateSaverAndLoader.getPlayerState(player);
+		ServerPlayNetworking.send(player, new Payloads.OccultPointsPayload(playerState.maxOccultPoints, playerState.occultPoints));
+	}
+
+	public void syncAllToServer(){
+		ClientPlayNetworking.send(new Payloads.PexPayload(pex, xp));
+		ClientPlayNetworking.send(new Payloads.AttributesPayload(attPoints, attributes[0], attributes[1], attributes[2]));
+		ClientPlayNetworking.send(new Payloads.PowersPayload(powerPoints, serializePowers(), serializeAffinities()));
+		ClientPlayNetworking.send(new Payloads.RitualsPayload(ritualSlots, serializeRituals()));
+		ClientPlayNetworking.send(new Payloads.OccultPointsPayload(maxOccultPoints, occultPoints));
+	}
+
+	public void syncPexToServer(){
+		ClientPlayNetworking.send(new Payloads.PexPayload(pex, xp));
+	}
+
+	public void syncAttributesToServer(){
+		ClientPlayNetworking.send(new Payloads.AttributesPayload(attPoints, attributes[0], attributes[1], attributes[2]));
+	}
+
+	public void syncPowersToServer(){
+		ClientPlayNetworking.send(new Payloads.PowersPayload(powerPoints, serializePowers(), serializeAffinities()));
+	}
+
+	public void syncRitualsToServer(){
+		ClientPlayNetworking.send(new Payloads.RitualsPayload(ritualSlots, serializeRituals()));
+	}
+
+	public void syncOccultPointsToServer(){
+		ClientPlayNetworking.send(new Payloads.OccultPointsPayload(maxOccultPoints, occultPoints));
 	}
 }

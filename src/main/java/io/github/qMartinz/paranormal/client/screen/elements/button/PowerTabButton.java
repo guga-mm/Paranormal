@@ -5,7 +5,7 @@ import io.github.qMartinz.paranormal.api.ParanormalElement;
 import io.github.qMartinz.paranormal.client.screen.PowersScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.button.ButtonWidget;
 import net.minecraft.text.Text;
 
 public class PowerTabButton extends ButtonWidget {
@@ -19,7 +19,7 @@ public class PowerTabButton extends ButtonWidget {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	protected void drawWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 		graphics.drawTexture(PowersScreen.TEXTURE, getX(), getY(), 52 + 32 * (element.index - 1), selected ? 176 : 144, 32, 32);
 
 		if (isMouseOver(mouseX, mouseY) && !selected){

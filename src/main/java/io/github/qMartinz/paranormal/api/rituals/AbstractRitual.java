@@ -6,8 +6,6 @@ import io.github.qMartinz.paranormal.api.events.ParanormalEvents;
 import io.github.qMartinz.paranormal.api.rituals.types.ProjectileRitual;
 import io.github.qMartinz.paranormal.api.rituals.types.RayTracingRitual;
 import io.github.qMartinz.paranormal.api.rituals.types.SelfRitual;
-import io.github.qMartinz.paranormal.networking.ParticleMessages;
-import io.github.qMartinz.paranormal.registry.ModParticleRegistry;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
@@ -18,7 +16,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
-import team.lodestar.lodestone.systems.rendering.particle.Easing;
 
 public abstract class AbstractRitual {
 	private final ParanormalElement element;
@@ -127,7 +124,7 @@ public abstract class AbstractRitual {
 			if (cast) {
 				if (caster instanceof ServerPlayerEntity player && !player.isCreative()) {
 					playerData.setOccultPoints(playerData.getOccultPoints() - getOccultPointsCost());
-					playerData.syncToClient(player);
+					playerData.syncAllToClient(player);
 				}
 
 				castEffects(caster);
@@ -137,19 +134,7 @@ public abstract class AbstractRitual {
 
 	public void castEffects(LivingEntity caster){
 		if (caster.getWorld() instanceof ServerWorld world){
-			if (getElement() == ParanormalElement.DEATH){
-				ParticleMessages.spawnLumitransparentCircle(world, ModParticleRegistry.GLOWING_PARTICLE, caster.getX(),
-						caster.getY() + 0.2d, caster.getZ(), 0.5d, 12, 0d, 0.25d, 0d,
-						getElement().particleColorS(), getElement().particleColorE(), 1f, 0f, -1f,
-						1f, Easing.LINEAR, Easing.LINEAR, 0.3f, 0f, -1f, 1f,
-						Easing.LINEAR, Easing.LINEAR, 36, 1f);
-			} else {
-				ParticleMessages.spawnAdditiveCircle(world, ModParticleRegistry.GLOWING_PARTICLE, caster.getX(),
-						caster.getY() + 0.2d, caster.getZ(), 0.5d, 12, 0d, 0.25d, 0d,
-						getElement().particleColorS(), getElement().particleColorE(), 1f, 0f, -1f,
-						1f, Easing.LINEAR, Easing.LINEAR, 0.3f, 0f, -1f, 1f,
-						Easing.LINEAR, Easing.LINEAR, 36, 1f);
-			}
+			// TODO cast VFX
 		}
 	}
 }

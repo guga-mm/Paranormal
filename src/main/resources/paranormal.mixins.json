@@ -6,7 +6,8 @@
   "mixins": [
     "ItemEventsMixin",
     "PlayerEventsMixin",
-    "VillagerFearMixin"
+    "VillagerFearMixin",
+    "EntityEventsMixin"
   ],
   "client": [
   ],

@@ -70,7 +70,7 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 		}
 
 		private Model blockItem(Block block){
-			return new Model(Optional.of(new Identifier(MODID, ModelIds.getBlockModelId(block).getPath())), Optional.empty());
+			return new Model(Optional.of(Identifier.of(MODID, ModelIds.getBlockModelId(block).getPath())), Optional.empty());
 		}
 
 		@Override
@@ -92,12 +92,12 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 
 	public static class EnUsLangProvider extends FabricLanguageProvider {
 
-		protected EnUsLangProvider(FabricDataOutput dataOutput) {
-			super(dataOutput);
+		protected EnUsLangProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
+			super(dataOutput, "en_us", registryLookup);
 		}
 
 		@Override
-		public void generateTranslations(TranslationBuilder translationBuilder) {
+		public void generateTranslations(HolderLookup.Provider provider, TranslationBuilder translationBuilder) {
 			translationBuilder.add(ModItemRegistry.ASHES, "Ashes");
 			translationBuilder.add(ModItemRegistry.ORGAN, "Organ");
 			translationBuilder.add(ModBlockRegistry.TRANSCENDANCE_ALTAR, "Transcendance Altar");
@@ -117,12 +117,12 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 
 	public static class PtBrLangProvider extends FabricLanguageProvider {
 
-		protected PtBrLangProvider(FabricDataOutput dataOutput) {
-			super(dataOutput, "pt_br");
+		protected PtBrLangProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
+			super(dataOutput, "pt_br", registryLookup);
 		}
 
 		@Override
-		public void generateTranslations(TranslationBuilder translationBuilder) {
+		public void generateTranslations(HolderLookup.Provider provider, TranslationBuilder translationBuilder) {
 			translationBuilder.add(ModItemRegistry.ASHES, "Cinzas");
 			translationBuilder.add(ModItemRegistry.ORGAN, "Órgao");
 			translationBuilder.add(ModBlockRegistry.TRANSCENDANCE_ALTAR, "Altar de Transcendência");
@@ -140,10 +140,10 @@ public class ParanormalDatagen implements DataGeneratorEntrypoint {
 	}
 
 	public static class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
-		public static final TagKey<Item> BLOOD_FUEL = TagKey.of(RegistryKeys.ITEM, new Identifier(MODID, "blood_fuel"));
-		public static final TagKey<Item> ENERGY_FUEL = TagKey.of(RegistryKeys.ITEM, new Identifier(MODID, "energy_fuel"));
-		public static final TagKey<Item> DEATH_FUEL = TagKey.of(RegistryKeys.ITEM, new Identifier(MODID, "death_fuel"));
-		public static final TagKey<Item> WISDOM_FUEL = TagKey.of(RegistryKeys.ITEM, new Identifier(MODID, "wisdom_fuel"));
+		public static final TagKey<Item> BLOOD_FUEL = TagKey.of(RegistryKeys.ITEM, Identifier.of(MODID, "blood_fuel"));
+		public static final TagKey<Item> ENERGY_FUEL = TagKey.of(RegistryKeys.ITEM, Identifier.of(MODID, "energy_fuel"));
+		public static final TagKey<Item> DEATH_FUEL = TagKey.of(RegistryKeys.ITEM, Identifier.of(MODID, "death_fuel"));
+		public static final TagKey<Item> WISDOM_FUEL = TagKey.of(RegistryKeys.ITEM, Identifier.of(MODID, "wisdom_fuel"));
 
 		public ItemTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> completableFuture) {
 			super(output, completableFuture);

@@ -35,7 +35,7 @@ public class SelectedRitual extends ClickableWidget {
 		if (!playerData.rituals.isEmpty()){
 			AbstractRitual ritual = playerData.rituals.stream().toList().get(ritualIndex);
 
-			Identifier symbol = new Identifier(ritual.getId().getNamespace(),
+			Identifier symbol = Identifier.of(ritual.getId().getNamespace(),
 					"textures/ritual_symbol/" + ritual.getId().getPath() + ".png");
 
 			RenderSystem.enableBlend();

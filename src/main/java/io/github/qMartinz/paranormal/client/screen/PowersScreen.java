@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class PowersScreen extends Screen {
-	public static final Identifier TEXTURE = new Identifier(Paranormal.MODID, "textures/gui/powerscreen.png");
+	public static final Identifier TEXTURE = Identifier.of(Paranormal.MODID, "textures/gui/powerscreen.png");
 	private final int guiWidth = 255;
 	private final int guiHeight = 173;
 	private final List<PowerSlotButton> slots = new ArrayList<>();
@@ -44,22 +44,22 @@ public class PowersScreen extends Screen {
 		int x = width/2 - guiWidth/2;
 		int y = height/2 - guiHeight/2;
 
-		this.addDrawableChild(new PowerTabButton(x + 10, y + 10, 32, 32, ParanormalElement.BLOOD, element == ParanormalElement.BLOOD));
-		this.addDrawableChild(new PowerTabButton(x + 10, y + 45, 32, 32, ParanormalElement.DEATH, element == ParanormalElement.DEATH));
-		this.addDrawableChild(new PowerTabButton(x + 10, y + 80, 32, 32, ParanormalElement.ENERGY, element == ParanormalElement.ENERGY));
-		this.addDrawableChild(new PowerTabButton(x + 10, y + 115, 32, 32, ParanormalElement.WISDOM, element == ParanormalElement.WISDOM));
+		this.addDrawable(new PowerTabButton(x + 10, y + 10, 32, 32, ParanormalElement.BLOOD, element == ParanormalElement.BLOOD));
+		this.addDrawable(new PowerTabButton(x + 10, y + 45, 32, 32, ParanormalElement.DEATH, element == ParanormalElement.DEATH));
+		this.addDrawable(new PowerTabButton(x + 10, y + 80, 32, 32, ParanormalElement.ENERGY, element == ParanormalElement.ENERGY));
+		this.addDrawable(new PowerTabButton(x + 10, y + 115, 32, 32, ParanormalElement.WISDOM, element == ParanormalElement.WISDOM));
 
-		this.addDrawableChild(new ChangeScreenButton(x + 16, y + 151, 20, 20, new AttributesScreen()));
+		this.addDrawable(new ChangeScreenButton(x + 16, y + 151, 20, 20, new AttributesScreen()));
 
 		ClientEvents.POWER_SCREEN_INIT.invoker().powerScreenInit(this);
 
 		for (int i = 0; i < 5; i++) {
 			PowerSlotButton newSlot = new PowerSlotButton(x + 61, y + 5 + (27 * i));
 			slots.add(newSlot);
-			this.addDrawableChild(newSlot);
+			this.addDrawable(newSlot);
 		}
 
-		this.addDrawableChild(new PowerScrollBar(width/2 - guiWidth/2 + 234, height/2 - guiHeight/2 + 6));
+		this.addDrawable(new PowerScrollBar(width/2 - guiWidth/2 + 234, height/2 - guiHeight/2 + 6));
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class PowersScreen extends Screen {
 		int x = width/2 - guiWidth/2;
 		int y = height/2 - guiHeight/2;
 
-		renderBackground(guiGraphics);
+		renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
 
 		guiGraphics.drawTexture(TEXTURE, x, y, 0, 0, 52, 173);
 		guiGraphics.drawTexture(TEXTURE, x + 56, y, 52, 0, 199, 144);
@@ -123,16 +123,16 @@ public class PowersScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+	public boolean mouseScrolled(double mouseX, double mouseY, double amountX, double amountY) {
 		int x = width/2 - guiWidth/2;
 		int y = height/2 - guiHeight/2;
 
 		for (Element e : children()){
 			if (e instanceof PowerScrollBar scrollBar && mouseX > x + 56 && mouseX < x + 251 && mouseY > y && mouseY < y + 144) {
-				scrollBar.scrollPosition = MathUtils.clamp(scrollBar.scrollPosition - ((int) amount), 0, scrollBar.getMaxScrollPosition());
+				scrollBar.scrollPosition = MathUtils.clamp(scrollBar.scrollPosition - ((int) amountY), 0, scrollBar.getMaxScrollPosition());
 			}
 		}
-		return super.mouseScrolled(mouseX, mouseY, amount);
+		return super.mouseScrolled(mouseX, mouseY, amountX, amountY);
 	}
 
 	public static class PowerScrollBar extends ClickableWidget implements Drawable, Element {
@@ -143,8 +143,7 @@ public class PowersScreen extends Screen {
 		}
 
 		@Override
-		public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-			super.render(graphics, mouseX, mouseY, delta);
+		protected void drawWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 			if (powersScreen != null && !powersScreen.powers.isEmpty()) {
 				int size = powersScreen.powers.size();
 				int scroll = this.getScrollPosition();
@@ -157,11 +156,6 @@ public class PowersScreen extends Screen {
 
 				setSlots(Math.min(b, size - 1));
 			}
-		}
-
-		@Override
-		protected void drawWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-
 		}
 
 		public int getScrollPosition() {
@@ -185,11 +179,6 @@ public class PowersScreen extends Screen {
 
 		@Override
 		protected void updateNarration(NarrationMessageBuilder builder) {}
-
-		@Override
-		public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-			return super.mouseScrolled(mouseX, mouseY, amount);
-		}
 
 		@Override
 		public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {

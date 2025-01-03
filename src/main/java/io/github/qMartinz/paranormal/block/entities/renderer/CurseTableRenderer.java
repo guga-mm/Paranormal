@@ -1,7 +1,9 @@
 package io.github.qMartinz.paranormal.block.entities.renderer;
 
+import foundry.veil.api.util.FastNoiseLite;
 import io.github.qMartinz.paranormal.Paranormal;
 import io.github.qMartinz.paranormal.block.entities.CurseTableEntity;
+import io.netty.buffer.ByteBuf;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -14,12 +16,15 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.data.client.model.VariantSettings;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import org.quiltmc.loader.api.minecraft.ClientOnly;
+
+import java.nio.ByteBuffer;
 
 @ClientOnly
 public class CurseTableRenderer implements BlockEntityRenderer<CurseTableEntity> {
@@ -37,7 +42,7 @@ public class CurseTableRenderer implements BlockEntityRenderer<CurseTableEntity>
 			matrices.push();
 			matrices.translate(xOffset, yOffset, zOffset);
 			matrices.scale(0.5f, 0.5f, 0.5f);
-			matrices.multiply(Axis.Y_POSITIVE.rotationDegrees((entity.getWorld().getTime() + tickDelta) * 4));
+			matrices.rotate(Axis.Y_POSITIVE.rotationDegrees((entity.getWorld().getTime() + tickDelta) * 4));
 			// TODO fix rendering
 			int lightAbove = WorldRenderer.getLightmapCoordinates(entity.getWorld(), entity.getPos().up());
 			MinecraftClient.getInstance().getItemRenderer().renderItem(item, ModelTransformationMode.FIXED, lightAbove, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, entity.getWorld(), 0);

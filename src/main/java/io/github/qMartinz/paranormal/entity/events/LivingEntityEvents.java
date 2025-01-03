@@ -9,11 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
-
-import java.util.Random;
 
 public class LivingEntityEvents {
 	public static void onDeath(LivingEntity killed, DamageSource source){
@@ -26,12 +22,12 @@ public class LivingEntityEvents {
 		}
 	}
 
-	public static void onTick(Entity entity, boolean b) {
+	public static void onTick(Entity entity) {
 		if (entity instanceof ServerPlayerEntity player && player.isSleeping()){
 			PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 			playerData.setOccultPoints(playerData.getOccultPoints() +
 					(0.025d * (playerData.getAttribute(ParanormalAttribute.PRESENCE) * 0.25d + 1)));
-			playerData.syncToClient(player);
+			playerData.syncAllToClient(player);
 		}
 	}
 }

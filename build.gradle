@@ -1,7 +1,6 @@
 plugins {
 	id 'maven-publish'
-	id 'org.quiltmc.loom' version '1.+' // Required for the loader to work.
-	id 'io.github.juuxel.loom-quiltflower' version '1.8.+' // For loom 0.8-0.9, 0.11+
+	alias libs.plugins.quilt.loom
 }
 
 base {
@@ -12,16 +11,6 @@ version = "$project.version+${libs.versions.minecraft.get()}"
 group = project.maven_group
 
 repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
-	maven {
-		name 'Quilt'
-		url 'https://maven.quiltmc.org/repository/release'
-	}
-
 	maven{
 		name = 'Ladysnake Mods'
 		url = 'https://maven.ladysnake.org/releases'
@@ -58,9 +47,6 @@ loom {
 		"paranormal" {
 			// Tell Loom about each source set used by your mod here. This ensures that your mod's classes are properly transformed by Loader.
 			sourceSet("main")
-			// If you shade (directly include classes, not JiJ) a dependency into your mod, include it here using one of these methods:
-			// dependency("com.example.shadowedmod:1.2.3")
-			// configuration("exampleShadedConfigurationName")
 		}
 	}
 
@@ -83,53 +69,36 @@ assemble.dependsOn(runDatagen)
 dependencies {
 	minecraft libs.minecraft
 
-	modImplementation "org.quiltmc:quilt-loader:${project.loader_version}"
-	modImplementation "org.quiltmc.qsl.core:resource_loader:${qsl_version}+${minecraft_version}"
-	modImplementation "org.quiltmc.quilted-fabric-api:quilted-fabric-api:${quilted_fabric_api_version}-${minecraft_version}"
-	modImplementation "org.quiltmc:qsl:${qsl_version}+${minecraft_version}"
-	mappings "org.quiltmc:quilt-mappings:${minecraft_version}+build.${quilt_mappings}:intermediary-v2"
+	mappings variantOf(libs.quilt.mappings) { classifier 'intermediary-v2' }
 
-	// midnight
-	modImplementation(libs.midnightLib)
-	include(libs.midnightLib)
+	modImplementation libs.quilt.loader
 
-	// satin
-	modImplementation(libs.satin) {
-		exclude group: 'net.fabricmc'
-	}
-	include(libs.satin)
+	modImplementation libs.quilted.fabric.api
 
-	// lodestone
-	modImplementation(libs.lodestoneLib) {
-		transitive = false
-	}
-	include(libs.lodestoneLib)
-
-	implementation("foundry.veil:Veil-common-${project.minecraft_version}:${project.veil_version}") {
+	implementation("foundry.veil:veil-common-${veil}") {
 		exclude group: "maven.modrinth"
 	}
 
-	//modImplementation "software.bernie.geckolib:geckolib-quilt-${minecraft_version}:${geckolib_version}"
+	//modImplementation "software.bernie.geckolib:geckolib-quilt-${geckolib}"
 }
 
 processResources {
-	inputs.property 'version', version
+	inputs.properties 'version': version, 'group': project.group
 
 	filesMatching('quilt.mod.json') {
-		expand 'version': version
+		expand 'version': version, 'group': project.group
 	}
 }
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.encoding = 'UTF-8'
-	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
-	it.options.release = 17
+	it.options.release = 21
 }
 
 java {
 	// Still required by IDEs such as Eclipse and Visual Studio Code
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
 
 	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task if it is present.
 	// If you remove this line, sources will not be generated.

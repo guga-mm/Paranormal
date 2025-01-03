@@ -4,6 +4,7 @@ import io.github.qMartinz.paranormal.api.ParanormalAttribute;
 import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
 import io.github.qMartinz.paranormal.item.RitualItem;
+import io.github.qMartinz.paranormal.registry.ModComponentsRegistry;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -13,11 +14,9 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.state.property.Property;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Hand;
@@ -88,23 +87,21 @@ public class TranscendanceAltar extends Block {
 	}
 
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if (world.isClient()) return super.onUse(state, world, pos, player, hand, hit);
+	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+		if (world.isClient()) return super.onUse(state, world, pos, player, hit);
 		PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 
-		if (!(player.getStackInHand(hand).getItem() instanceof RitualItem)) return super.onUse(state, world, pos, player, hand, hit);
+		if (!(player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof RitualItem)) return super.onUse(state, world, pos, player, hit);
 
-		AbstractRitual ritual = ((RitualItem) player.getStackInHand(hand).getItem()).getRitual();
-		ItemStack stack = player.getStackInHand(hand);
+		AbstractRitual ritual = ((RitualItem) player.getStackInHand(Hand.MAIN_HAND).getItem()).getRitual();
+		ItemStack stack = player.getStackInHand(Hand.MAIN_HAND);
 
 		if (playerData.hasRitual(ritual) && player.isSneaking()) {
-			if (stack.getOrCreateNbt().getBoolean("ritualLearned")){
-				NbtCompound tag = new NbtCompound();
-				tag.putBoolean("ritualLearned", false);
-				stack.setNbt(tag);
+			if (stack.getOrDefault(ModComponentsRegistry.RITUAL_LEARNED, false)){
+				stack.set(ModComponentsRegistry.RITUAL_LEARNED, false);
 			}
 			playerData.removeRitual(ritual);
-			playerData.syncToClient((ServerPlayerEntity) player);
+			playerData.syncAllToClient((ServerPlayerEntity) player);
 			//world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), OPSounds.RITUAL_FORGOTTEN.get(), SoundCategory.BLOCKS, 0.5f, 1f); TODO sons de ritual
 			//world.playSound(null, pPos.getX(), pPos.getY(), pPos.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.BLOCKS, 1f, 1f); sons de ritual
 			return ActionResult.CONSUME;
@@ -112,12 +109,10 @@ public class TranscendanceAltar extends Block {
 
 		if (playerData.getAttribute(ParanormalAttribute.PRESENCE) >= ((RitualItem) stack.getItem()).getRitual().getPresenceRequired() &&
 				playerData.rituals.size() < playerData.getRitualSlots() &&
-				!stack.getOrCreateNbt().getBoolean("ritualLearned")) {
-			NbtCompound tag = new NbtCompound();
-			tag.putBoolean("ritualLearned", true);
-			stack.setNbt(tag);
+				!stack.getOrDefault(ModComponentsRegistry.RITUAL_LEARNED, false)) {
+			stack.set(ModComponentsRegistry.RITUAL_LEARNED, true);
 			playerData.addRitual(ritual);
-			playerData.syncToClient((ServerPlayerEntity) player);
+			playerData.syncAllToClient((ServerPlayerEntity) player);
 
 			//world.playSound(null, pPos.getX(), pPos.getY(), pPos.getZ(), OPSounds.RITUAL_LEARNED.get(), SoundSource.BLOCKS, 0.5f, 1f); sons de ritual
 			//world.playSound(null, pPos.getX(), pPos.getY(), pPos.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.BLOCKS, 1f, 1f); sons de ritual
@@ -127,6 +122,6 @@ public class TranscendanceAltar extends Block {
 			return ActionResult.CONSUME;
 		}
 
-		return super.onUse(state, world, pos, player, hand, hit);
+		return super.onUse(state, world, pos, player, hit);
 	}
 }

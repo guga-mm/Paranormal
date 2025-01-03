@@ -8,20 +8,21 @@ import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.render.DeltaTracker;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class RitualHud implements HudRenderCallback {
-	public static final Identifier TEXTURES = new Identifier(Paranormal.MODID, "textures/gui/overlay.png");
+	public static final Identifier TEXTURES = Identifier.of(Paranormal.MODID, "textures/gui/overlay.png");
 
 	private boolean visible = false;
 
 	private int ritualIndex = 0;
 
 	@Override
-	public void onHudRender(GuiGraphics guiGraphics, float tickDelta) {
+	public void onHudRender(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
 		MinecraftClient client = MinecraftClient.getInstance();
 		PlayerData playerData = ParanormalClient.playerData;
 		if (visible && !client.options.hudHidden && client != null && !playerData.rituals.isEmpty()) {
@@ -37,7 +38,7 @@ public class RitualHud implements HudRenderCallback {
 				if (ritualIndex > playerData.rituals.size() - 1) ritualIndex = Math.max(0, playerData.rituals.size() - 1);
 
 				AbstractRitual ritual = playerData.rituals.stream().toList().get(ritualIndex);
-				Identifier symbol = new Identifier(ritual.getId().getNamespace(),
+				Identifier symbol = Identifier.of(ritual.getId().getNamespace(),
 						"textures/ritual_symbol/" + ritual.getId().getPath() + ".png");
 
 				int previousIndex = ritualIndex - 1;
@@ -50,11 +51,11 @@ public class RitualHud implements HudRenderCallback {
 
 				if (playerData.rituals.size() > 1) {
 					AbstractRitual ritualPrevious = playerData.rituals.stream().toList().get(previousIndex);
-					Identifier symbolPrevious = new Identifier(ritualPrevious.getId().getNamespace(),
+					Identifier symbolPrevious = Identifier.of(ritualPrevious.getId().getNamespace(),
 							"textures/ritual_symbol/" + ritualPrevious.getId().getPath() + ".png");
 
 					AbstractRitual ritualNext = playerData.rituals.stream().toList().get(nextIndex);
-					Identifier symbolNext = new Identifier(ritualNext.getId().getNamespace(),
+					Identifier symbolNext = Identifier.of(ritualNext.getId().getNamespace(),
 							"textures/ritual_symbol/" + ritualNext.getId().getPath() + ".png");
 
 					guiGraphics.drawTexture(symbolPrevious, width / 2 - 37, 24, 0, 0, 64, 64, 64, 64);

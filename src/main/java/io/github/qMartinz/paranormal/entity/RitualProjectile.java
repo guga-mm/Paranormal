@@ -1,12 +1,8 @@
 package io.github.qMartinz.paranormal.entity;
 
-import io.github.qMartinz.paranormal.Paranormal;
-import io.github.qMartinz.paranormal.api.ParanormalElement;
 import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.api.rituals.AbstractRitual;
 import io.github.qMartinz.paranormal.api.rituals.types.ProjectileRitual;
-import io.github.qMartinz.paranormal.networking.ParticleMessages;
-import io.github.qMartinz.paranormal.registry.ModParticleRegistry;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -26,9 +22,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
-import team.lodestar.lodestone.systems.rendering.particle.Easing;
-
-import java.awt.*;
 
 public class RitualProjectile extends PersistentProjectileEntity {
     private static final TrackedData<Integer> DATA_ELEMENT;
@@ -51,7 +44,7 @@ public class RitualProjectile extends PersistentProjectileEntity {
 	}
 
 	public RitualProjectile(EntityType<? extends RitualProjectile> entityType, World world, LivingEntity owner, AbstractRitual ritual) {
-		super(entityType, owner, world);
+		super(entityType, owner, world, ItemStack.EMPTY, ItemStack.EMPTY);
 		this.pickupType = PickupPermission.DISALLOWED;
 		this.iX = this.getX();
 		this.iY = this.getY();
@@ -62,9 +55,9 @@ public class RitualProjectile extends PersistentProjectileEntity {
 	}
 
 	@Override
-	protected void initDataTracker() {
-		super.initDataTracker();
-		this.dataTracker.startTracking(DATA_ELEMENT, 0);
+	protected void initDataTracker(DataTracker.Builder builder) {
+		super.initDataTracker(builder);
+		this.dataTracker.set(DATA_ELEMENT, 0);
 	}
 
 	static{
@@ -77,7 +70,7 @@ public class RitualProjectile extends PersistentProjectileEntity {
 
         if (target == null || !target.isAlive()){
             target = getWorld().getClosestEntity(LivingEntity.class, TargetPredicate.DEFAULT,
-                    null, getX(), getY(), getZ(), getBoundingBox().expand(1.5d));
+                    null, getX(), getY(), getZ(), getVisibilityBoundingBox().expand(1.5d));
             if (getOwner() instanceof MobEntity mob && target != mob.getTarget()) {
                 target = null;
             }
@@ -107,63 +100,7 @@ public class RitualProjectile extends PersistentProjectileEntity {
 	public void baseTick() {
 		super.baseTick();
 		if (ritual != null && this.getWorld() instanceof ServerWorld world) {
-			if (this.ritual.getElement() == ParanormalElement.DEATH){
-				ParticleMessages.spawnLumitransparentParticle(world, ModParticleRegistry.GLOWING_PARTICLE, this.getX(),
-						this.getY(), this.getZ(), 0d, 0d, 0d, ritual.getElement().particleColorS(),
-						ritual.getElement().particleColorE(), 1f, 0f, -1f,
-						1f, Easing.LINEAR, Easing.LINEAR, 0.3f, 0f, -1f, 1f,
-						Easing.LINEAR, Easing.LINEAR, 36, 0f);
-
-				if (getPitch() < 45 && getPitch() > -45) {
-					if (getHorizontalFacing().getAxis() == Direction.Axis.Z) {
-						ParticleMessages.spawnLumitransparentParticle(world, ModParticleRegistry.GLOWING_PARTICLE,
-								this.getX() + Math.sin(particleIncrement / 3f) * 0.25d, this.getY() + Math.cos(particleIncrement / 3f) * 0.25d, this.getZ(),
-								0d, 0d, 0d, ritual.getComplement().complementColorS(), ritual.getComplement().complementColorE(),
-								1f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR,
-								0.15f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR, 36, 0f);
-					} else {
-						ParticleMessages.spawnLumitransparentParticle(world, ModParticleRegistry.GLOWING_PARTICLE,
-								this.getX(), this.getY() + Math.cos(particleIncrement / 3f) * 0.25d, this.getZ() + Math.sin(particleIncrement / 3f) * 0.25d,
-								0d, 0d, 0d, ritual.getComplement().complementColorS(), ritual.getComplement().complementColorE(),
-								1f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR,
-								0.15f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR, 36, 0f);
-					}
-				} else {
-					ParticleMessages.spawnLumitransparentParticle(world, ModParticleRegistry.GLOWING_PARTICLE,
-							this.getX() + Math.sin(particleIncrement / 3f) * 0.25d, this.getY(), this.getZ() + Math.cos(particleIncrement / 3f) * 0.25d,
-							0d, 0d, 0d, ritual.getComplement().complementColorS(), ritual.getComplement().complementColorE(),
-							1f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR,
-							0.15f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR, 36, 0f);
-				}
-			} else {
-				ParticleMessages.spawnAdditiveParticle(world, ModParticleRegistry.GLOWING_PARTICLE, this.getX(),
-						this.getY(), this.getZ(), 0d, 0d, 0d, ritual.getElement().particleColorS(),
-						ritual.getElement().particleColorE(), 1f, 0f, -1f,
-						1f, Easing.LINEAR, Easing.LINEAR, 0.3f, 0f, -1f, 1f,
-						Easing.LINEAR, Easing.LINEAR, 36, 0f);
-
-				if (getPitch() < 45 && getPitch() > -45) {
-					if (getHorizontalFacing().getAxis() == Direction.Axis.Z) {
-						ParticleMessages.spawnAdditiveParticle(world, ModParticleRegistry.GLOWING_PARTICLE,
-								this.getX() + Math.sin(particleIncrement / 3f) * 0.25d, this.getY() + Math.cos(particleIncrement / 3f) * 0.25d, this.getZ(),
-								0d, 0d, 0d, ritual.getComplement().complementColorS(), ritual.getComplement().complementColorE(),
-								1f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR,
-								0.15f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR, 36, 0f);
-					} else {
-						ParticleMessages.spawnAdditiveParticle(world, ModParticleRegistry.GLOWING_PARTICLE,
-								this.getX(), this.getY() + Math.cos(particleIncrement / 3f) * 0.25d, this.getZ() + Math.sin(particleIncrement / 3f) * 0.25d,
-								0d, 0d, 0d, ritual.getComplement().complementColorS(), ritual.getComplement().complementColorE(),
-								1f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR,
-								0.15f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR, 36, 0f);
-					}
-				} else {
-					ParticleMessages.spawnAdditiveParticle(world, ModParticleRegistry.GLOWING_PARTICLE,
-							this.getX() + Math.sin(particleIncrement / 3f) * 0.25d, this.getY(), this.getZ() + Math.cos(particleIncrement / 3f) * 0.25d,
-							0d, 0d, 0d, ritual.getComplement().complementColorS(), ritual.getComplement().complementColorE(),
-							1f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR,
-							0.15f, 0f, -1f, 1f, Easing.LINEAR, Easing.LINEAR, 36, 0f);
-				}
-			}
+			// TODO ritual projectile VFX
 		}
 
 		particleIncrement++;
@@ -252,6 +189,11 @@ public class RitualProjectile extends PersistentProjectileEntity {
 	@Override
 	protected ItemStack asItemStack() {
 		return null;
+	}
+
+	@Override
+	protected ItemStack getDefaultItemStack() {
+		return ItemStack.EMPTY;
 	}
 
 	private double getRange(){

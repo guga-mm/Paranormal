@@ -1,26 +1,22 @@
 package io.github.qMartinz.paranormal.client.screen.elements.button;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.qMartinz.paranormal.Paranormal;
 import io.github.qMartinz.paranormal.ParanormalClient;
 import io.github.qMartinz.paranormal.api.ParanormalAttribute;
 import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.api.powers.ParanormalPower;
 import io.github.qMartinz.paranormal.client.screen.PowersScreen;
-import io.github.qMartinz.paranormal.networking.ModMessages;
+import io.github.qMartinz.paranormal.networking.Payloads;
 import io.github.qMartinz.paranormal.power.Affinity;
 import io.github.qMartinz.paranormal.util.CommonText;
 import io.github.qMartinz.paranormal.util.MathUtils;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.client.gui.widget.button.ButtonWidget;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.quiltmc.qsl.networking.api.PacketByteBufs;
-import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -37,7 +33,8 @@ public class PowerSlotButton extends ButtonWidget {
 		super(x, y, 170, 26, Text.empty(), new AddPower(), DEFAULT_NARRATION);
 	}
 
-	public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+	@Override
+	protected void drawWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 		if (power != null) {
 			PlayerData playerData = ParanormalClient.playerData;
 
@@ -46,35 +43,35 @@ public class PowerSlotButton extends ButtonWidget {
 			RenderSystem.depthMask(false);
 			RenderSystem.disableDepthTest();
 
-			guiGraphics.drawTexture(PowersScreen.TEXTURE, getX(), getY(), 57, 5, 170, 26);
+			graphics.drawTexture(PowersScreen.TEXTURE, getX(), getY(), 57, 5, 170, 26);
 
 			float alpha = 1f;
 			boolean powerRequirement = power.getPowerRequirements().stream().allMatch(playerData::hasPower) || power.getPowerRequirements().isEmpty();
 			boolean requirements = playerData.getPex() >= power.getPexRequired() &&
-					playerData.getAttribute(ParanormalAttribute.STRENGTH) >= power.getAttributeRequired(ParanormalAttribute.STRENGTH) &&
-					playerData.getAttribute(ParanormalAttribute.VIGOR) >= power.getAttributeRequired(ParanormalAttribute.VIGOR) &&
-					playerData.getAttribute(ParanormalAttribute.PRESENCE) >= power.getAttributeRequired(ParanormalAttribute.PRESENCE) &&
-					powerRequirement;
+				playerData.getAttribute(ParanormalAttribute.STRENGTH) >= power.getAttributeRequired(ParanormalAttribute.STRENGTH) &&
+				playerData.getAttribute(ParanormalAttribute.VIGOR) >= power.getAttributeRequired(ParanormalAttribute.VIGOR) &&
+				playerData.getAttribute(ParanormalAttribute.PRESENCE) >= power.getAttributeRequired(ParanormalAttribute.PRESENCE) &&
+				powerRequirement;
 			if (!playerData.hasPower(power)) {
 				alpha = requirements ? MathUtils.Oscillate((int) ((System.currentTimeMillis() / 10) % 200), 50, 100) / 100f : 0.5f;
 			}
 
 			if (playerData.hasPower(power) && !playerData.hasAffinity(power) &&
-					playerData.getPowers().stream().anyMatch(p -> p instanceof Affinity a && a.getElement() == power.getElement())) {
+				playerData.getPowers().stream().anyMatch(p -> p instanceof Affinity a && a.getElement() == power.getElement())) {
 				RenderSystem.setShaderColor(1f, 1f, 1f, MathUtils.Oscillate((int) ((System.currentTimeMillis() / 10) % 200), 1, 100) / 100f);
-				guiGraphics.drawTexture(PowersScreen.TEXTURE, getX() + 1, getY() + 1, 120, 208, 24, 24);
+				graphics.drawTexture(PowersScreen.TEXTURE, getX() + 1, getY() + 1, 120, 208, 24, 24);
 			}
 
 			RenderSystem.setShaderColor(1f, 1f, 1f, alpha);
 
-			guiGraphics.drawTexture(PowersScreen.TEXTURE, getX() + 1, getY() + 1, 24 * power.getElement().index, playerData.hasAffinity(power) ? 208 : 232, 24, 24);
+			graphics.drawTexture(PowersScreen.TEXTURE, getX() + 1, getY() + 1, 24 * power.getElement().index, playerData.hasAffinity(power) ? 208 : 232, 24, 24);
 
-			Identifier icon = new Identifier(this.power.getId().getNamespace(), "textures/paranormal_power/" + this.power.getId().getPath() + ".png");
-			guiGraphics.drawTexture(icon, getX() + 5, getY() + 5, 0, 0, 16, 16, 16, 16);
+			Identifier icon = Identifier.of(this.power.getId().getNamespace(), "textures/paranormal_power/" + this.power.getId().getPath() + ".png");
+			graphics.drawTexture(icon, getX() + 5, getY() + 5, 0, 0, 16, 16, 16, 16);
 
 			RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
-			guiGraphics.drawText(client.textRenderer, power.getDisplayName(), getX() + 29, getY() + 3, new Color(255, 255, 255).getRGB(), true);
+			graphics.drawText(client.textRenderer, power.getDisplayName(), getX() + 29, getY() + 3, new Color(255, 255, 255).getRGB(), true);
 
 			if (!power.getPowerRequirements().isEmpty() || Arrays.stream(power.getAttributesRequired()).anyMatch(i -> i > 0) || power.getPexRequired() != 0) {
 				List<MutableText> requisites = new ArrayList<>();
@@ -99,7 +96,7 @@ public class PowerSlotButton extends ButtonWidget {
 				MutableText requisitesComponent = CommonText.REQUISITES.copyContentOnly().append(": ").append(iterator.next());
 				iterator.forEachRemaining(req -> requisitesComponent.append(", " + req.getString()));
 
-				guiGraphics.drawText(client.textRenderer, requisitesComponent, getX() + 29, getY() + 5 + client.textRenderer.fontHeight, new Color(148, 148, 148).getRGB(), false);
+				graphics.drawText(client.textRenderer, requisitesComponent, getX() + 29, getY() + 5 + client.textRenderer.fontHeight, new Color(148, 148, 148).getRGB(), false);
 			}
 
 			RenderSystem.enableDepthTest();
@@ -139,10 +136,7 @@ public class PowerSlotButton extends ButtonWidget {
 						playerData.setPowerPoints(playerData.getPowerPoints() - 1);
 						playerData.addPower(power);
 
-						PacketByteBuf data = PacketByteBufs.create();
-						data.writeIdentifier(power.getId());
-
-						ClientPlayNetworking.send(ModMessages.ON_ADDED_POWER_TRIGGER_ID, data);
+						ClientPlayNetworking.send(new Payloads.AddedPowerTriggerPayload(power.getId()));
 					}
 				} else if (!playerData.hasAffinity(power)) {
 					if (playerData.getPowerPoints() > 0) {
@@ -151,7 +145,7 @@ public class PowerSlotButton extends ButtonWidget {
 					}
 				}
 
-				playerData.syncToServer();
+				playerData.syncAllToServer();
 			}
 		}
 	}

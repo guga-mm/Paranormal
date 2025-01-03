@@ -6,6 +6,7 @@ import io.github.qMartinz.paranormal.api.powers.PowerRegistry;
 import io.github.qMartinz.paranormal.api.rituals.RitualRegistry;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.HolderLookup;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.PersistentState;
@@ -17,9 +18,14 @@ import java.util.UUID;
 
 public class StateSaverAndLoader extends PersistentState {
 	public HashMap<UUID, PlayerData> players = new HashMap<>();
+	private static final Factory<StateSaverAndLoader> factory = new Factory<>(
+		StateSaverAndLoader::new, // If there's no 'StateSaverAndLoader' yet create one
+		StateSaverAndLoader::createFromNbt, // If there is a 'StateSaverAndLoader' NBT, parse it with 'createFromNbt'
+		null // Supposed to be an 'DataFixTypes' enum, but we can just pass null
+	);
 
 	@Override
-	public NbtCompound writeNbt(NbtCompound nbt) {
+	public NbtCompound writeNbt(NbtCompound nbt, HolderLookup.Provider lookupProvider) {
 		NbtCompound playersNbt = new NbtCompound();
 		players.forEach((uuid, playerData) -> {
 			NbtCompound playerNbt = new NbtCompound();
@@ -57,7 +63,7 @@ public class StateSaverAndLoader extends PersistentState {
 		return nbt;
 	}
 
-	public static StateSaverAndLoader createFromNbt(NbtCompound tag) {
+	public static StateSaverAndLoader createFromNbt(NbtCompound tag, HolderLookup.Provider lookupProvider) {
 		StateSaverAndLoader state = new StateSaverAndLoader();
 
 		NbtCompound playersNbt = tag.getCompound("players");
@@ -76,20 +82,20 @@ public class StateSaverAndLoader extends PersistentState {
 
 			playerData.rituals.clear();
 			NbtCompound rituals = nbt.getCompound("rituals");
-			for (int i = 0; i < rituals.getKeys().size(); i++){
-				playerData.rituals.add(RitualRegistry.getRitual(new Identifier(rituals.getString("ritual_" + i))).orElse(null));
+			for (int i = 0; i < rituals.getKeys().size(); i++) {
+				playerData.rituals.add(RitualRegistry.getRitual(Identifier.of(Paranormal.MODID, rituals.getString("ritual_" + i))).orElse(null));
 			}
 
 			playerData.powers.clear();
 			NbtCompound powers = nbt.getCompound("powers");
-			for (int i = 0; i < powers.getKeys().size(); i++){
-				playerData.powers.add(PowerRegistry.getPower(new Identifier(powers.getString("power_" + i))).orElse(null));
+			for (int i = 0; i < powers.getKeys().size(); i++) {
+				playerData.powers.add(PowerRegistry.getPower(Identifier.of(Paranormal.MODID, powers.getString("power_" + i))).orElse(null));
 			}
 
 			playerData.affinities.clear();
 			NbtCompound affinities = nbt.getCompound("affinities");
-			for (int i = 0; i < affinities.getKeys().size(); i++){
-				playerData.affinities.add(PowerRegistry.getPower(new Identifier(affinities.getString("affinity_" + i))).orElse(null));
+			for (int i = 0; i < affinities.getKeys().size(); i++) {
+				playerData.affinities.add(PowerRegistry.getPower(Identifier.of(Paranormal.MODID, affinities.getString("affinity_" + i))).orElse(null));
 			}
 
 			UUID uuid = UUID.fromString(key);
@@ -102,7 +108,7 @@ public class StateSaverAndLoader extends PersistentState {
 	public static StateSaverAndLoader getServerState(MinecraftServer server) {
 		PersistentStateManager persistentStateManager = server.getWorld(World.OVERWORLD).getPersistentStateManager();
 
-		StateSaverAndLoader state = persistentStateManager.getOrCreate(StateSaverAndLoader::createFromNbt, StateSaverAndLoader::new, Paranormal.MODID);
+		StateSaverAndLoader state = persistentStateManager.getOrCreate(factory, Paranormal.MODID);
 
 		state.markDirty();
 

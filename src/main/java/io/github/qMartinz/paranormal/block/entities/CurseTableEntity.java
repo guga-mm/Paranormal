@@ -19,6 +19,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.registry.HolderLookup;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
@@ -26,12 +27,6 @@ import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
-import team.lodestar.lodestone.systems.rendering.particle.Easing;
-import team.lodestar.lodestone.systems.rendering.particle.LodestoneWorldParticleTextureSheet;
-import team.lodestar.lodestone.systems.rendering.particle.WorldParticleBuilder;
-import team.lodestar.lodestone.systems.rendering.particle.data.ColorParticleData;
-import team.lodestar.lodestone.systems.rendering.particle.data.GenericParticleData;
-import team.lodestar.lodestone.systems.rendering.particle.data.SpinParticleData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,34 +103,7 @@ public class CurseTableEntity extends BlockEntity implements CurseTableInventory
 
 	public static void tick(World world, BlockPos pos, BlockState state, CurseTableEntity be) {
 		if (world.isClient() && be.getFuel() >= 4){
-			WorldParticleBuilder builder = WorldParticleBuilder.create(ModParticleRegistry.GLOWING_PARTICLE)
-					.setTransparencyData(GenericParticleData.create(1f, 0f, -1f)
-							.setCoefficient(1f)
-							.setEasing(Easing.LINEAR, Easing.LINEAR).build())
-					.setSpinData(SpinParticleData.create(0f, 0f, -1f)
-							.setCoefficient(1f)
-							.setEasing(Easing.LINEAR, Easing.LINEAR)
-							.setSpinOffset(0f).build())
-					.setScaleData(GenericParticleData.create(0.3f, 0, -1f)
-							.setCoefficient(1f)
-							.setEasing(Easing.LINEAR, Easing.LINEAR).build())
-					.setLifetime(36).setGravity(0f)
-					.setColorData(ColorParticleData.create(be.element.particleColorS(), be.element.particleColorE()).build())
-					.setMotion(0, 0.05d, 0);
-
-			for (int i = 0; i < 3; i++) {
-				if (be.element == ParanormalElement.DEATH){
-					builder.setRenderType(LodestoneWorldParticleTextureSheet.LUMITRANSPARENT).spawn(world,
-							pos.getX() + 0.5d + (world.random.rangeClosed(-20, 20) / 100d),
-							pos.getY() + 0.9d,
-							pos.getZ() + 0.5d + (world.random.rangeClosed(-20, 20) / 100d));
-				} else {
-					builder.setRenderType(LodestoneWorldParticleTextureSheet.ADDITIVE).spawn(world,
-							pos.getX() + 0.5d + (world.random.rangeClosed(-20, 20) / 100d),
-							pos.getY() + 0.9d,
-							pos.getZ() + 0.5d + (world.random.rangeClosed(-20, 20) / 100d));
-				}
-			}
+			// TODO fueled VFX
 		}
 
 		TagKey<Item> acceptedItems = switch(be.element){
@@ -158,25 +126,24 @@ public class CurseTableEntity extends BlockEntity implements CurseTableInventory
 	}
 
 	@Override
-	public void readNbt(NbtCompound nbt) {
-		super.readNbt(nbt);
+	public void readNbtImpl(NbtCompound nbt, HolderLookup.Provider lookupProvider) {
 		inventory.clear();
-		Inventories.readNbt(nbt, inventory);
+		Inventories.readNbt(nbt, inventory, lookupProvider);
 	}
 
 	@Override
-	protected void writeNbt(NbtCompound nbt) {
-		Inventories.writeNbt(nbt, inventory, true);
-		super.writeNbt(nbt);
+	protected void writeNbt(NbtCompound nbt, HolderLookup.Provider lookupProvider) {
+		Inventories.writeNbt(nbt, inventory, lookupProvider);
 	}
 
 	public BlockEntityUpdateS2CPacket toUpdatePacket() {
 		return BlockEntityUpdateS2CPacket.of(this);
 	}
 
-	public NbtCompound toSyncedNbt() {
+	@Override
+	public NbtCompound toSyncedNbt(HolderLookup.Provider lookupProvider) {
 		NbtCompound nbtCompound = new NbtCompound();
-		Inventories.writeNbt(nbtCompound, inventory, true);
+		Inventories.writeNbt(nbtCompound, inventory, lookupProvider);
 		return nbtCompound;
 	}
 }

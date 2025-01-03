@@ -11,7 +11,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class ModItemGroupRegistry {
-	public static ItemGroup PARANORMAL = Registry.register(Registries.ITEM_GROUP, new Identifier(Paranormal.MODID, "main_group"), FabricItemGroup.builder()
+	public static ItemGroup PARANORMAL = Registry.register(Registries.ITEM_GROUP, Identifier.of(Paranormal.MODID, "main_group"), FabricItemGroup.builder()
 			.icon(() -> new ItemStack(ModItemRegistry.ORGAN))
 			.name(Text.translatable("itemgroup.paranormal.items"))
 			.entries((context, entries) -> {

@@ -3,14 +3,12 @@ package io.github.qMartinz.paranormal.client.event;
 import com.mojang.blaze3d.platform.InputUtil;
 import io.github.qMartinz.paranormal.ParanormalClient;
 import io.github.qMartinz.paranormal.api.PlayerData;
-import io.github.qMartinz.paranormal.networking.ModMessages;
+import io.github.qMartinz.paranormal.networking.Payloads;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.option.KeyBind;
-import net.minecraft.network.PacketByteBuf;
 import org.lwjgl.glfw.GLFW;
-import org.quiltmc.qsl.lifecycle.api.client.event.ClientTickEvents;
-import org.quiltmc.qsl.networking.api.PacketByteBufs;
-import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 
 public class KeyInputHandler {
 	public static final String KEY_CATEGORY = "key.category.paranormal";
@@ -27,7 +25,7 @@ public class KeyInputHandler {
 	public static void registerKeyInputs() {
 		PlayerData playerData = ParanormalClient.playerData;
 
-		ClientTickEvents.END.register(client -> {
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (ritualHudKey.wasPressed() && !playerData.rituals.isEmpty()) {
 				ParanormalClient.ritualHud.setVisible(!ParanormalClient.ritualHud.isVisible());
 			}
@@ -46,9 +44,7 @@ public class KeyInputHandler {
 
 			if (client.options.useKey.isPressed() && castCooldownTicks <= 0) {
 				if (ParanormalClient.ritualHud.isVisible() && !playerData.rituals.isEmpty()){
-					PacketByteBuf data = PacketByteBufs.create();
-					data.writeInt(ParanormalClient.ritualHud.getRitualIndex());
-					ClientPlayNetworking.send(ModMessages.CAST_RITUAL_ID, data);
+					ClientPlayNetworking.send(new Payloads.CastPayload(ParanormalClient.ritualHud.getRitualIndex()));
 					castCooldownTicks = 20;
 				}
 			}

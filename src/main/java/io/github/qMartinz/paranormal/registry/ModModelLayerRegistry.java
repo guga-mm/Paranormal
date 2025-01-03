@@ -12,7 +12,7 @@ public class ModModelLayerRegistry {
 	public static final EntityModelLayer VILLAGER_CORPSE = register("villager_corpse");
 
 	private static EntityModelLayer register(String id){
-		return new EntityModelLayer(new Identifier(Paranormal.MODID, id), "main");
+		return new EntityModelLayer(Identifier.of(Paranormal.MODID, id), "main");
 	}
 
 	public static void registerLayers(){

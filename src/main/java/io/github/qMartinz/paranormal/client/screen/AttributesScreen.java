@@ -22,8 +22,8 @@ import net.minecraft.util.Identifier;
 import java.util.List;
 
 public class AttributesScreen extends Screen {
-	public static final Identifier TEXTURES = new Identifier(Paranormal.MODID, "textures/gui/pexscreen.png");
-	public static final Identifier RITUAL_TAB_BG = new Identifier(Paranormal.MODID, "textures/gui/ritual_tab.png");
+	public static final Identifier TEXTURES = Identifier.of(Paranormal.MODID, "textures/gui/pexscreen.png");
+	public static final Identifier RITUAL_TAB_BG = Identifier.of(Paranormal.MODID, "textures/gui/ritual_tab.png");
 	private final int screenHeight = 217;
 	public AttributesScreen() {
 		super(Text.translatable("paranormal.screen.attributes_screen"));
@@ -34,21 +34,21 @@ public class AttributesScreen extends Screen {
 		int tabX = screenX + 110;
 		int screenY = (this.height/2) - (this.screenHeight/2);
 
-		addDrawableChild(new AttributeButton(screenX + 33, screenY + 12, ParanormalAttribute.STRENGTH));
-		addDrawableChild(new AttributeButton(screenX + 33, screenY + 75, ParanormalAttribute.VIGOR));
-		addDrawableChild(new AttributeButton(screenX + 33, screenY + 138, ParanormalAttribute.PRESENCE));
-		addDrawableChild(new SelectedRitual(tabX + 46, screenY + 7));
+		addDrawable(new AttributeButton(screenX + 33, screenY + 12, ParanormalAttribute.STRENGTH));
+		addDrawable(new AttributeButton(screenX + 33, screenY + 75, ParanormalAttribute.VIGOR));
+		addDrawable(new AttributeButton(screenX + 33, screenY + 138, ParanormalAttribute.PRESENCE));
+		addDrawable(new SelectedRitual(tabX + 46, screenY + 7));
 
-		addDrawableChild(new SelectRitualButtons.PreviousRitual(tabX + 44, screenY + 75, 8, 8));
-		addDrawableChild(new SelectRitualButtons.NextRitual(tabX + 104, screenY + 75, 8, 8));
+		addDrawable(new SelectRitualButtons.PreviousRitual(tabX + 44, screenY + 75, 8, 8));
+		addDrawable(new SelectRitualButtons.NextRitual(tabX + 104, screenY + 75, 8, 8));
 
-		addDrawableChild(new ChangeScreenButton(screenX + 39, screenY + 195, 20, 20, new PowersScreen(ParanormalElement.BLOOD)));
+		addDrawable(new ChangeScreenButton(screenX + 39, screenY + 195, 20, 20, new PowersScreen(ParanormalElement.BLOOD)));
 	}
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		PlayerData playerData = ParanormalClient.playerData;
 
-		renderBackground(guiGraphics);
+		renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
 
 		int screenX = (this.width/2) - 266/2;
 		int screenY = (this.height/2) - (this.screenHeight/2);

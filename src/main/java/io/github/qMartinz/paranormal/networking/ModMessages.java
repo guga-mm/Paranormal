@@ -4,100 +4,121 @@ import io.github.qMartinz.paranormal.Paranormal;
 import io.github.qMartinz.paranormal.ParanormalClient;
 import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.api.events.ParanormalEvents;
-import io.github.qMartinz.paranormal.api.powers.ParanormalPower;
 import io.github.qMartinz.paranormal.api.powers.PowerRegistry;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.particle.DefaultParticleType;
-import net.minecraft.particle.ParticleType;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.util.Identifier;
-import org.quiltmc.qsl.networking.api.PacketByteBufs;
-import org.quiltmc.qsl.networking.api.ServerPlayNetworking;
-import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
-
-import java.util.Collection;
 
 public class ModMessages {
-	public static final Identifier PLAYER_DATA_SYNC_ID = new Identifier(Paranormal.MODID, "player_data_sync");
-	public static final Identifier CAST_RITUAL_ID = new Identifier(Paranormal.MODID, "cast_ritual");
-	public static final Identifier SPAWN_PARTICLE_ID = new Identifier(Paranormal.MODID, "spawn_particle");
-	public static final Identifier ON_ADDED_POWER_TRIGGER_ID = new Identifier(Paranormal.MODID, "on_added_power_trigger");
+	public static final Identifier PEX_SYNC_ID = Identifier.of(Paranormal.MODID, "pex_sync");
+	public static final Identifier ATTRIBUTES_SYNC_ID = Identifier.of(Paranormal.MODID, "attributes_sync");
+	public static final Identifier POWERS_SYNC_ID = Identifier.of(Paranormal.MODID, "powers_sync");
+	public static final Identifier RITUALS_SYNC_ID = Identifier.of(Paranormal.MODID, "rituals_sync");
+	public static final Identifier OCCULT_POINTS_SYNC_ID = Identifier.of(Paranormal.MODID, "occult_points_sync");
+	public static final Identifier CAST_ID = Identifier.of(Paranormal.MODID, "cast_ritual");
+	public static final Identifier ADDED_POWER_TRIGGER_ID = Identifier.of(Paranormal.MODID, "on_added_power_trigger");
 
 	public static void registerC2SPackets() {
-		ServerPlayNetworking.registerGlobalReceiver(PLAYER_DATA_SYNC_ID, (server, player, handler, buf, responseSender) -> {
-			PlayerData playerData = StateSaverAndLoader.getPlayerState(handler.player);
-			playerData.pex = buf.readInt();
-			playerData.xp = buf.readInt();
-			playerData.attPoints = buf.readInt();
-			playerData.attributes = buf.readIntArray();
-			playerData.ritualSlots = buf.readInt();
-			playerData.powerPoints = buf.readInt();
-			playerData.maxOccultPoints = buf.readDouble();
-			playerData.occultPoints = buf.readDouble();
-
-			playerData.deserializeRituals(buf.readNbt());
-			playerData.deserializePowers(buf.readNbt());
-			playerData.deserializeAffinities(buf.readNbt());
+		ServerPlayNetworking.registerGlobalReceiver(Payloads.PexPayload.ID, (payload, context) -> {
+			context.server().execute(() -> {
+				PlayerData playerData = StateSaverAndLoader.getPlayerState(context.player());
+				playerData.pex = payload.pex();
+				playerData.xp = payload.xp();
+			});
 		});
 
-		ServerPlayNetworking.registerGlobalReceiver(CAST_RITUAL_ID, (server, player, handler, buf, responseSender) -> {
-			PlayerData playerData = StateSaverAndLoader.getPlayerState(handler.player);
-			playerData.getRitual(buf.readInt()).onCast(player);
+		ServerPlayNetworking.registerGlobalReceiver(Payloads.AttributesPayload.ID, (payload, context) -> {
+			context.server().execute(() -> {
+				PlayerData playerData = StateSaverAndLoader.getPlayerState(context.player());
+				playerData.attPoints = payload.attPoints();
+				playerData.attributes = new int[]{payload.str(), payload.pre(), payload.vig()};
+			});
 		});
 
-		ServerPlayNetworking.registerGlobalReceiver(ON_ADDED_POWER_TRIGGER_ID, (server, player, handler, buf, responseSender) -> {
-			Identifier id = buf.readIdentifier();
-			PowerRegistry.getPower(id).ifPresent(power -> {
-				power.onAdded(player);
-				ParanormalEvents.POWER_ADDED.invoker().powerAdded(power, player);
+		ServerPlayNetworking.registerGlobalReceiver(Payloads.PowersPayload.ID, (payload, context) -> {
+			context.server().execute(() -> {
+				PlayerData playerData = StateSaverAndLoader.getPlayerState(context.player());
+				playerData.powerPoints = payload.powerPoints();
+				playerData.deserializePowers(payload.powers());
+				playerData.deserializeAffinities(payload.affinities());
+			});
+		});
+
+		ServerPlayNetworking.registerGlobalReceiver(Payloads.RitualsPayload.ID, (payload, context) -> {
+			context.server().execute(() -> {
+				PlayerData playerData = StateSaverAndLoader.getPlayerState(context.player());
+				playerData.ritualSlots = payload.ritualSlots();
+				playerData.deserializeRituals(payload.rituals());
+			});
+		});
+
+		ServerPlayNetworking.registerGlobalReceiver(Payloads.OccultPointsPayload.ID, (payload, context) -> {
+			context.server().execute(() -> {
+				PlayerData playerData = StateSaverAndLoader.getPlayerState(context.player());
+				playerData.maxOccultPoints = payload.maxOccultPoints();
+				playerData.occultPoints = payload.occultPoints();
+			});
+		});
+
+		ServerPlayNetworking.registerGlobalReceiver(Payloads.CastPayload.ID, (payload, context) -> {
+			context.server().execute(() -> {
+				PlayerData playerData = StateSaverAndLoader.getPlayerState(context.player());
+				playerData.getRitual(payload.index()).onCast(context.player());
+			});
+		});
+
+
+		ServerPlayNetworking.registerGlobalReceiver(Payloads.AddedPowerTriggerPayload.ID, (payload, context) -> {
+			context.server().execute(() -> {
+				PowerRegistry.getPower(payload.powerId()).ifPresent(power -> {
+					power.onAdded(context.player());
+					ParanormalEvents.POWER_ADDED.invoker().powerAdded(power, context.player());
+				});
 			});
 		});
 	}
 
 	public static void registerS2CPackets() {
-		ClientPlayNetworking.registerGlobalReceiver(PLAYER_DATA_SYNC_ID, (client, handler, buf, responseSender) -> {
-			ParanormalClient.playerData.pex = buf.readInt();
-			ParanormalClient.playerData.xp = buf.readInt();
-			ParanormalClient.playerData.attPoints = buf.readInt();
-			ParanormalClient.playerData.attributes = buf.readIntArray();
-			ParanormalClient.playerData.ritualSlots = buf.readInt();
-			ParanormalClient.playerData.powerPoints = buf.readInt();
-			ParanormalClient.playerData.maxOccultPoints = buf.readDouble();
-			ParanormalClient.playerData.occultPoints = buf.readDouble();
-
-			ParanormalClient.playerData.deserializeRituals(buf.readNbt());
-			ParanormalClient.playerData.deserializePowers(buf.readNbt());
-			ParanormalClient.playerData.deserializeAffinities(buf.readNbt());
+		ClientPlayNetworking.registerGlobalReceiver(Payloads.PexPayload.ID, (payload, context) -> {
+			context.client().execute(() -> {
+				PlayerData playerData = ParanormalClient.playerData;
+				playerData.pex = payload.pex();
+				playerData.xp = payload.xp();
+			});
 		});
 
-		ClientPlayNetworking.registerGlobalReceiver(SPAWN_PARTICLE_ID,  (client, handler, buf, responseSender) -> {
-			if (client.world != null) {
-				Identifier id = buf.readIdentifier();
-				DefaultParticleType particle = (DefaultParticleType) Registries.PARTICLE_TYPE.get(id);
-				double x = buf.readDouble();
-				double y = buf.readDouble();
-				double z = buf.readDouble();
-				double xd = buf.readDouble();
-				double yd = buf.readDouble();
-				double zd = buf.readDouble();
-				client.world.addParticle(particle, x, y, z, xd, yd, zd);
-			}
+		ClientPlayNetworking.registerGlobalReceiver(Payloads.AttributesPayload.ID, (payload, context) -> {
+			context.client().execute(() -> {
+				PlayerData playerData = ParanormalClient.playerData;
+				playerData.attPoints = payload.attPoints();
+				playerData.attributes = new int[]{payload.str(), payload.pre(), payload.vig()};
+			});
 		});
 
-		ParticleMessages.registerPackets();
-	}
+		ClientPlayNetworking.registerGlobalReceiver(Payloads.PowersPayload.ID, (payload, context) -> {
+			context.client().execute(() -> {
+				PlayerData playerData = ParanormalClient.playerData;
+				playerData.powerPoints = payload.powerPoints();
+				playerData.deserializePowers(payload.powers());
+				playerData.deserializeAffinities(payload.affinities());
+			});
+		});
 
-	public static void spawnParticlePacket(Collection<ServerPlayerEntity> players, ParticleType<?> particle, double x, double y, double z, double xd, double yd, double zd){
-		PacketByteBuf data = PacketByteBufs.create();
-		data.writeIdentifier(Registries.PARTICLE_TYPE.getId(particle));
-		data.writeDouble(x);
-		data.writeDouble(y);
-		data.writeDouble(z);
-		data.writeDouble(xd);
-		data.writeDouble(yd);
-		data.writeDouble(zd);
-		ServerPlayNetworking.send(players, SPAWN_PARTICLE_ID, data);
+		ClientPlayNetworking.registerGlobalReceiver(Payloads.RitualsPayload.ID, (payload, context) -> {
+			context.client().execute(() -> {
+				PlayerData playerData = ParanormalClient.playerData;
+				playerData.ritualSlots = payload.ritualSlots();
+				playerData.deserializeRituals(payload.rituals());
+			});
+		});
+
+		ClientPlayNetworking.registerGlobalReceiver(Payloads.OccultPointsPayload.ID, (payload, context) -> {
+			context.client().execute(() -> {
+				PlayerData playerData = ParanormalClient.playerData;
+				playerData.maxOccultPoints = payload.maxOccultPoints();
+				playerData.occultPoints = payload.occultPoints();
+			});
+		});
 	}
 }

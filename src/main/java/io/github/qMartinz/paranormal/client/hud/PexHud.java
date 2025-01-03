@@ -7,13 +7,15 @@ import io.github.qMartinz.paranormal.api.PlayerData;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.render.DeltaTracker;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.util.Identifier;
 
 public class PexHud implements HudRenderCallback {
-	public static final Identifier TEXTURES = new Identifier(Paranormal.MODID, "textures/gui/overlay.png");
+	public static final Identifier TEXTURES = Identifier.of(Paranormal.MODID, "textures/gui/overlay.png");
+
 	@Override
-	public void onHudRender(GuiGraphics guiGraphics, float tickDelta) {
+	public void onHudRender(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
 		MinecraftClient client = MinecraftClient.getInstance();
 		if (!client.options.hudHidden && client != null) {
 			int width = client.getWindow().getScaledWidth();

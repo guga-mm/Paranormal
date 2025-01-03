@@ -1,7 +1,6 @@
 package io.github.qMartinz.paranormal.registry;
 
 import com.mojang.brigadier.arguments.DoubleArgumentType;
-import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import io.github.qMartinz.paranormal.api.ParanormalAttribute;
 import io.github.qMartinz.paranormal.api.PlayerData;
@@ -9,11 +8,11 @@ import io.github.qMartinz.paranormal.api.events.ParanormalEvents;
 import io.github.qMartinz.paranormal.api.powers.PowerRegistry;
 import io.github.qMartinz.paranormal.api.rituals.RitualRegistry;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.IdentifierArgumentType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import org.quiltmc.qsl.command.api.CommandRegistrationCallback;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -22,7 +21,7 @@ public class ModCommandRegistry {
 	public static void registerCommands(){
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			// PEX commands
-			dispatcher.register(literal("pex").requires(source -> source.hasPermissionLevel(2))
+			dispatcher.register(literal("pex").requires(source -> source.hasPermission(2))
 					.then(argument("player", EntityArgumentType.player())
 					// Set PEX level
 					.then(literal("set").then(argument("amount", IntegerArgumentType.integer(0, 20))
@@ -32,7 +31,7 @@ public class ModCommandRegistry {
 								final int amount = IntegerArgumentType.getInteger(context, "amount");
 
 								playerData.setPex(amount);
-								playerData.syncToClient(player);
+								playerData.syncAllToClient(player);
 								return 1;
 							})))
 					// Reset all player data
@@ -53,7 +52,7 @@ public class ModCommandRegistry {
 								playerData.setAttribute(ParanormalAttribute.PRESENCE, 0);
 								playerData.clearRituals();
 								playerData.clearPowers();
-								playerData.syncToClient(player);
+								playerData.syncAllToClient(player);
 								return 1;
 							}))
 					.then(literal("xp")
@@ -65,7 +64,7 @@ public class ModCommandRegistry {
 										final int amount = IntegerArgumentType.getInteger(context, "amount");
 
 										playerData.addXp(amount);
-										playerData.syncToClient(player);
+										playerData.syncAllToClient(player);
 										return 1;
 									}))))
 					.then(literal("occultPoints")
@@ -79,7 +78,7 @@ public class ModCommandRegistry {
 										playerData.setMaxOccultPoints(amount);
 										playerData.setOccultPoints(playerData.getOccultPoints() + amount - playerData.getMaxOccultPoints());
 
-										playerData.syncToClient(player);
+										playerData.syncAllToClient(player);
 										return 1;
 									}))))
 					.then(literal("attributes")
@@ -92,7 +91,7 @@ public class ModCommandRegistry {
 												final int amount = IntegerArgumentType.getInteger(context, "amount");
 
 												playerData.setAttPoints(playerData.getAttPoints() + amount);
-												playerData.syncToClient(player);
+												playerData.syncAllToClient(player);
 												return 1;
 											})))
 									// Remove attribute points
@@ -103,7 +102,7 @@ public class ModCommandRegistry {
 												final int amount = IntegerArgumentType.getInteger(context, "amount");
 
 												playerData.setAttPoints(playerData.getAttPoints() - amount);
-												playerData.syncToClient(player);
+												playerData.syncAllToClient(player);
 												return 1;
 											}))))
 							.then(literal("strength")
@@ -115,7 +114,7 @@ public class ModCommandRegistry {
 												final int amount = IntegerArgumentType.getInteger(context, "amount");
 
 												playerData.setAttribute(ParanormalAttribute.STRENGTH, playerData.getAttribute(ParanormalAttribute.STRENGTH) + amount);
-												playerData.syncToClient(player);
+												playerData.syncAllToClient(player);
 												return 1;
 											})))
 									// Remove strength
@@ -126,7 +125,7 @@ public class ModCommandRegistry {
 												final int amount = IntegerArgumentType.getInteger(context, "amount");
 
 												playerData.setAttribute(ParanormalAttribute.STRENGTH, playerData.getAttribute(ParanormalAttribute.STRENGTH) - amount);
-												playerData.syncToClient(player);
+												playerData.syncAllToClient(player);
 												return 1;
 											}))))
 							.then(literal("vigor")
@@ -138,7 +137,7 @@ public class ModCommandRegistry {
 												final int amount = IntegerArgumentType.getInteger(context, "amount");
 
 												playerData.setAttribute(ParanormalAttribute.VIGOR, playerData.getAttribute(ParanormalAttribute.VIGOR) + amount);
-												playerData.syncToClient(player);
+												playerData.syncAllToClient(player);
 												return 1;
 											})))
 									// Remove vigor
@@ -149,7 +148,7 @@ public class ModCommandRegistry {
 												final int amount = IntegerArgumentType.getInteger(context, "amount");
 
 												playerData.setAttribute(ParanormalAttribute.VIGOR, playerData.getAttribute(ParanormalAttribute.VIGOR) - amount);
-												playerData.syncToClient(player);
+												playerData.syncAllToClient(player);
 												return 1;
 											}))))
 							.then(literal("presence")
@@ -161,7 +160,7 @@ public class ModCommandRegistry {
 												final int amount = IntegerArgumentType.getInteger(context, "amount");
 
 												playerData.setAttribute(ParanormalAttribute.PRESENCE, playerData.getAttribute(ParanormalAttribute.PRESENCE) + amount);
-												playerData.syncToClient(player);
+												playerData.syncAllToClient(player);
 												return 1;
 											})))
 									// Remove presence
@@ -172,13 +171,13 @@ public class ModCommandRegistry {
 												final int amount = IntegerArgumentType.getInteger(context, "amount");
 
 												playerData.setAttribute(ParanormalAttribute.PRESENCE, playerData.getAttribute(ParanormalAttribute.PRESENCE) - amount);
-												playerData.syncToClient(player);
+												playerData.syncAllToClient(player);
 												return 1;
 											})))
 							))));
 
 			// Ritual commands
-			dispatcher.register(literal("rituals").requires(source -> source.hasPermissionLevel(2))
+			dispatcher.register(literal("rituals").requires(source -> source.hasPermission(2))
 					.then(argument("player", EntityArgumentType.player())
 					.then(literal("slots")
 							// Add ritual slots
@@ -189,7 +188,7 @@ public class ModCommandRegistry {
 										final int amount = IntegerArgumentType.getInteger(context, "amount");
 
 										playerData.setRitualSlots(playerData.getRitualSlots() + amount);
-										playerData.syncToClient(player);
+										playerData.syncAllToClient(player);
 										return 1;
 									})))
 							// Remove ritual slots
@@ -200,7 +199,7 @@ public class ModCommandRegistry {
 										final int amount = IntegerArgumentType.getInteger(context, "amount");
 
 										playerData.setRitualSlots(playerData.getRitualSlots() - amount);
-										playerData.syncToClient(player);
+										playerData.syncAllToClient(player);
 										return 1;
 									}))))
 					// Add ritual
@@ -218,7 +217,7 @@ public class ModCommandRegistry {
 							playerData.addRitual(ritual);
 							ParanormalEvents.RITUAL_ADDED.invoker().ritualAdded(ritual, player);
 						});
-						playerData.syncToClient(player);
+						playerData.syncAllToClient(player);
 						return 1;
 					})))
 					// Remove ritual
@@ -233,13 +232,13 @@ public class ModCommandRegistry {
 						final Identifier id = IdentifierArgumentType.getIdentifier(context, "id");
 
 						RitualRegistry.getRitual(id).ifPresent(playerData::removeRitual);
-						playerData.syncToClient(player);
+						playerData.syncAllToClient(player);
 						return 1;
 					})))
 					));
 
 			// Power commands
-			dispatcher.register(literal("powers").requires(source -> source.hasPermissionLevel(2))
+			dispatcher.register(literal("powers").requires(source -> source.hasPermission(2))
 					.then(argument("player", EntityArgumentType.player())
 					.then(literal("points")
 							// Add power points
@@ -250,7 +249,7 @@ public class ModCommandRegistry {
 										final int amount = IntegerArgumentType.getInteger(context, "amount");
 
 										playerData.setPowerPoints(playerData.getPowerPoints() + amount);
-										playerData.syncToClient(player);
+										playerData.syncAllToClient(player);
 										return 1;
 									})))
 							// Remove power points
@@ -261,7 +260,7 @@ public class ModCommandRegistry {
 										final int amount = IntegerArgumentType.getInteger(context, "amount");
 
 										playerData.setPowerPoints(playerData.getPowerPoints() - amount);
-										playerData.syncToClient(player);
+										playerData.syncAllToClient(player);
 										return 1;
 									}))))
 					// Add power
@@ -279,7 +278,7 @@ public class ModCommandRegistry {
 							playerData.addPower(power);
 							ParanormalEvents.POWER_ADDED.invoker().powerAdded(power, player);
 						}));
-						playerData.syncToClient(player);
+						playerData.syncAllToClient(player);
 						return 1;
 					})))
 					// Remove power
@@ -294,7 +293,7 @@ public class ModCommandRegistry {
 						final Identifier id = IdentifierArgumentType.getIdentifier(context, "id");
 
 						PowerRegistry.getPower(id).ifPresent(playerData::removePower);
-						playerData.syncToClient(player);
+						playerData.syncAllToClient(player);
 						return 1;
 					})))
 					));

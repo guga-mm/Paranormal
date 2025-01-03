@@ -1,13 +1,11 @@
 package io.github.qMartinz.paranormal.client.screen.elements.button;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.qMartinz.paranormal.api.ParanormalElement;
 import io.github.qMartinz.paranormal.client.screen.AttributesScreen;
-import io.github.qMartinz.paranormal.client.screen.PowersScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.button.ButtonWidget;
 import net.minecraft.text.Text;
 
 public class ChangeScreenButton extends ButtonWidget {
@@ -17,7 +15,7 @@ public class ChangeScreenButton extends ButtonWidget {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	protected void drawWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 		if (isMouseOver(mouseX, mouseY)){
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();

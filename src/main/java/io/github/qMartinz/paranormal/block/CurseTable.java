@@ -5,8 +5,6 @@ import io.github.qMartinz.paranormal.api.ParanormalElement;
 import io.github.qMartinz.paranormal.api.curses.CurseHelper;
 import io.github.qMartinz.paranormal.api.curses.CurseInstance;
 import io.github.qMartinz.paranormal.block.entities.CurseTableEntity;
-import io.github.qMartinz.paranormal.networking.ParticleMessages;
-import io.github.qMartinz.paranormal.registry.ModParticleRegistry;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.ItemEntity;
@@ -31,9 +29,8 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import team.lodestar.lodestone.systems.rendering.particle.Easing;
 
-public class CurseTable extends BlockWithEntity {
+public abstract class CurseTable extends BlockWithEntity {
 	public static final BooleanProperty HAS_ITEM;
 	public static final IntProperty FUEL;
 
@@ -92,8 +89,8 @@ public class CurseTable extends BlockWithEntity {
 	}
 
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if (world.isClient() || !(world.getBlockEntity(pos) instanceof CurseTableEntity curseTableEntity) || hand != Hand.MAIN_HAND) return super.onUse(state, world, pos, player, hand, hit);
+	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+		if (world.isClient() || !(world.getBlockEntity(pos) instanceof CurseTableEntity curseTableEntity)) return super.onUse(state, world, pos, player, hit);
 
 		if (!curseTableEntity.getItem().isEmpty() && player.getMainHandStack().isEmpty()){
 			Paranormal.LOGGER.info("Taking Item");
@@ -153,23 +150,11 @@ public class CurseTable extends BlockWithEntity {
 			return ActionResult.CONSUME;
 		}
 
-		return super.onUse(state, world, pos, player, hand, hit);
+		return super.onUse(state, world, pos, player, hit);
 	}
 
 	public void curseParticles(ServerWorld world, BlockPos pos){
-		if (element == ParanormalElement.DEATH){
-			ParticleMessages.spawnLumitransparentCircle(world, ModParticleRegistry.GLOWING_PARTICLE, pos.getX() + 0.5d,
-					pos.getY() + 1.25d, pos.getZ() + 0.5d, 0.5d, 12, 0d, 0.25d, 0d,
-					element.particleColorS(), element.particleColorE(), 1f, 0f, -1f,
-					1f, Easing.LINEAR, Easing.LINEAR, 0.3f, 0f, -1f, 1f,
-					Easing.LINEAR, Easing.LINEAR, 36, 1f);
-		} else {
-			ParticleMessages.spawnAdditiveCircle(world, ModParticleRegistry.GLOWING_PARTICLE, pos.getX() + 0.5d,
-					pos.getY() + 1.25d, pos.getZ() + 0.5d, 0.5d, 12, 0d, 0.25d, 0d,
-					element.particleColorS(), element.particleColorE(), 1f, 0f, -1f,
-					1f, Easing.LINEAR, Easing.LINEAR, 0.3f, 0f, -1f, 1f,
-					Easing.LINEAR, Easing.LINEAR, 36, 1f);
-		}
+		// TODO cursing VFX
 	}
 
 	static {

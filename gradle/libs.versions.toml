@@ -1,14 +1,11 @@
 [versions]
-# The latest versions are available at https://lambdaurora.dev/tools/import_quilt.html
-minecraft = "1.20.1"
-loom = "1.4.1"
-quilt_mappings = "1.20.1+build.23"
-quilt_loader = "0.21.0"
+minecraft = "1.21"
+quilt_mappings = "1.21+build.18"
 
-quilted_fabric_api = "7.4.0+0.90.0-1.20.1"
-lodestoneLib = "0.0.4+1.20.1"
-midnightLib = "1.4.1-quilt"
-satin = "1.14.0"
+loom = "1.8.5"
+quilt_loader = "0.28.0-beta.4"
+
+quilted_fabric_api = "11.0.0-alpha.3+0.102.0-1.21"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
@@ -17,11 +14,6 @@ quilt_loader = { module = "org.quiltmc:quilt-loader", version.ref = "quilt_loade
 
 quilted_fabric_api = { module = "org.quiltmc.quilted-fabric-api:quilted-fabric-api", version.ref = "quilted_fabric_api" }
 quilted_fabric_api_deprecated = { module = "org.quiltmc.quilted-fabric-api:quilted-fabric-api-deprecated", version.ref = "quilted_fabric_api" }
-
-# Third party dependencies
-lodestoneLib = { module = "team.lodestar.lodestone:LodestoneLib-Quilt", version.ref = "lodestoneLib" }
-midnightLib = { module = "maven.modrinth:midnightlib", version.ref = "midnightLib" }
-satin = { module = "org.ladysnake:satin", version.ref = "satin" }
 
 # If you have multiple similar dependencies, you can declare a dependency bundle and reference it on the build script with "libs.bundles.example".
 [bundles]

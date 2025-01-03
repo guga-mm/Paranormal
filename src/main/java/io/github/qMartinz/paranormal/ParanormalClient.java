@@ -4,7 +4,6 @@ import io.github.qMartinz.paranormal.api.ParanormalElement;
 import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.api.events.ParanormalEvents;
 import io.github.qMartinz.paranormal.api.powers.ParanormalPower;
-import io.github.qMartinz.paranormal.api.powers.PowerRegistry;
 import io.github.qMartinz.paranormal.client.event.ClientEvents;
 import io.github.qMartinz.paranormal.client.event.KeyInputHandler;
 import io.github.qMartinz.paranormal.client.hud.PexHud;
@@ -12,21 +11,20 @@ import io.github.qMartinz.paranormal.client.hud.RitualHud;
 import io.github.qMartinz.paranormal.client.screen.AttributesScreen;
 import io.github.qMartinz.paranormal.networking.ModMessages;
 import io.github.qMartinz.paranormal.registry.*;
-import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.ActionResult;
-import org.quiltmc.loader.api.ModContainer;
-import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
-import org.quiltmc.qsl.block.extensions.api.client.BlockRenderLayerMap;
 
 public class ParanormalClient implements ClientModInitializer {
 	public static PlayerData playerData = new PlayerData();
 	public static RitualHud ritualHud = new RitualHud();
+
 	@Override
-	public void onInitializeClient(ModContainer mod) {
+	public void onInitializeClient() {
 		ModEntityRegistry.registerRenderers();
 		ModBlockRegistry.registerRenderers();
 		ModParticleRegistry.registerFactories();
@@ -101,7 +99,6 @@ public class ParanormalClient implements ClientModInitializer {
 	}
 
 	private void setBlockRenderLayers(){
-		BlockRenderLayerMap.put(RenderLayer.getCutout(), ModBlockRegistry.TRANSCENDANCE_ALTAR);
-
+		BlockRenderLayerMap.INSTANCE.putBlock(ModBlockRegistry.TRANSCENDANCE_ALTAR, RenderLayer.getCutout());
 	}
 }

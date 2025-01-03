@@ -39,10 +39,11 @@ public class FogEntity extends Entity {
 	}
 
 	@Override
-	protected void initDataTracker() {
-		this.dataTracker.startTracking(FOG_INTENSITY, 1);
-		this.dataTracker.startTracking(FOG_LIFE, getMaxLife());
-		this.dataTracker.startTracking(FOG_RADIUS, 15);
+	protected void initDataTracker(DataTracker.Builder builder) {
+
+		this.dataTracker.set(FOG_INTENSITY, 1);
+		this.dataTracker.set(FOG_LIFE, getMaxLife());
+		this.dataTracker.set(FOG_RADIUS, 15);
 	}
 
 	public void setRadius(int size) {
@@ -164,9 +165,9 @@ public class FogEntity extends Entity {
 			if (entity instanceof PlayerEntity player && !player.getWorld().isClient()){
 				PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 				// TODO limit xp gain by pex after testing is done
-				if (random.nextFloat() <= 0.05f && isServer()) {
+				if (random.nextFloat() <= 0.05f && !getWorld().isClient()) {
 					playerData.addXp(getIntensity() + (getType() == ModEntityRegistry.RUINED_FOG ? 3 : 0));
-					playerData.syncToClient((ServerPlayerEntity) player);
+					playerData.syncAllToClient((ServerPlayerEntity) player);
 				}
 			}
 		}

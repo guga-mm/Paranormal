@@ -12,13 +12,13 @@ import net.minecraft.util.Identifier;
 import static io.github.qMartinz.paranormal.Paranormal.MODID;
 
 public class ModRitualRegistry {
-	public static final AbstractRitual HEALING = RitualRegistry.register(new Identifier(MODID, "healing"),
+	public static final AbstractRitual HEALING = RitualRegistry.register(Identifier.of(MODID, "healing"),
 			new HealingRitual());
 
-	public static final AbstractRitual SKINNING = RitualRegistry.register(new Identifier(MODID, "skinning"),
+	public static final AbstractRitual SKINNING = RitualRegistry.register(Identifier.of(MODID, "skinning"),
 			new SkinningRitual());
 
-	public static final AbstractRitual LIGHT = RitualRegistry.register(new Identifier(MODID, "light"),
+	public static final AbstractRitual LIGHT = RitualRegistry.register(Identifier.of(MODID, "light"),
 			new LightRitual());
 
 	public static void init(){

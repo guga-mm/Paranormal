@@ -18,15 +18,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ModDamageTypes {
-	public static final RegistryKey<DamageType> BLOOD_DAMAGE = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, new Identifier(Paranormal.MODID,
+	public static final RegistryKey<DamageType> BLOOD_DAMAGE = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Identifier.of(Paranormal.MODID,
 			"blood"));
-	public static final RegistryKey<DamageType> WISDOM_DAMAGE = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, new Identifier(Paranormal.MODID,
+	public static final RegistryKey<DamageType> WISDOM_DAMAGE = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Identifier.of(Paranormal.MODID,
 			"wisdom"));
-	public static final RegistryKey<DamageType> DEATH_DAMAGE = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, new Identifier(Paranormal.MODID,
+	public static final RegistryKey<DamageType> DEATH_DAMAGE = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Identifier.of(Paranormal.MODID,
 			"death"));
-	public static final RegistryKey<DamageType> ENERGY_DAMAGE = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, new Identifier(Paranormal.MODID,
+	public static final RegistryKey<DamageType> ENERGY_DAMAGE = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Identifier.of(Paranormal.MODID,
 			"energy"));
-	public static final RegistryKey<DamageType> FEAR_DAMAGE = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, new Identifier(Paranormal.MODID,
+	public static final RegistryKey<DamageType> FEAR_DAMAGE = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Identifier.of(Paranormal.MODID,
 			"fear"));
 
 	private static final Map<RegistryKey<DamageType>, DamageSource> damageSourceCache = new HashMap<>();

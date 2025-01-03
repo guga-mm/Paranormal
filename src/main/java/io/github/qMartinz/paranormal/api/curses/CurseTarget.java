@@ -88,7 +88,7 @@ public enum CurseTarget {
 	},
 	BREAKABLE {
 		public boolean isAcceptableItem(Item item) {
-			return item.isDamageable();
+			return new ItemStack(item).isDamageable();
 		}
 	},
 	BOW {
@@ -104,11 +104,6 @@ public enum CurseTarget {
 	CROSSBOW {
 		public boolean isAcceptableItem(Item item) {
 			return item instanceof CrossbowItem;
-		}
-	},
-	VANISHABLE {
-		public boolean isAcceptableItem(Item item) {
-			return item instanceof Vanishable || Block.getBlockFromItem(item) instanceof Vanishable || BREAKABLE.isAcceptableItem(item);
 		}
 	};
 

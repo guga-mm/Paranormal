@@ -7,7 +7,7 @@ import io.github.qMartinz.paranormal.api.PlayerData;
 import io.github.qMartinz.paranormal.client.screen.AttributesScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.button.ButtonWidget;
 import net.minecraft.text.Text;
 
 public class AttributeButton extends ButtonWidget {
@@ -19,20 +19,21 @@ public class AttributeButton extends ButtonWidget {
 		this.attribute = attribute;
 	}
 
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+	@Override
+	protected void drawWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 		int u = 32 * this.attribute.index;
 		if (isMouseOver(mouseX, mouseY)) RenderSystem.setShaderColor(1.4f, 1.4f, 1.4f, 1f);
-		guiGraphics.drawTexture(AttributesScreen.TEXTURES, getX(), getY(), u, 217, width, height);
+		graphics.drawTexture(AttributesScreen.TEXTURES, getX(), getY(), u, 217, width, height);
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
 		int color = 0xFFFFFF;
 
 		int level = ParanormalClient.playerData.getAttribute(attribute);
 		MinecraftClient client = MinecraftClient.getInstance();
-		guiGraphics.drawShadowedText(client.textRenderer, Integer.toString(level), getX() + 16 - client.textRenderer.getWidth(Integer.toString(level)) / 2, getY() + height + 1, color);
+		graphics.drawShadowedText(client.textRenderer, Integer.toString(level), getX() + 16 - client.textRenderer.getWidth(Integer.toString(level)) / 2, getY() + height + 1, color);
 
 		Text text = attribute.getDisplayName();
-		guiGraphics.drawShadowedText(client.textRenderer, text, getX() + 16 - client.textRenderer.getWidth(text) / 2, getY() + height + 2 + client.textRenderer.fontHeight, color);
+		graphics.drawShadowedText(client.textRenderer, text, getX() + 16 - client.textRenderer.getWidth(text) / 2, getY() + height + 2 + client.textRenderer.fontHeight, color);
 	}
 
 	public static class IncreaseAttribute implements PressAction {
@@ -52,7 +53,7 @@ public class AttributeButton extends ButtonWidget {
 					playerData.setOccultPoints(playerData.getOccultPoints() + 1d);
 				}
 
-				playerData.syncToServer();
+				playerData.syncAllToServer();
 			}
 		}
 	}

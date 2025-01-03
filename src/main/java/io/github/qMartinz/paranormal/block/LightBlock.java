@@ -1,5 +1,6 @@
 package io.github.qMartinz.paranormal.block;
 
+import com.mojang.serialization.MapCodec;
 import io.github.qMartinz.paranormal.block.entities.LightBlockEntity;
 import io.github.qMartinz.paranormal.registry.ModBlockRegistry;
 import net.minecraft.block.Block;
@@ -43,5 +44,10 @@ public class LightBlock extends BlockWithEntity {
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
 		return checkType(type, ModBlockRegistry.LIGHT_BLOCK_ENTITY, LightBlockEntity::tick);
+	}
+
+	@Override
+	protected MapCodec<? extends BlockWithEntity> getCodec() {
+		return createCodec(LightBlock::new);
 	}
 }

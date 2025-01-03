@@ -16,7 +16,7 @@ import net.minecraft.util.math.Box;
 import java.util.List;
 
 public class VillagerFearEvents {
-	public static void onTick(Entity entity, boolean b) {
+	public static void onTick(Entity entity) {
 		if (entity instanceof VillagerEntity villager){
 			int fear = ((IEntityDataSaver) villager).getPersistentData().getInt("fear_meter");
 			int fearIncrement = 0;
@@ -66,16 +66,7 @@ public class VillagerFearEvents {
 	}
 
 	private static void frighten(VillagerEntity entity, int amount){
-		// Fear particle effects & sfx
-		for (int i = 0; i < 5; ++i) {
-			double yd = entity.getRandom().nextGaussian() * 0.02;
-			ModMessages.spawnParticlePacket(entity.getServer().getWorld(entity.getWorld().getRegistryKey()).getPlayers(),
-					ParticleTypes.ANGRY_VILLAGER,
-					entity.getX() + (entity.getRandom().range(-4, 4)/10d),
-					entity.getEyeY(),
-					entity.getZ() + (entity.getRandom().range(-4, 4)/10d),
-					0, yd, 0);
-		}
+		// TODO Fear particle effects & sfx
 
 		FearData.addFear((IEntityDataSaver) entity, amount);
 		FearData.setFearTimer((IEntityDataSaver) entity, 120);
@@ -91,16 +82,7 @@ public class VillagerFearEvents {
 	}
 
 	private static void calm(VillagerEntity entity, int amount){
-		// Fear particle effects & sfx
-		for (int i = 0; i < 5; ++i) {
-			double yd = entity.getRandom().nextGaussian() * 0.01;
-			ModMessages.spawnParticlePacket(entity.getServer().getWorld(entity.getWorld().getRegistryKey()).getPlayers(),
-					ParticleTypes.HAPPY_VILLAGER,
-					entity.getX() + (entity.getRandom().range(-4, 4)/10d),
-					entity.getEyeY(),
-					entity.getZ() + (entity.getRandom().range(-4, 4)/10d),
-					0, yd, 0);
-		}
+		// TODO Calm particle effects & sfx
 
 		FearData.removeFear((IEntityDataSaver) entity, amount);
 		FearData.setCalmTimer((IEntityDataSaver) entity, 120);

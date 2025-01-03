@@ -9,22 +9,11 @@ import io.github.qMartinz.paranormal.entity.events.VillagerFearEvents;
 import io.github.qMartinz.paranormal.networking.ModMessages;
 import io.github.qMartinz.paranormal.registry.*;
 import io.github.qMartinz.paranormal.server.data.StateSaverAndLoader;
-import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
-import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Items;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.entry.ItemEntry;
-import net.minecraft.util.ActionResult;
-import org.quiltmc.loader.api.ModContainer;
-import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
-import org.quiltmc.qsl.entity.event.api.LivingEntityDeathCallback;
-import org.quiltmc.qsl.entity.event.api.ServerEntityTickCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,16 +22,17 @@ public class Paranormal implements ModInitializer {
 	public static final String MODID = "paranormal";
 
 	@Override
-	public void onInitialize(ModContainer mod) {
+	public void onInitialize() {
 		// Registry
 		ModEntityRegistry.init();
 		ModParticleRegistry.init();
+		ModItemGroupRegistry.init();
 		ModItemRegistry.init();
 		ModBlockRegistry.init();
 		ModRitualRegistry.init();
 		ModPowerRegistry.init();
-		ModItemGroupRegistry.init();
 		ModCommandRegistry.registerCommands();
+		ModComponentsRegistry.initialize();
 
 		ModMessages.registerC2SPackets();
 
@@ -50,11 +40,11 @@ public class Paranormal implements ModInitializer {
 	}
 
 	private void registerEvents(){
-		LivingEntityDeathCallback.EVENT.register(LivingEntityEvents::onDeath);
-		ServerEntityTickCallback.EVENT.register(VillagerFearEvents::onTick);
-		ServerEntityTickCallback.EVENT.register(LivingEntityEvents::onTick);
+		ServerLivingEntityEvents.AFTER_DEATH.register(LivingEntityEvents::onDeath);
 
-		ServerEntityTickCallback.EVENT.register((entity, b) -> {
+		ParanormalEvents.ENTITY_TICK.register(VillagerFearEvents::onTick);
+		ParanormalEvents.ENTITY_TICK.register(LivingEntityEvents::onTick);
+		ParanormalEvents.ENTITY_TICK.register((entity) -> {
 			if (entity instanceof PlayerEntity player) {
 				PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 				playerData.powers.forEach(p -> p.onTick(player));
