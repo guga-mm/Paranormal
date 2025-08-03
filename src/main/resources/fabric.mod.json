@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+  "id": "paranormal",
+  "version": "${version}",
+  "name": "Paranormal",
+  "description": "WIP",
+  "authors": [
+    "Guga"
+  ],
+  "contact": {
+    "homepage": "https://example.com/",
+    "issues": "https://example.com/",
+    "sources": "https://example.com/"
+  },
+  "icon": "assets/paranormal/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-datagen": [
+      "io.github.gugamm.paranormal.ParanormalDatagen"
+    ],
+    "main": [
+      "io.github.gugamm.paranormal.Paranormal"
+    ],
+    "client": [
+      "io.github.gugamm.paranormal.ParanormalClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.9",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  },
+  "mixins": [
+    "paranormal.mixins.json",
+    {
+      "config": "paranormal-client.mixins.json",
+      "environment": "client"
+    }
+  ]
+}

@@ -1,0 +1,302 @@
+package io.github.gugamm.paranormal.registry;
+
+import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import io.github.gugamm.paranormal.api.ParanormalAttribute;
+import io.github.gugamm.paranormal.api.PlayerData;
+import io.github.gugamm.paranormal.api.events.ParanormalEvents;
+import io.github.gugamm.paranormal.api.powers.PowerRegistry;
+import io.github.gugamm.paranormal.api.rituals.RitualRegistry;
+import io.github.gugamm.paranormal.server.data.StateSaverAndLoader;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.command.argument.IdentifierArgumentType;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
+
+import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
+
+public class ModCommandRegistry {
+	public static void registerCommands(){
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+			// PEX commands
+			dispatcher.register(literal("pex").requires(source -> source.hasPermissionLevel(2))
+					.then(argument("player", EntityArgumentType.player())
+					// Set PEX level
+					.then(literal("set").then(argument("amount", IntegerArgumentType.integer(0, 20))
+							.executes(context -> {
+								ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+								PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+								final int amount = IntegerArgumentType.getInteger(context, "amount");
+
+								playerData.setPex(amount);
+								StateSaverAndLoader.syncPexToClient(player);
+								return 1;
+							})))
+					// Reset all player data
+					.then(literal("reset")
+							.executes(context -> {
+								ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+								PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+
+								playerData.setPex(0);
+								playerData.setXp(0);
+								playerData.setAttPoints(0);
+								playerData.setPowerPoints(0);
+								playerData.setRitualSlots(0);
+								playerData.setMaxOccultPoints(4d);
+								playerData.setOccultPoints(4d);
+								playerData.setAttribute(ParanormalAttribute.STRENGTH, 0);
+								playerData.setAttribute(ParanormalAttribute.VIGOR, 0);
+								playerData.setAttribute(ParanormalAttribute.PRESENCE, 0);
+								playerData.clearRituals();
+								playerData.clearPowers();
+								StateSaverAndLoader.syncAllToClient(player);
+								return 1;
+							}))
+					.then(literal("xp")
+							// Add xp
+							.then(literal("add").then(argument("amount", IntegerArgumentType.integer(1))
+									.executes(context -> {
+										ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+										PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+										final int amount = IntegerArgumentType.getInteger(context, "amount");
+
+										playerData.addXp(amount);
+										StateSaverAndLoader.syncAllToClient(player);
+										return 1;
+									}))))
+					.then(literal("occultPoints")
+							// Add occult points
+							.then(literal("set").then(argument("amount", DoubleArgumentType.doubleArg(1, 14))
+									.executes(context -> {
+										ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+										PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+										final double amount = DoubleArgumentType.getDouble(context, "amount");
+
+										playerData.setMaxOccultPoints(amount);
+										playerData.setOccultPoints(playerData.getOccultPoints() + amount - playerData.getMaxOccultPoints());
+
+										StateSaverAndLoader.syncOccultPointsToClient(player);
+										return 1;
+									}))))
+					.then(literal("attributes")
+							.then(literal("points")
+									// Add attribute points
+									.then(literal("add").then(argument("amount", IntegerArgumentType.integer(1))
+											.executes(context -> {
+												ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+												PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+												final int amount = IntegerArgumentType.getInteger(context, "amount");
+
+												playerData.setAttPoints(playerData.getAttPoints() + amount);
+												StateSaverAndLoader.syncAttributesToClient(player);
+												return 1;
+											})))
+									// Remove attribute points
+									.then(literal("remove").then(argument("amount", IntegerArgumentType.integer(1))
+											.executes(context -> {
+												ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+												PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+												final int amount = IntegerArgumentType.getInteger(context, "amount");
+
+												playerData.setAttPoints(playerData.getAttPoints() - amount);
+												StateSaverAndLoader.syncAttributesToClient(player);
+												return 1;
+											}))))
+							.then(literal("strength")
+									// Add strength
+									.then(literal("add").then(argument("amount", IntegerArgumentType.integer(1))
+											.executes(context -> {
+												ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+												PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+												final int amount = IntegerArgumentType.getInteger(context, "amount");
+
+												playerData.setAttribute(ParanormalAttribute.STRENGTH, playerData.getAttribute(ParanormalAttribute.STRENGTH) + amount);
+												StateSaverAndLoader.syncAttributesToClient(player);
+												return 1;
+											})))
+									// Remove strength
+									.then(literal("remove").then(argument("amount", IntegerArgumentType.integer(1))
+											.executes(context -> {
+												ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+												PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+												final int amount = IntegerArgumentType.getInteger(context, "amount");
+
+												playerData.setAttribute(ParanormalAttribute.STRENGTH, playerData.getAttribute(ParanormalAttribute.STRENGTH) - amount);
+												StateSaverAndLoader.syncAttributesToClient(player);
+												return 1;
+											}))))
+							.then(literal("vigor")
+									// Add vigor
+									.then(literal("add").then(argument("amount", IntegerArgumentType.integer(1))
+											.executes(context -> {
+												ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+												PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+												final int amount = IntegerArgumentType.getInteger(context, "amount");
+
+												playerData.setAttribute(ParanormalAttribute.VIGOR, playerData.getAttribute(ParanormalAttribute.VIGOR) + amount);
+												StateSaverAndLoader.syncAttributesToClient(player);
+												return 1;
+											})))
+									// Remove vigor
+									.then(literal("remove").then(argument("amount", IntegerArgumentType.integer(1))
+											.executes(context -> {
+												ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+												PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+												final int amount = IntegerArgumentType.getInteger(context, "amount");
+
+												playerData.setAttribute(ParanormalAttribute.VIGOR, playerData.getAttribute(ParanormalAttribute.VIGOR) - amount);
+												StateSaverAndLoader.syncAttributesToClient(player);
+												return 1;
+											}))))
+							.then(literal("presence")
+									// Add presence
+									.then(literal("add").then(argument("amount", IntegerArgumentType.integer(1))
+											.executes(context -> {
+												ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+												PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+												final int amount = IntegerArgumentType.getInteger(context, "amount");
+
+												playerData.setAttribute(ParanormalAttribute.PRESENCE, playerData.getAttribute(ParanormalAttribute.PRESENCE) + amount);
+												StateSaverAndLoader.syncAttributesToClient(player);
+												return 1;
+											})))
+									// Remove presence
+									.then(literal("remove").then(argument("amount", IntegerArgumentType.integer(1))
+											.executes(context -> {
+												ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+												PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+												final int amount = IntegerArgumentType.getInteger(context, "amount");
+
+												playerData.setAttribute(ParanormalAttribute.PRESENCE, playerData.getAttribute(ParanormalAttribute.PRESENCE) - amount);
+												StateSaverAndLoader.syncAttributesToClient(player);
+												return 1;
+											})))
+							))));
+
+			// Ritual commands
+			dispatcher.register(literal("rituals").requires(source -> source.hasPermissionLevel(2))
+					.then(argument("player", EntityArgumentType.player())
+					.then(literal("slots")
+							// Add ritual slots
+							.then(literal("add").then(argument("amount", IntegerArgumentType.integer(1))
+									.executes(context -> {
+										ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+										PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+										final int amount = IntegerArgumentType.getInteger(context, "amount");
+
+										playerData.setRitualSlots(playerData.getRitualSlots() + amount);
+										StateSaverAndLoader.synRitualsToClient(player);
+										return 1;
+									})))
+							// Remove ritual slots
+							.then(literal("remove").then(argument("amount", IntegerArgumentType.integer(1))
+									.executes(context -> {
+										ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+										PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+										final int amount = IntegerArgumentType.getInteger(context, "amount");
+
+										playerData.setRitualSlots(playerData.getRitualSlots() - amount);
+										StateSaverAndLoader.synRitualsToClient(player);
+										return 1;
+									}))))
+					// Add ritual
+					.then(literal("add").then(argument("id", IdentifierArgumentType.identifier()).suggests((context, builder) -> {
+						for (Identifier id : RitualRegistry.rituals.keySet()){
+							builder.suggest(id.toString());
+						}
+						return builder.buildFuture();
+					}).executes(context -> {
+						ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+						PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+						final Identifier id = IdentifierArgumentType.getIdentifier(context, "id");
+
+						if (playerData.rituals.size() < playerData.getRitualSlots()) RitualRegistry.getRitual(id).ifPresent(ritual -> {
+							playerData.addRitual(ritual);
+							ParanormalEvents.RITUAL_ADDED.invoker().ritualAdded(ritual, player);
+						});
+						StateSaverAndLoader.synRitualsToClient(player);
+						return 1;
+					})))
+					// Remove ritual
+					.then(literal("remove").then(argument("id", IdentifierArgumentType.identifier()).suggests((context, builder) -> {
+						for (Identifier id : RitualRegistry.rituals.keySet()){
+							builder.suggest(id.toString());
+						}
+						return builder.buildFuture();
+					}).executes(context -> {
+						ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+						PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+						final Identifier id = IdentifierArgumentType.getIdentifier(context, "id");
+
+						RitualRegistry.getRitual(id).ifPresent(playerData::removeRitual);
+						StateSaverAndLoader.synRitualsToClient(player);
+						return 1;
+					})))
+					));
+
+			// Power commands
+			dispatcher.register(literal("powers").requires(source -> source.hasPermissionLevel(2))
+					.then(argument("player", EntityArgumentType.player())
+					.then(literal("points")
+							// Add power points
+							.then(literal("add").then(argument("amount", IntegerArgumentType.integer(1))
+									.executes(context -> {
+										ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+										PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+										final int amount = IntegerArgumentType.getInteger(context, "amount");
+
+										playerData.setPowerPoints(playerData.getPowerPoints() + amount);
+										StateSaverAndLoader.syncPowersToClient(player);
+										return 1;
+									})))
+							// Remove power points
+							.then(literal("remove").then(argument("amount", IntegerArgumentType.integer(1))
+									.executes(context -> {
+										ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+										PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+										final int amount = IntegerArgumentType.getInteger(context, "amount");
+
+										playerData.setPowerPoints(playerData.getPowerPoints() - amount);
+										StateSaverAndLoader.syncPowersToClient(player);
+										return 1;
+									}))))
+					// Add power
+					.then(literal("add").then(argument("id", IdentifierArgumentType.identifier()).suggests((context, builder) -> {
+						for (Identifier id : PowerRegistry.powers.keySet()){
+							builder.suggest(id.toString());
+						}
+						return builder.buildFuture();
+					}).executes(context -> {
+						ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+						PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+						final Identifier id = IdentifierArgumentType.getIdentifier(context, "id");
+
+						PowerRegistry.getPower(id).ifPresent((power -> {
+							playerData.addPower(power);
+							ParanormalEvents.POWER_ADDED.invoker().powerAdded(power, player);
+						}));
+						StateSaverAndLoader.syncPowersToClient(player);
+						return 1;
+					})))
+					// Remove power
+					.then(literal("remove").then(argument("id", IdentifierArgumentType.identifier()).suggests((context, builder) -> {
+						for (Identifier id : RitualRegistry.rituals.keySet()){
+							builder.suggest(id.toString());
+						}
+						return builder.buildFuture();
+					}).executes(context -> {
+						ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "player");
+						PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+						final Identifier id = IdentifierArgumentType.getIdentifier(context, "id");
+
+						PowerRegistry.getPower(id).ifPresent(playerData::removePower);
+						StateSaverAndLoader.syncPowersToClient(player);
+						return 1;
+					})))
+					));
+		});
+	}
+}

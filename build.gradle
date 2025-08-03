@@ -1,26 +1,16 @@
 plugins {
 	id 'maven-publish'
-	alias libs.plugins.quilt.loom
+	id 'fabric-loom' version '1.11-SNAPSHOT'
 }
 
 base {
 	archivesName = project.archives_base_name
 }
 
-version = "$project.version+${libs.versions.minecraft.get()}"
+version = "$project.version+${minecraft_version}"
 group = project.maven_group
 
 repositories {
-	maven{
-		name = 'Ladysnake Mods'
-		url = 'https://maven.ladysnake.org/releases'
-		content {
-			includeGroup 'org.ladysnake'
-			includeGroup 'io.github.ladysnake'
-			includeGroup 'team.lodestar.lodestone'
-		}
-	}
-
 	maven {
 		name "modrinth"
 		url "https://api.modrinth.com/maven"
@@ -41,54 +31,47 @@ repositories {
 }
 
 loom {
-	// Loom and Loader both use this block in order to gather more information about your mod.
-	mods {
-		// This should match your mod id.
-		"paranormal" {
-			// Tell Loom about each source set used by your mod here. This ensures that your mod's classes are properly transformed by Loader.
-			sourceSet("main")
-		}
-	}
+	splitEnvironmentSourceSets()
 
-	runs {
-		// This adds a new gradle task that runs the datagen API: "gradlew runDatagen"
-		datagen {
-			server()
-			name = "Data Generation"
-			runDir = "build/datagen"
-			vmArg("-Dfabric-api.datagen")
-			vmArg("-Dfabric-api.datagen.output-dir=${file("src/main/generated")}")
+	mods {
+		"paranormal" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
 		}
 	}
 }
 
-assemble.dependsOn(runDatagen)
+fabricApi {
+	configureDataGeneration {
+		client = true
+	}
+}
 
 // All the dependencies are declared at gradle/libs.version.toml and referenced with "libs.<id>"
 // See https://docs.gradle.org/current/userguide/platforms.html for information on how version catalogs work.
 dependencies {
-	minecraft libs.minecraft
+	// To change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	mappings variantOf(libs.quilt.mappings) { classifier 'intermediary-v2' }
+	// Fabric API. This is technically optional, but you probably want it anyway.
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modImplementation libs.quilt.loader
-
-	modImplementation libs.quilted.fabric.api
-
-	modImplementation libs.quilt.standard.libraries
-
-	implementation("foundry.veil:veil-common-${veil}") {
+	modImplementation("foundry.veil:veil-fabric-${project.minecraft_version}:${project.veil_version}") {
 		exclude group: "maven.modrinth"
 	}
+
+	modRuntimeOnly "maven.modrinth:modmenu:11.0.3"
 
 	//modImplementation "software.bernie.geckolib:geckolib-quilt-${geckolib}"
 }
 
 processResources {
-	inputs.properties 'version': version, 'group': project.group
+	inputs.property "version", project.version
 
-	filesMatching('quilt.mod.json') {
-		expand 'version': version, 'group': project.group
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
 	}
 }
 
@@ -113,15 +96,16 @@ java {
 
 // If you plan to use a different file for the license, don't forget to change the file name here!
 jar {
-	from('LICENSE') {
-		rename { "${it}_${base.archivesName.get()}" }
+	from("LICENSE") {
+		rename { "${it}_${project.base.archivesName.get()}"}
 	}
 }
 
 // Configure the maven publication
 publishing {
 	publications {
-		mavenJava(MavenPublication) {
+		create("mavenJava", MavenPublication) {
+			artifactId = project.archives_base_name
 			from components.java
 		}
 	}
@@ -132,15 +116,5 @@ publishing {
 		// Notice: This block does NOT have the same function as the block in the top level.
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
-	}
-}
-
-sourceSets {
-	main {
-		resources {
-			srcDirs += [
-					'src/main/generated'
-			]
-		}
 	}
 }
